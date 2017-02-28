@@ -23,7 +23,9 @@ public final class RegionsDeserializer implements JsonDeserializer<List<Region>>
         final Type type = new TypeToken<Map<String, String>>() {
         }.getType();
 
-        final Map<String, String> regionMap = Collections.checkedMap(new Gson().<Map<String, String>>fromJson(json, type), String.class, String.class);
+        final Map<String, String> regionMap =
+                Collections.checkedMap(new Gson().<Map<String, String>>fromJson(json, type),
+                        String.class, String.class);
 
         if (regionMap != null && !regionMap.isEmpty()) {
             for (final String key : regionMap.keySet()) {

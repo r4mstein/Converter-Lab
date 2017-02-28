@@ -1,4 +1,4 @@
-package ua.r4mstein.converterlab;
+package ua.r4mstein.converterlab.presentation;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,18 +12,36 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import ua.r4mstein.converterlab.R;
 import ua.r4mstein.converterlab.api.ApiInterface;
 import ua.r4mstein.converterlab.database.DBContract;
 import ua.r4mstein.converterlab.database.DBContract.HomeEntry;
 import ua.r4mstein.converterlab.database.DBHelper;
+import ua.r4mstein.converterlab.models.HomeModel;
 import ua.r4mstein.converterlab.models.MainModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -42,50 +60,20 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mDBHelper = new DBHelper(this);
-        mDatabase = mDBHelper.getWritableDatabase();
 
-        Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + HomeEntry.TABLE_NAME,
-                null);
-        try {
-            Log.d(TAG, "Numbers of rows in DB: " + cursor.getCount());
-        } finally {
-            cursor.close();
-        }
-
-        OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        ApiInterface apiInterface = retrofit.create(ApiInterface.class);
-
-        Call<MainModel> modelCall = apiInterface.getMainModel();
-        modelCall.enqueue(new Callback<MainModel>() {
-            @Override
-            public void onResponse(Call<MainModel> call, Response<MainModel> response) {
-                Log.d(TAG, "onResponse - Response Code: " + response.code());
-
-
-            }
-
-            @Override
-            public void onFailure(Call<MainModel> call, Throwable t) {
-
-            }
-        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.setOnClickListener(new View.OnClickListener()
+
+                               {
+                                   @Override
+                                   public void onClick(View view) {
+                                       Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                                               .setAction("Action", null).show();
+                                   }
+                               }
+
+        );
     }
 
     @Override

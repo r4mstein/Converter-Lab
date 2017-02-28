@@ -1,6 +1,5 @@
 package ua.r4mstein.converterlab.presentation;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,13 +9,13 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import ua.r4mstein.converterlab.R;
-import ua.r4mstein.converterlab.database.DBHelper;
-public class MainActivity extends AppCompatActivity {
+import ua.r4mstein.converterlab.presentation.base.BaseActivity;
+
+public class MainActivity extends BaseActivity {
 
     public static final String BASE_URL = "http://resources.finance.ua/";
 
     private static final String TAG = "MainActivity";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

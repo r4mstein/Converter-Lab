@@ -5,6 +5,7 @@ import android.content.ContentValues;
 
 import ua.r4mstein.converterlab.database.DBContract.HomeEntry;
 
+@Deprecated
 public class HomeModel {
 
     private String id;

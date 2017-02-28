@@ -1,13 +1,12 @@
 package ua.r4mstein.converterlab.api;
 
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.util.Map;
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -17,6 +16,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ua.r4mstein.converterlab.models.RootResponse;
+import ua.r4mstein.converterlab.models.regions.Region;
 import ua.r4mstein.converterlab.models.regions.RegionsDeserializer;
 import ua.r4mstein.converterlab.util.logger.LogManager;
 import ua.r4mstein.converterlab.util.logger.Logger;
@@ -42,7 +42,7 @@ public class RetrofitManager {
                 .addInterceptor(loggingBODY)
                 .build();
 
-        final Type type = new TypeToken<Map<String, String>>(){}.getType();
+        final Type type = new TypeToken<List<Region>>(){}.getType();
 
         final GsonBuilder gsonBuilder = new GsonBuilder()
                 .registerTypeAdapter(type, new RegionsDeserializer());

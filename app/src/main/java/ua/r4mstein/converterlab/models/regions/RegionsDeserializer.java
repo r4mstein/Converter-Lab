@@ -8,11 +8,11 @@ import com.google.gson.JsonParseException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public final class RegionsDeserializer implements JsonDeserializer<List<Region>> {
+public final class RegionsDeserializer implements JsonDeserializer<Map<String, String>> {
     @Override
-    public List<Region> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        final List<Region> regions = new ArrayList<>();
-        return regions;
+    public Map<String, String> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+      return null;
     }
 }

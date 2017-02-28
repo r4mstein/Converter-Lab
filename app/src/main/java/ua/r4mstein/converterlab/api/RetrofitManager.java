@@ -29,55 +29,58 @@ public class RetrofitManager {
 
     private static final String TAG = "RetrofitManager";
 
-    final HttpLoggingInterceptor loggingBODY = new HttpLoggingInterceptor();
-    loggingBODY.setLevel(HttpLoggingInterceptor.Level.BODY);
+    private   void  test () {
+        final HttpLoggingInterceptor loggingBODY = new HttpLoggingInterceptor();
+        loggingBODY.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-    final HttpLoggingInterceptor loggingHEADERS = new HttpLoggingInterceptor();
-    loggingHEADERS.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+        final HttpLoggingInterceptor loggingHEADERS = new HttpLoggingInterceptor();
+        loggingHEADERS.setLevel(HttpLoggingInterceptor.Level.HEADERS);
 
-    OkHttpClient okHttpClient = new OkHttpClient.Builder()
-            .addInterceptor(loggingHEADERS)
-            .addInterceptor(loggingBODY)
-            .build();
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(loggingHEADERS)
+                .addInterceptor(loggingBODY)
+                .build();
 
-    final GsonConverterFactory factory = GsonConverterFactory.create();
+        final GsonConverterFactory factory = GsonConverterFactory.create();
 
-    Type listType = new TypeToken<List<MainModel.City>>(){}.getType();
+        Type listType = new TypeToken<List<MainModel.City>>(){}.getType();
 
-    Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(factory)
-            .addConverterFactory(GsonConverterFactory.create(new GsonBuilder()
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(okHttpClient)
+                .addConverterFactory(factory)
+                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder()
 
-                    .registerTypeAdapter(listType, new JsonDeserializer<JSONObject>() {
-                        @Override
-                        public JSONObject deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                        .registerTypeAdapter(listType, new JsonDeserializer<JSONObject>() {
+                            @Override
+                            public JSONObject deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 
-                            return null ; //context.deserialize(json, MainModel.City.class);
+                                return null ; //context.deserialize(json, MainModel.City.class);
 
-                        }
-                    }).create())
-            )
-            .build();
+                            }
+                        }).create())
+                )
+                .build();
 
-    ApiInterface apiInterface = retrofit.create(ApiInterface.class);
+        ApiInterface apiInterface = retrofit.create(ApiInterface.class);
 
-    Call<MainModel> modelCall = apiInterface.getMainModel();
-    modelCall.enqueue(new Callback<MainModel>()
+        Call<MainModel> modelCall = apiInterface.getMainModel();
+        modelCall.enqueue(new Callback<MainModel>()
 
-    {
-        @Override
-        public void onResponse(Call<MainModel> call, Response<MainModel> response) {
-        Log.d(TAG, "onResponse - Response Code: " + response.code());
+                          {
+                              @Override
+                              public void onResponse(Call<MainModel> call, Response<MainModel> response) {
+                                  Log.d(TAG, "onResponse - Response Code: " + response.code());
 
+                              }
+
+                              @Override
+                              public void onFailure(Call<MainModel> call, Throwable t) {
+
+                              }
+                          }
+
+        );
     }
 
-        @Override
-        public void onFailure(Call<MainModel> call, Throwable t) {
-
-    }
-    }
-
-    );
 }

@@ -2,6 +2,8 @@ package ua.r4mstein.converterlab.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Map;
+
 
 public class RootResponse {
 
@@ -12,6 +14,6 @@ public class RootResponse {
     private String date;
 
     @SerializedName("regions")
-    Object regionList;
+    Map<String,String> regionList;
 
 }

@@ -3,14 +3,15 @@ package ua.r4mstein.converterlab.presentation;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import ua.r4mstein.converterlab.R;
-import ua.r4mstein.converterlab.database.DBHelper;
-public class MainActivity extends AppCompatActivity {
+import ua.r4mstein.converterlab.api.RetrofitManager;
+import ua.r4mstein.converterlab.presentation.base.BaseActivity;
+
+public class MainActivity extends BaseActivity {
 
     public static final String BASE_URL = "http://resources.finance.ua/";
 

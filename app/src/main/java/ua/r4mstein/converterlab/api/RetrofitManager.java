@@ -18,12 +18,16 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ua.r4mstein.converterlab.models.RootResponse;
 import ua.r4mstein.converterlab.models.regions.RegionsDeserializer;
+import ua.r4mstein.converterlab.util.logger.LogManager;
+import ua.r4mstein.converterlab.util.logger.Logger;
 
 import static ua.r4mstein.converterlab.presentation.MainActivity.BASE_URL;
 
 public class RetrofitManager {
 
     private static final String TAG = "RetrofitManager";
+
+    private final Logger mLogger = LogManager.getLogger();
 
     public void test() {
 
@@ -60,8 +64,7 @@ public class RetrofitManager {
         modelCall.enqueue(new Callback<RootResponse>() {
                     @Override
                     public void onResponse(Call<RootResponse> call, Response<RootResponse> response) {
-                        Log.d(TAG, "onResponse - Response Code: " + response.code());
-
+                        mLogger.d(TAG, "onResponse - Response Code: " + response.code());
                     }
 
                     @Override

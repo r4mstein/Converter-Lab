@@ -2,17 +2,12 @@ package ua.r4mstein.converterlab.api;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONObject;
-
 import java.lang.reflect.Type;
-import java.util.List;
+import java.util.Map;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -21,7 +16,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import ua.r4mstein.converterlab.models.MainModel;
+import ua.r4mstein.converterlab.models.RootResponse;
+import ua.r4mstein.converterlab.models.regions.RegionsDeserializer;
 
 import static ua.r4mstein.converterlab.presentation.MainActivity.BASE_URL;
 
@@ -29,57 +25,50 @@ public class RetrofitManager {
 
     private static final String TAG = "RetrofitManager";
 
-    private   void  test () {
+    public void test() {
+
         final HttpLoggingInterceptor loggingBODY = new HttpLoggingInterceptor();
         loggingBODY.setLevel(HttpLoggingInterceptor.Level.BODY);
 
         final HttpLoggingInterceptor loggingHEADERS = new HttpLoggingInterceptor();
         loggingHEADERS.setLevel(HttpLoggingInterceptor.Level.HEADERS);
 
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        final OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(loggingHEADERS)
                 .addInterceptor(loggingBODY)
                 .build();
 
-        final GsonConverterFactory factory = GsonConverterFactory.create();
+        final Type type = new TypeToken<Map<String, String>>(){}.getType();
 
-        Type listType = new TypeToken<List<MainModel.City>>(){}.getType();
+        final GsonBuilder gsonBuilder = new GsonBuilder()
+                .registerTypeAdapter(type, new RegionsDeserializer());
 
-        Retrofit retrofit = new Retrofit.Builder()
+        final Gson gson = gsonBuilder.create();
+
+        final GsonConverterFactory factory = GsonConverterFactory.create(gson);
+
+        final Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(okHttpClient)
                 .addConverterFactory(factory)
-                .addConverterFactory(GsonConverterFactory.create(new GsonBuilder()
-
-                        .registerTypeAdapter(listType, new JsonDeserializer<JSONObject>() {
-                            @Override
-                            public JSONObject deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-
-                                return null ; //context.deserialize(json, MainModel.City.class);
-
-                            }
-                        }).create())
-                )
                 .build();
 
-        ApiInterface apiInterface = retrofit.create(ApiInterface.class);
+        final ApiInterface apiInterface = retrofit.create(ApiInterface.class);
 
-        Call<MainModel> modelCall = apiInterface.getMainModel();
-        modelCall.enqueue(new Callback<MainModel>()
+        final Call<RootResponse> modelCall = apiInterface.getMainModel();
 
-                          {
-                              @Override
-                              public void onResponse(Call<MainModel> call, Response<MainModel> response) {
-                                  Log.d(TAG, "onResponse - Response Code: " + response.code());
+        modelCall.enqueue(new Callback<RootResponse>() {
+                    @Override
+                    public void onResponse(Call<RootResponse> call, Response<RootResponse> response) {
+                        Log.d(TAG, "onResponse - Response Code: " + response.code());
 
-                              }
+                    }
 
-                              @Override
-                              public void onFailure(Call<MainModel> call, Throwable t) {
+                    @Override
+                    public void onFailure(Call<RootResponse> call, Throwable t) {
 
-                              }
-                          }
-
+                    }
+                }
         );
     }
 

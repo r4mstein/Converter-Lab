@@ -52,8 +52,8 @@ public class RetrofitManager {
         OkHttpClient okHttpClient = initOkHttpClient();
 
 //        GsonBuilder gsonBuilder = initCityGsonBuilder();
-        GsonBuilder gsonBuilder = initCurrencyGsonBuilder();
-//        GsonBuilder gsonBuilder = initRegionGsonBuilder();
+//        GsonBuilder gsonBuilder = initCurrencyGsonBuilder();
+        GsonBuilder gsonBuilder = initRegionGsonBuilder();
 
         GsonConverterFactory factory = initGsonConverterFactory(gsonBuilder);
 

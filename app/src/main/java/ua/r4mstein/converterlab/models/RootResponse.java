@@ -6,6 +6,7 @@ import java.util.List;
 
 import ua.r4mstein.converterlab.models.cities.City;
 import ua.r4mstein.converterlab.models.currencies.Currency;
+import ua.r4mstein.converterlab.models.organizations.Organization;
 import ua.r4mstein.converterlab.models.regions.Region;
 
 
@@ -26,4 +27,6 @@ public class RootResponse {
     @SerializedName("currencies")
     List<Currency> currencies;
 
+    @SerializedName("organizations")
+    List<Organization> organizations;
 }

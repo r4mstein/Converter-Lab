@@ -2,16 +2,20 @@ package ua.r4mstein.converterlab.presentation;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import java.util.List;
+
 import ua.r4mstein.converterlab.R;
 import ua.r4mstein.converterlab.api.RetrofitManager;
 import ua.r4mstein.converterlab.models.RootResponse;
+import ua.r4mstein.converterlab.models.cities.City;
+import ua.r4mstein.converterlab.models.organizations.Organization;
+import ua.r4mstein.converterlab.models.regions.Region;
 import ua.r4mstein.converterlab.presentation.base.BaseActivity;
 
 public class MainActivity extends BaseActivity {
@@ -33,16 +37,45 @@ public class MainActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        RetrofitManager.getInstance().init(); // todo remove.
+        mTitleTextView = (TextView) findViewById(R.id.title);
+        mRegionTextView = (TextView) findViewById(R.id.region);
+        mCityTextView = (TextView) findViewById(R.id.city);
+        mPhoneTextView = (TextView) findViewById(R.id.phone);
+        mAddressTextView = (TextView) findViewById(R.id.address);
+
+        retrofitManager.init(); // todo remove.
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
                                    @Override
                                    public void onClick(View view) {
-                                       RetrofitManager.getInstance().getResponse(new RetrofitManager.MCallback() {
+                                       retrofitManager.getResponse(new RetrofitManager.RCallback() {
                                            @Override
                                            public void onSuccess(RootResponse response) {
+                                               List<Organization> organizations = response.getOrganizations();
+                                               Organization organization = organizations.get(0);
 
+                                               List<Region> regions = response.getRegions();
+                                               String regionUI = null;
+                                               for (Region region : regions) {
+                                                   if (region.id.equals(organization.regionId)) {
+                                                       regionUI = region.name;
+                                                   }
+                                               }
+
+                                               List<City> cities = response.getCities();
+                                               String cityUI = null;
+                                               for (City city : cities) {
+                                                   if (city.id.equals(organization.cityId)) {
+                                                       cityUI = city.name;
+                                                   }
+                                               }
+
+                                               mTitleTextView.setText(organization.title);
+                                               mRegionTextView.setText(regionUI);
+                                               mCityTextView.setText(cityUI);
+                                               mPhoneTextView.setText(organization.phone);
+                                               mAddressTextView.setText(organization.address);
                                            }
 
                                            @Override

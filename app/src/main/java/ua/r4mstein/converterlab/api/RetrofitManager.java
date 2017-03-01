@@ -1,7 +1,6 @@
 package ua.r4mstein.converterlab.api;
 
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
@@ -49,6 +48,7 @@ public class RetrofitManager {
     }
 
     public void init() {
+        mLogger.d(TAG, "init");
 
         OkHttpClient okHttpClient = initOkHttpClient();
 
@@ -61,6 +61,8 @@ public class RetrofitManager {
     }
 
     public OkHttpClient initOkHttpClient() {
+        mLogger.d(TAG, "initOkHttpClient");
+
         final HttpLoggingInterceptor loggingBODY = new HttpLoggingInterceptor();
         loggingBODY.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -76,6 +78,8 @@ public class RetrofitManager {
     }
 
     public GsonConverterFactory initGsonConverterFactory() {
+        mLogger.d(TAG, "initGsonConverterFactory");
+
         final Type typeRegions = new TypeToken<List<Region>>() {
         }.getType();
 
@@ -97,6 +101,8 @@ public class RetrofitManager {
     }
 
     public Retrofit initRetrofit(OkHttpClient okHttpClient, GsonConverterFactory factory) {
+        mLogger.d(TAG, "initRetrofit");
+
         final Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(okHttpClient)
@@ -107,7 +113,7 @@ public class RetrofitManager {
     }
 
 
-    public void getResponse(final MCallback callback) {
+    public void getResponse(final RCallback callback) {
         final Call<RootResponse> modelCall = apiInterface.getMainModel();
 
         modelCall.enqueue(new Callback<RootResponse>() {
@@ -121,13 +127,14 @@ public class RetrofitManager {
 
                               @Override
                               public void onFailure(Call<RootResponse> call, Throwable t) {
+                                  mLogger.d(TAG, t.getMessage(), t);
                                   callback.onError("error");
                               }
                           }
         );
     }
 
-    public interface MCallback {
+    public interface RCallback {
 
         void onSuccess(RootResponse response);
 

@@ -12,13 +12,13 @@ import ua.r4mstein.converterlab.util.logger.Logger;
 public abstract class BaseActivity extends AppCompatActivity {
 
     protected Logger logger;
-    protected RetrofitManager retrofitManager;
+    protected RetrofitManager retrofitManager = RetrofitManager.getInstance();
 
     @Override
     public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
         super.onCreate(savedInstanceState, persistentState);
         logger = LogManager.getLogger();
 
-        retrofitManager = RetrofitManager.getInstance();
+//        retrofitManager = RetrofitManager.getInstance();
     }
 }

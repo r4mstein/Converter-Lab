@@ -1,4 +1,4 @@
-package ua.r4mstein.converterlab.models.cities;
+package ua.r4mstein.converterlab.api.models.cities;
 
 public final class City {
 

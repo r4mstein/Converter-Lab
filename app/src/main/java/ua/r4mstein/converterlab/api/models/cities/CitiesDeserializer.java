@@ -1,4 +1,4 @@
-package ua.r4mstein.converterlab.models.cities;
+package ua.r4mstein.converterlab.api.models.cities;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;

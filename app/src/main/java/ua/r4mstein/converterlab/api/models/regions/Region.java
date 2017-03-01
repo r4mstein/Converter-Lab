@@ -1,4 +1,4 @@
-package ua.r4mstein.converterlab.models.regions;
+package ua.r4mstein.converterlab.api.models.regions;
 
 public final class Region {
 

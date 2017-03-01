@@ -14,13 +14,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import ua.r4mstein.converterlab.models.RootResponse;
-import ua.r4mstein.converterlab.models.cities.CitiesDeserializer;
-import ua.r4mstein.converterlab.models.cities.City;
-import ua.r4mstein.converterlab.models.currencies.CurrenciesDeserializer;
-import ua.r4mstein.converterlab.models.currencies.Currency;
-import ua.r4mstein.converterlab.models.regions.Region;
-import ua.r4mstein.converterlab.models.regions.RegionsDeserializer;
+import ua.r4mstein.converterlab.api.models.RootResponse;
+import ua.r4mstein.converterlab.api.models.cities.CitiesDeserializer;
+import ua.r4mstein.converterlab.api.models.cities.City;
+import ua.r4mstein.converterlab.api.models.currencies.CurrenciesDeserializer;
+import ua.r4mstein.converterlab.api.models.currencies.Currency;
+import ua.r4mstein.converterlab.api.models.regions.Region;
+import ua.r4mstein.converterlab.api.models.regions.RegionsDeserializer;
 import ua.r4mstein.converterlab.util.logger.LogManager;
 import ua.r4mstein.converterlab.util.logger.Logger;
 
@@ -41,9 +41,8 @@ public class RetrofitManager {
     public static RetrofitManager getInstance() {
         if (retrofitManager == null) {
             retrofitManager = new RetrofitManager();
-        } else {
-            return retrofitManager;
         }
+
         return retrofitManager;
     }
 

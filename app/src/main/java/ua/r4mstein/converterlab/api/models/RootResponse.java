@@ -1,13 +1,13 @@
-package ua.r4mstein.converterlab.models;
+package ua.r4mstein.converterlab.api.models;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import ua.r4mstein.converterlab.models.cities.City;
-import ua.r4mstein.converterlab.models.currencies.Currency;
-import ua.r4mstein.converterlab.models.organizations.Organization;
-import ua.r4mstein.converterlab.models.regions.Region;
+import ua.r4mstein.converterlab.api.models.cities.City;
+import ua.r4mstein.converterlab.api.models.currencies.Currency;
+import ua.r4mstein.converterlab.api.models.organizations.Organization;
+import ua.r4mstein.converterlab.api.models.regions.Region;
 
 public class RootResponse {
 

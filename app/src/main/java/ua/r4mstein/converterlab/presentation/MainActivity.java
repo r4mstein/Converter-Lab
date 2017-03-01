@@ -4,19 +4,19 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.TextView;
 
 import java.util.List;
 
 import ua.r4mstein.converterlab.R;
 import ua.r4mstein.converterlab.api.RetrofitManager;
-import ua.r4mstein.converterlab.models.RootResponse;
-import ua.r4mstein.converterlab.models.cities.City;
-import ua.r4mstein.converterlab.models.organizations.Organization;
-import ua.r4mstein.converterlab.models.regions.Region;
+import ua.r4mstein.converterlab.api.models.RootResponse;
+import ua.r4mstein.converterlab.api.models.cities.City;
+import ua.r4mstein.converterlab.api.models.organizations.Organization;
+import ua.r4mstein.converterlab.api.models.regions.Region;
 import ua.r4mstein.converterlab.presentation.base.BaseActivity;
+import ua.r4mstein.converterlab.presentation.ui_models.HomeModel;
+import ua.r4mstein.converterlab.util.converter.Converter;
 
 public class MainActivity extends BaseActivity {
 
@@ -46,68 +46,35 @@ public class MainActivity extends BaseActivity {
         retrofitManager.init(); // todo remove.
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-                                   @Override
-                                   public void onClick(View view) {
-                                       retrofitManager.getResponse(new RetrofitManager.RCallback() {
-                                           @Override
-                                           public void onSuccess(RootResponse response) {
-                                               List<Organization> organizations = response.getOrganizations();
-                                               Organization organization = organizations.get(0);
+        fab.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        retrofitManager.getResponse(new RetrofitManager.RCallback() {
+                            @Override
+                            public void onSuccess(RootResponse response) {
 
-                                               List<Region> regions = response.getRegions();
-                                               String regionUI = null;
-                                               for (Region region : regions) {
-                                                   if (region.id.equals(organization.regionId)) {
-                                                       regionUI = region.name;
-                                                   }
-                                               }
+                                Converter converter = new Converter();
 
-                                               List<City> cities = response.getCities();
-                                               String cityUI = null;
-                                               for (City city : cities) {
-                                                   if (city.id.equals(organization.cityId)) {
-                                                       cityUI = city.name;
-                                                   }
-                                               }
+                                converter.convert(response);
+                                List<HomeModel> homeModels = converter.getHomeModels();
 
-                                               mTitleTextView.setText(organization.title);
-                                               mRegionTextView.setText(regionUI);
-                                               mCityTextView.setText(cityUI);
-                                               mPhoneTextView.setText(organization.phone);
-                                               mAddressTextView.setText(organization.address);
-                                           }
+                                HomeModel homeModel = homeModels.get(0);
 
-                                           @Override
-                                           public void onError(String message) {
+                                mTitleTextView.setText(homeModel.getTitle());
+                                mRegionTextView.setText(homeModel.getRegion());
+                                mCityTextView.setText(homeModel.getCity());
+                                mPhoneTextView.setText(homeModel.getPhone());
+                                mAddressTextView.setText(homeModel.getAddress());
+                            }
 
-                                           }
-                                       });
-                                   }
-                               }
+                            @Override
+                            public void onError(String message) {
 
+                            }
+                        });
+                    }
+                }
         );
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

@@ -29,6 +29,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <TextView
+            tools:text="title"
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,6 +40,7 @@
             />
 
         <TextView
+            tools:text="region"
             android:id="@+id/region"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,6 +49,7 @@
             android:layout_marginTop="@dimen/margin_text"/>
 
         <TextView
+            tools:text="city"
             android:id="@+id/city"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,6 +58,7 @@
             android:layout_marginTop="@dimen/margin_text"/>
 
         <TextView
+            tools:text="phone"
             android:id="@+id/phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -64,6 +68,7 @@
             />
 
         <TextView
+            tools:text="address"
             android:id="@+id/address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -1,4 +1,4 @@
-package ua.r4mstein.converterlab.models.currencies;
+package ua.r4mstein.converterlab.api.models.currencies;
 
 public final class Currency {
 

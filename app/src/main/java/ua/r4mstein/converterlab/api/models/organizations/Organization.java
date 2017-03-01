@@ -1,4 +1,4 @@
-package ua.r4mstein.converterlab.models.organizations;
+package ua.r4mstein.converterlab.api.models.organizations;
 
 import com.google.gson.annotations.SerializedName;
 

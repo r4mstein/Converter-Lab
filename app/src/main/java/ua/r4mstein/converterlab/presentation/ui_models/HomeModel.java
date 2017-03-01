@@ -1,12 +1,30 @@
-package ua.r4mstein.converterlab.models.ui_models;
+package ua.r4mstein.converterlab.presentation.ui_models;
 
 public final class HomeModel {
 
+    private String id;
     private String title;
     private String region;
     private String city;
     private String phone;
     private String address;
+    private String[] currencyId;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String[] getCurrencyId() {
+        return currencyId;
+    }
+
+    public void setCurrencyId(String[] currencyId) {
+        this.currencyId = currencyId;
+    }
 
     public String getTitle() {
         return title;

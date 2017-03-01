@@ -1,4 +1,4 @@
-package ua.r4mstein.converterlab.models.regions;
+package ua.r4mstein.converterlab.api.models.regions;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;

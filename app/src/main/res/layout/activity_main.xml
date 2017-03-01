@@ -22,7 +22,60 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/padding_text_large"
+            android:paddingTop="@dimen/padding_text_large"
+            android:textSize="@dimen/text_size_large"
+            android:textStyle="bold"
+            android:text="Alfa Bank"/>
+
+        <TextView
+            android:id="@+id/region"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/padding_text_large"
+            android:textSize="@dimen/text_size_medium"
+            android:text="Region"
+            android:layout_marginTop="@dimen/margin_text"/>
+
+        <TextView
+            android:id="@+id/city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:textSize="@dimen/text_size_medium"
+            android:text="City"
+            android:layout_marginTop="@dimen/margin_text"/>
+
+        <TextView
+            android:id="@+id/phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:textSize="@dimen/text_size_medium"
+            android:text="095222362"
+            android:layout_marginTop="@dimen/margin_text"
+            />
+
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:textSize="@dimen/text_size_medium"
+            android:text="Address"
+            android:layout_marginTop="@dimen/margin_text"/>
+
+    </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

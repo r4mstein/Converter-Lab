@@ -3,8 +3,6 @@ package ua.r4mstein.converterlab.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import ua.r4mstein.converterlab.models.HomeModel;
-
 public class DataSource {
 
     private Context mContext;
@@ -25,7 +23,4 @@ public class DataSource {
         mDBHelper.close();
     }
 
-    public HomeModel createHomeModel(HomeModel homeModel) {
-        return null;
-    }
 }

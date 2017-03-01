@@ -9,7 +9,6 @@ import ua.r4mstein.converterlab.models.currencies.Currency;
 import ua.r4mstein.converterlab.models.organizations.Organization;
 import ua.r4mstein.converterlab.models.regions.Region;
 
-
 public class RootResponse {
 
     @SerializedName("sourceId")
@@ -19,14 +18,38 @@ public class RootResponse {
     private String date;
 
     @SerializedName("regions")
-    List<Region> regions;
+    private List<Region> regions;
 
     @SerializedName("cities")
-    List<City> cities;
+    private List<City> cities;
 
     @SerializedName("currencies")
-    List<Currency> currencies;
+    private List<Currency> currencies;
 
     @SerializedName("organizations")
-    List<Organization> organizations;
+    private List<Organization> organizations;
+
+    public String getSourceId() {
+        return sourceId;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public List<Region> getRegions() {
+        return regions;
+    }
+
+    public List<City> getCities() {
+        return cities;
+    }
+
+    public List<Currency> getCurrencies() {
+        return currencies;
+    }
+
+    public List<Organization> getOrganizations() {
+        return organizations;
+    }
 }

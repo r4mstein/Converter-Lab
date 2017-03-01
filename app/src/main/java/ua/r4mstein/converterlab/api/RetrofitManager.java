@@ -34,6 +34,7 @@ public class RetrofitManager {
     private final Logger mLogger = LogManager.getLogger();
 
     private static RetrofitManager retrofitManager;
+    private ApiInterface apiInterface;
 
     private RetrofitManager() {
     }
@@ -47,21 +48,16 @@ public class RetrofitManager {
         return retrofitManager;
     }
 
-    public void test() {
+    public void init() {
 
         OkHttpClient okHttpClient = initOkHttpClient();
 
-//        GsonBuilder gsonBuilder = initCityGsonBuilder();
-//        GsonBuilder gsonBuilder = initCurrencyGsonBuilder();
-        GsonBuilder gsonBuilder = initRegionGsonBuilder();
-
-        GsonConverterFactory factory = initGsonConverterFactory(gsonBuilder);
+        GsonConverterFactory factory = initGsonConverterFactory();
 
         Retrofit retrofit = initRetrofit(okHttpClient, factory);
 
-        final ApiInterface apiInterface = retrofit.create(ApiInterface.class);
+        apiInterface = retrofit.create(ApiInterface.class);
 
-        getResponse(apiInterface);
     }
 
     public OkHttpClient initOkHttpClient() {
@@ -79,40 +75,23 @@ public class RetrofitManager {
         return okHttpClient;
     }
 
-    public GsonBuilder initRegionGsonBuilder() {
-        final Type type = new TypeToken<List<Region>>() {
+    public GsonConverterFactory initGsonConverterFactory() {
+        final Type typeRegions = new TypeToken<List<Region>>() {
         }.getType();
 
-        final GsonBuilder gsonBuilder = new GsonBuilder()
-                .registerTypeAdapter(type, new RegionsDeserializer());
+        final Type typeCurrencies = new TypeToken<List<Currency>>() {
+        }.getType();
 
-        return gsonBuilder;
-    }
 
-    public GsonBuilder initCityGsonBuilder() {
         final Type type = new TypeToken<List<City>>() {
         }.getType();
 
-        final GsonBuilder gsonBuilder = new GsonBuilder()
+        GsonBuilder gsonBuilder = new GsonBuilder()
+                .registerTypeAdapter(typeRegions, new RegionsDeserializer())
+                .registerTypeAdapter(typeCurrencies, new CurrenciesDeserializer())
                 .registerTypeAdapter(type, new CitiesDeserializer());
 
-        return gsonBuilder;
-    }
-
-    public GsonBuilder initCurrencyGsonBuilder() {
-        final Type type = new TypeToken<List<Currency>>() {
-        }.getType();
-
-        final GsonBuilder gsonBuilder = new GsonBuilder()
-                .registerTypeAdapter(type, new CurrenciesDeserializer());
-
-        return gsonBuilder;
-    }
-
-    public GsonConverterFactory initGsonConverterFactory(GsonBuilder gsonBuilder) {
-        final Gson gson = gsonBuilder.create();
-
-        final GsonConverterFactory factory = GsonConverterFactory.create(gson);
+        final GsonConverterFactory factory = GsonConverterFactory.create(gsonBuilder.create());
 
         return factory;
     }
@@ -127,7 +106,8 @@ public class RetrofitManager {
         return retrofit;
     }
 
-    public void getResponse(ApiInterface apiInterface) {
+
+    public void getResponse(final MCallback callback) {
         final Call<RootResponse> modelCall = apiInterface.getMainModel();
 
         modelCall.enqueue(new Callback<RootResponse>() {
@@ -135,13 +115,22 @@ public class RetrofitManager {
                               public void onResponse(Call<RootResponse> call, Response<RootResponse> response) {
                                   mLogger.d(TAG, "onResponse - Response Code: " + response.code());
 
+                                  if (response.isSuccessful()) callback.onSuccess(response.body());
+                                  else callback.onError(response.errorBody().toString());
                               }
 
                               @Override
                               public void onFailure(Call<RootResponse> call, Throwable t) {
-
+                                  callback.onError("error");
                               }
                           }
         );
+    }
+
+    public interface MCallback {
+
+        void onSuccess(RootResponse response);
+
+        void onError(String message);
     }
 }

@@ -7,8 +7,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
 import ua.r4mstein.converterlab.R;
 import ua.r4mstein.converterlab.api.RetrofitManager;
+import ua.r4mstein.converterlab.models.RootResponse;
 import ua.r4mstein.converterlab.presentation.base.BaseActivity;
 
 public class MainActivity extends BaseActivity {
@@ -17,6 +20,12 @@ public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MainActivity";
 
+    private TextView mTitleTextView;
+    private TextView mRegionTextView;
+    private TextView mCityTextView;
+    private TextView mPhoneTextView;
+    private TextView mAddressTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,16 +33,23 @@ public class MainActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        RetrofitManager.getInstance().test(); // todo remove.
+        RetrofitManager.getInstance().init(); // todo remove.
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener()
-
-                               {
+        fab.setOnClickListener(new View.OnClickListener() {
                                    @Override
                                    public void onClick(View view) {
-                                       Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                                               .setAction("Action", null).show();
+                                       RetrofitManager.getInstance().getResponse(new RetrofitManager.MCallback() {
+                                           @Override
+                                           public void onSuccess(RootResponse response) {
+
+                                           }
+
+                                           @Override
+                                           public void onError(String message) {
+
+                                           }
+                                       });
                                    }
                                }
 

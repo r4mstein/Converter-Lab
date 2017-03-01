@@ -64,15 +64,15 @@
             android:layout_below="@+id/home_phone"
             android:layout_alignParentEnd="true"/>
 
-        <android.support.design.widget.BottomNavigationView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/home_address"
-            android:background="@color/colorItemBackground"
-            app:itemIconTint="@drawable/nav_item_state"
-            app:itemTextColor="@drawable/nav_item_state"
-            app:menu="@menu/menu_bottom_navigation_home_item"
-            style="@style/Widget.Design.BottomNavigationView"/>
+        <!--<android.support.design.widget.BottomNavigationView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@id/home_address"-->
+            <!--android:background="@color/colorItemBackground"-->
+            <!--app:itemIconTint="@drawable/nav_item_state"-->
+            <!--app:itemTextColor="@drawable/nav_item_state"-->
+            <!--app:menu="@menu/menu_bottom_navigation_home_item"-->
+            <!--style="@style/Widget.Design.BottomNavigationView"/>-->
 
     </RelativeLayout>
 

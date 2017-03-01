@@ -4,7 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import ua.r4mstein.converterlab.database.DBContract.HomeEntry;
+import ua.r4mstein.converterlab.database.DBContract.CurrenciesEntry;
+import ua.r4mstein.converterlab.database.DBContract.OrganizationEntry;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -17,12 +18,15 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(HomeEntry.SQL_CREATE);
+        db.execSQL(OrganizationEntry.SQL_CREATE);
+        db.execSQL(CurrenciesEntry.SQL_CREATE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(HomeEntry.SQL_DELETE);
+        db.execSQL(OrganizationEntry.SQL_DELETE);
+        db.execSQL(CurrenciesEntry.SQL_DELETE);
+
         onCreate(db);
     }
 }

@@ -1,5 +1,7 @@
 package ua.r4mstein.converterlab.presentation;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +13,8 @@ import java.util.List;
 import ua.r4mstein.converterlab.R;
 import ua.r4mstein.converterlab.api.RetrofitManager;
 import ua.r4mstein.converterlab.api.models.RootResponse;
+import ua.r4mstein.converterlab.database.DBContract;
+import ua.r4mstein.converterlab.database.DBHelper;
 import ua.r4mstein.converterlab.presentation.base.BaseActivity;
 import ua.r4mstein.converterlab.presentation.ui_models.CurrenciesModel;
 import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
@@ -42,6 +46,25 @@ public class MainActivity extends BaseActivity {
         mPhoneTextView = (TextView) findViewById(R.id.phone);
         mAddressTextView = (TextView) findViewById(R.id.address);
         mCurrencyTextView = (TextView) findViewById(R.id.currency);
+
+        DBHelper dbHelper = new DBHelper(this);
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        Cursor cursor = database.rawQuery("SELECT * FROM " + DBContract.OrganizationEntry.TABLE_NAME,
+                null);
+        try {
+            logger.d(TAG, "Numbers of rows in OrganizationDB: " + cursor.getCount());
+        } finally {
+            cursor.close();
+        }
+
+        Cursor cursorr = database.rawQuery("SELECT * FROM " + DBContract.CurrenciesEntry.TABLE_NAME,
+                null);
+        try {
+            logger.d(TAG, "Numbers of rows in CurrenciesDB: " + cursorr.getCount());
+        } finally {
+            cursorr.close();
+        }
 
         retrofitManager.init(); // todo remove.
 

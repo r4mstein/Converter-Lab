@@ -1,6 +1,6 @@
 package ua.r4mstein.converterlab.presentation.ui_models;
 
-public final class HomeModel {
+public final class OrganizationModel {
 
     private String id;
     private String title;
@@ -8,6 +8,7 @@ public final class HomeModel {
     private String city;
     private String phone;
     private String address;
+    private String link;
     private String[] currencyId;
 
     public String getId() {
@@ -64,5 +65,13 @@ public final class HomeModel {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 }

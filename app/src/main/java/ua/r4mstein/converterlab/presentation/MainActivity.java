@@ -11,11 +11,9 @@ import java.util.List;
 import ua.r4mstein.converterlab.R;
 import ua.r4mstein.converterlab.api.RetrofitManager;
 import ua.r4mstein.converterlab.api.models.RootResponse;
-import ua.r4mstein.converterlab.api.models.cities.City;
-import ua.r4mstein.converterlab.api.models.organizations.Organization;
-import ua.r4mstein.converterlab.api.models.regions.Region;
 import ua.r4mstein.converterlab.presentation.base.BaseActivity;
-import ua.r4mstein.converterlab.presentation.ui_models.HomeModel;
+import ua.r4mstein.converterlab.presentation.ui_models.CurrenciesModel;
+import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
 import ua.r4mstein.converterlab.util.converter.Converter;
 
 public class MainActivity extends BaseActivity {
@@ -29,6 +27,7 @@ public class MainActivity extends BaseActivity {
     private TextView mCityTextView;
     private TextView mPhoneTextView;
     private TextView mAddressTextView;
+    private TextView mCurrencyTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +41,7 @@ public class MainActivity extends BaseActivity {
         mCityTextView = (TextView) findViewById(R.id.city);
         mPhoneTextView = (TextView) findViewById(R.id.phone);
         mAddressTextView = (TextView) findViewById(R.id.address);
+        mCurrencyTextView = (TextView) findViewById(R.id.currency);
 
         retrofitManager.init(); // todo remove.
 
@@ -57,15 +57,20 @@ public class MainActivity extends BaseActivity {
                                 Converter converter = new Converter();
 
                                 converter.convert(response);
-                                List<HomeModel> homeModels = converter.getHomeModels();
+                                List<OrganizationModel> organizationModels = converter.getOrganizationModels();
+                                List<CurrenciesModel> currenciesModels = converter.getCurrencies();
 
-                                HomeModel homeModel = homeModels.get(0);
+                                OrganizationModel organizationModel = organizationModels.get(0);
 
-                                mTitleTextView.setText(homeModel.getTitle());
-                                mRegionTextView.setText(homeModel.getRegion());
-                                mCityTextView.setText(homeModel.getCity());
-                                mPhoneTextView.setText(homeModel.getPhone());
-                                mAddressTextView.setText(homeModel.getAddress());
+                                mTitleTextView.setText(organizationModel.getTitle());
+                                mRegionTextView.setText(organizationModel.getRegion());
+                                mCityTextView.setText(organizationModel.getCity());
+                                mPhoneTextView.setText(organizationModel.getPhone());
+                                mAddressTextView.setText(organizationModel.getAddress());
+
+                                for (int i = 0; i < 7; i++) {
+                                    mCurrencyTextView.append(currenciesModels.get(i).getId() + "\n");
+                                }
                             }
 
                             @Override

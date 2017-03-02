@@ -30,12 +30,13 @@ public class RetrofitManager {
 
     private static final String TAG = "RetrofitManager";
 
-    private final Logger mLogger = LogManager.getLogger();
+    private final Logger mLogger;
 
     private static RetrofitManager retrofitManager;
     private ApiInterface apiInterface;
 
     private RetrofitManager() {
+        mLogger = LogManager.getLogger();
     }
 
     public static RetrofitManager getInstance() {

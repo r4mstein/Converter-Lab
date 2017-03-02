@@ -59,7 +59,7 @@ public class MainActivity extends BaseActivity {
 
 //                        //update
 //                        OrganizationModel model = new OrganizationModel();
-//                        model.setId("7oiylpmiow8iy1sma6b");
+//                        model.setId("7oiylpmiow8iy1smdqi");
 //                        model.setTitle("My bank");
 //                        model.setRegion("my region");
 //                        model.setCity("my City");
@@ -92,13 +92,16 @@ public class MainActivity extends BaseActivity {
                                 List<OrganizationModel> organizationModels = converter.getOrganizationModels();
                                 List<CurrenciesModel> currenciesModels = converter.getCurrencies();
 
-                                for (OrganizationModel model : organizationModels) {
-                                    mDataSource.insertOrUpdateOrganizationItem(model);
-                                }
+//                                for (OrganizationModel model : organizationModels) {
+//                                    mDataSource.insertOrUpdateOrganizationItem(model);
+//                                }
+//
+//                                for (CurrenciesModel model : currenciesModels) {
+//                                    mDataSource.insertOrUpdateCurrenciesItem(model);
+//                                }
 
-                                for (CurrenciesModel model : currenciesModels) {
-                                    mDataSource.insertOrUpdateCurrenciesItem(model);
-                                }
+                                mDataSource.insertOrUpdateOrganizations(organizationModels);
+//                                mDataSource.insertOrUpdateCurrencies(currenciesModels);
 
                                 OrganizationModel organizationModel = organizationModels.get(0);
 

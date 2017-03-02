@@ -21,7 +21,7 @@ public class DataSource {
 
     private static final String TAG = "DataSource";
 
-    private Logger mLogger = LogManager.getLogger();
+    private final Logger mLogger;
 
     private Context mContext;
     private SQLiteDatabase mDatabase;
@@ -31,6 +31,7 @@ public class DataSource {
         mContext = context;
         mDBHelper = new DBHelper(mContext);
         mDatabase = mDBHelper.getWritableDatabase();
+        mLogger = LogManager.getLogger();
     }
 
     public void open() {
@@ -49,8 +50,8 @@ public class DataSource {
         return result;
     }
 
-    public void insertOrganizationItem(List<OrganizationModel> list) {
-        String sql = "INSERT INTO " + OrganizationEntry.TABLE_NAME + " (" +
+    public void insertOrUpdateOrganizations(List<OrganizationModel> list) {
+        String sql = "INSERT OR REPLACE INTO " + OrganizationEntry.TABLE_NAME + " (" +
                 OrganizationEntry.COLUMN_ID + ", " +
                 OrganizationEntry.COLUMN_TITLE + ", " +
                 OrganizationEntry.COLUMN_REGION + ", " +
@@ -60,6 +61,7 @@ public class DataSource {
                 OrganizationEntry.COLUMN_LINK + ") " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
         mDatabase.beginTransaction();
+        mLogger.d(TAG, "insertOrUpdateOrganizations: mDatabase.beginTransaction");
 
         SQLiteStatement statement = mDatabase.compileStatement(sql);
         for (int i = 0; i < list.size(); i++) {
@@ -77,21 +79,8 @@ public class DataSource {
 
         mDatabase.setTransactionSuccessful();
         mDatabase.endTransaction();
+        mLogger.d(TAG, "insertOrUpdateOrganizations: mDatabase.endTransaction");
     }
-
-//    String sql = "INSERT INTO table (number, nick) VALUES (?, ?)";
-//    db.beginTransaction();
-//
-//    SQLiteStatement stmt = db.compileStatement(sql);
-//    for (int i = 0; i < values.size(); i++) {
-//        stmt.bindString(1, values.get(i).number);
-//        stmt.bindString(2, values.get(i).nick);
-//        stmt.execute();
-//        stmt.clearBindings();
-//    }
-//
-//    db.setTransactionSuccessful();
-//    db.endTransaction();
 
     public void updateOrganizationItem(OrganizationModel model) {
         ContentValues values = new ContentValues();
@@ -155,6 +144,32 @@ public class DataSource {
         mLogger.d(TAG, "insertCurrenciesItem result: " + result);
 
         return result;
+    }
+
+    public void insertOrUpdateCurrencies(List<CurrenciesModel> list) {
+        String sql = "INSERT OR REPLACE INTO " + CurrenciesEntry.TABLE_NAME + " (" +
+                CurrenciesEntry.COLUMN_ID + ", " +
+                CurrenciesEntry.COLUMN_NAME + ", " +
+                CurrenciesEntry.COLUMN_ASK + ", " +
+                CurrenciesEntry.COLUMN_BID + ") " +
+                "VALUES (?, ?, ?, ?)";
+        mDatabase.beginTransaction();
+        mLogger.d(TAG, "insertOrUpdateCurrencies: mDatabase.beginTransaction");
+
+        SQLiteStatement statement = mDatabase.compileStatement(sql);
+        for (int i = 0; i < list.size(); i++) {
+            statement.bindString(1, list.get(i).getId());
+            statement.bindString(2, list.get(i).getName());
+            statement.bindString(3, list.get(i).getAsk());
+            statement.bindString(4, list.get(i).getBid());
+
+            statement.execute();
+            statement.clearBindings();
+        }
+
+        mDatabase.setTransactionSuccessful();
+        mDatabase.endTransaction();
+        mLogger.d(TAG, "insertOrUpdateCurrencies: mDatabase.endTransaction");
     }
 
     public void updateCurrenciesItem(CurrenciesModel model) {

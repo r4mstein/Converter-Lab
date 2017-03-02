@@ -1,5 +1,9 @@
 package ua.r4mstein.converterlab.presentation.ui_models;
 
+import android.content.ContentValues;
+
+import ua.r4mstein.converterlab.database.DBContract.OrganizationEntry;
+
 public final class OrganizationModel {
 
     private String id;
@@ -10,6 +14,20 @@ public final class OrganizationModel {
     private String address;
     private String link;
     private String[] currencyId;
+
+    public ContentValues toValues() {
+        ContentValues values = new ContentValues();
+
+        values.put(OrganizationEntry.COLUMN_ID, id);
+        values.put(OrganizationEntry.COLUMN_TITLE, title);
+        values.put(OrganizationEntry.COLUMN_REGION, region);
+        values.put(OrganizationEntry.COLUMN_CITY, city);
+        values.put(OrganizationEntry.COLUMN_PHONE, phone);
+        values.put(OrganizationEntry.COLUMN_ADDRESS, address);
+        values.put(OrganizationEntry.COLUMN_LINK, link);
+
+        return values;
+    }
 
     public String getId() {
         return id;

@@ -1,11 +1,26 @@
 package ua.r4mstein.converterlab.presentation.ui_models;
 
+import android.content.ContentValues;
+
+import ua.r4mstein.converterlab.database.DBContract;
+
 public final class CurrenciesModel {
 
     private String id;
     private String name;
     private String ask;
     private String bid;
+
+    public ContentValues toValues() {
+        ContentValues values = new ContentValues();
+
+        values.put(DBContract.CurrenciesEntry.COLUMN_ID, id);
+        values.put(DBContract.CurrenciesEntry.COLUMN_NAME, name);
+        values.put(DBContract.CurrenciesEntry.COLUMN_ASK, ask);
+        values.put(DBContract.CurrenciesEntry.COLUMN_BID, bid);
+
+        return values;
+    }
 
     public String getId() {
         return id;

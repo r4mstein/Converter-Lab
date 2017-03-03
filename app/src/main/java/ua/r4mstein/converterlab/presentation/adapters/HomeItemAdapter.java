@@ -5,7 +5,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -26,18 +28,19 @@ public final class HomeItemAdapter extends RecyclerView.Adapter<HomeItemAdapter.
     public HomeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View itemView = inflater.inflate(R.layout.home_item, parent, false);
-        return new HomeViewHolder(itemView);
+        return new HomeViewHolder(itemView, mContext);
     }
 
     @Override
     public void onBindViewHolder(HomeViewHolder holder, int position) {
         OrganizationModel model = mOrganizationList.get(position);
 
-        holder.mTitleTextView.setText(model.getTitle());
-        holder.mRegionTextView.setText(model.getRegion());
-        holder.mCityTextView.setText(model.getCity());
-        holder.mPhoneTextView.setText(model.getPhone());
-        holder.mAddressTextView.setText(model.getAddress());
+        holder.titleTextView.setText(model.getTitle());
+        holder.regionTextView.setText(model.getRegion());
+        holder.cityTextView.setText(model.getCity());
+        holder.phoneTextView.setText(model.getPhone());
+        holder.addressTextView.setText(model.getAddress());
+
     }
 
     @Override
@@ -45,22 +48,60 @@ public final class HomeItemAdapter extends RecyclerView.Adapter<HomeItemAdapter.
         return mOrganizationList.size();
     }
 
-    public static class HomeViewHolder extends RecyclerView.ViewHolder {
+    public static class HomeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public TextView mTitleTextView;
-        public TextView mRegionTextView;
-        public TextView mCityTextView;
-        public TextView mPhoneTextView;
-        public TextView mAddressTextView;
+        public TextView titleTextView;
+        public TextView regionTextView;
+        public TextView cityTextView;
+        public TextView phoneTextView;
+        public TextView addressTextView;
 
-        public HomeViewHolder(View itemView) {
+        public ImageButton linkImageButton;
+        public ImageButton locationImageButton;
+        public ImageButton phoneImageButton;
+        public ImageButton nextImageButton;
+
+        public Context context;
+
+        public HomeViewHolder(View itemView, Context context) {
             super(itemView);
 
-            mTitleTextView = (TextView) itemView.findViewById(R.id.home_title);
-            mRegionTextView = (TextView) itemView.findViewById(R.id.home_region);
-            mCityTextView = (TextView) itemView.findViewById(R.id.home_city);
-            mPhoneTextView = (TextView) itemView.findViewById(R.id.home_phone);
-            mAddressTextView = (TextView) itemView.findViewById(R.id.home_address);
+            this.context = context;
+
+            titleTextView = (TextView) itemView.findViewById(R.id.home_title);
+            regionTextView = (TextView) itemView.findViewById(R.id.home_region);
+            cityTextView = (TextView) itemView.findViewById(R.id.home_city);
+            phoneTextView = (TextView) itemView.findViewById(R.id.home_phone);
+            addressTextView = (TextView) itemView.findViewById(R.id.home_address);
+
+            linkImageButton = (ImageButton) itemView.findViewById(R.id.home_link_ib);
+            locationImageButton = (ImageButton) itemView.findViewById(R.id.home_location_ib);
+            phoneImageButton = (ImageButton) itemView.findViewById(R.id.home_phone_ib);
+            nextImageButton = (ImageButton) itemView.findViewById(R.id.home_next_ib);
+
+            linkImageButton.setOnClickListener(this);
+            locationImageButton.setOnClickListener(this);
+            phoneImageButton.setOnClickListener(this);
+            nextImageButton.setOnClickListener(this);
+        }
+
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.home_link_ib:
+                    Toast.makeText(context, "Link", Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.home_location_ib:
+                    Toast.makeText(context, "Location", Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.home_phone_ib:
+                    Toast.makeText(context, "Phone", Toast.LENGTH_SHORT).show();
+                    break;
+                case R.id.home_next_ib:
+                    Toast.makeText(context, "Next", Toast.LENGTH_SHORT).show();
+                    break;
+            }
         }
     }
 }

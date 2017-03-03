@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import ua.r4mstein.converterlab.api.models.organizations.Organization;
@@ -219,6 +220,31 @@ public class DataSource {
         }
         mLogger.d(TAG, "getAllCurrenciesItems");
         cursor.close();
+        return modelList;
+    }
+
+    public List<CurrenciesModel> getCurrenciesItemsForOrganization(String[] currencyId) {
+        List<CurrenciesModel> modelList = new ArrayList<>();
+
+        for (int i = 0; i < currencyId.length; i++) {
+            String[] strings = new String[]{currencyId[i]};
+            Cursor cursor = mDatabase.query(CurrenciesEntry.TABLE_NAME, CurrenciesEntry.ALL_COLUMNS,
+                    CurrenciesEntry.COLUMN_ID + "=?", strings, null, null, null);
+
+            while (cursor.moveToNext()) {
+                CurrenciesModel model = new CurrenciesModel();
+
+                model.setId(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ID)));
+                model.setName(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_NAME)));
+                model.setAsk(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ASK)));
+                model.setBid(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_BID)));
+
+                modelList.add(model);
+            }
+            cursor.close();
+        }
+
+        mLogger.d(TAG, "getCurrenciesItemsForOrganization");
         return modelList;
     }
 

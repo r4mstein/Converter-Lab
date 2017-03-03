@@ -33,9 +33,9 @@ public class OrganizationFragment extends BaseFragment<MainActivity> {
         super();
     }
 
-    public static OrganizationFragment newInstance(ArrayList<OrganizationModel> list) {
+    public static OrganizationFragment newInstance(/*ArrayList<OrganizationModel> list*/) {
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(BUNDLE_KEY, list);
+//        bundle.putParcelableArrayList(BUNDLE_KEY, list);
 
         OrganizationFragment fragment = new OrganizationFragment();
         fragment.setArguments(bundle);
@@ -43,16 +43,28 @@ public class OrganizationFragment extends BaseFragment<MainActivity> {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ArrayList<OrganizationModel> models = getArguments().getParcelableArrayList(BUNDLE_KEY);
+        final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.organization_recycler_view);
 
-        HomeItemAdapter adapter = new HomeItemAdapter(getActivityGeneric(), models);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.organization_recycler_view);
+        getActivityGeneric().parseData(new MainActivity.SuccessDataCallback() {
+            @Override
+            public void onSuccess(String message) {
+                List<OrganizationModel> models = getActivityGeneric().getOrganizationDataFromDB();
 
-        recyclerView.setAdapter(adapter);
+                HomeItemAdapter adapter = new HomeItemAdapter(getActivityGeneric(), models);
+
+                recyclerView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+        });
     }
+
 
 
 }

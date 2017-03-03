@@ -65,6 +65,47 @@
             tools:text="Address"
             android:textSize="@dimen/text_size_medium"/>
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_below="@id/home_address"
+            android:background="@color/colorItemBackground">
+
+            <ImageButton
+                android:id="@+id/home_link_ib"
+                android:layout_width="0dp"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_weight="1"
+                android:src="@drawable/ic_link"
+                android:background="@android:color/transparent"/>
+
+            <ImageButton
+                android:id="@+id/home_location_ib"
+                android:layout_width="0dp"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_weight="1"
+                android:src="@drawable/ic_location"
+                android:background="@android:color/transparent"/>
+
+            <ImageButton
+                android:id="@+id/home_phone_ib"
+                android:layout_width="0dp"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_weight="1"
+                android:src="@drawable/ic_phone"
+                android:background="@android:color/transparent"/>
+
+            <ImageButton
+                android:id="@+id/home_next_ib"
+                android:layout_width="0dp"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_weight="1"
+                android:src="@drawable/ic_next"
+                android:background="@android:color/transparent"/>
+
+        </LinearLayout>
+
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

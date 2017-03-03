@@ -1,12 +1,10 @@
 package ua.r4mstein.converterlab.presentation;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.TextView;
+import android.view.Menu;
+import android.view.MenuInflater;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ua.r4mstein.converterlab.R;
@@ -48,21 +46,20 @@ public class MainActivity extends BaseActivity {
 
         retrofitManager.init(); // todo remove.
 
-        parseData();
+        OrganizationFragment organizationFragment = new OrganizationFragment();
+        addFragment(organizationFragment);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(
-//                new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//
-//
-//                    }
-//                }
-//        );
+//        String[] strings = new String[]{"7oiylpmiow8iy1smazeEUR", "7oiylpmiow8iy1smazeRUB", "7oiylpmiow8iy1smazeUSD"};
+//        List<CurrenciesModel> models = getCurrenciesDataFromDB(strings);
+//        for (CurrenciesModel model : models) {
+//            logger.d(TAG, model.getName() + "--" + model.getAsk());
+//        }
+
+//        parseData();
+
     }
 
-    public void parseData() {
+    public void parseData(final SuccessDataCallback callback) {
         retrofitManager.getResponse(new RetrofitManager.RCallback() {
             @Override
             public void onSuccess(RootResponse response) {
@@ -73,20 +70,44 @@ public class MainActivity extends BaseActivity {
                 List<OrganizationModel> organizationModels = converter.getOrganizationModels();
                 List<CurrenciesModel> currenciesModels = converter.getCurrencies();
 
-                OrganizationFragment organizationFragment =
-                        OrganizationFragment.newInstance((ArrayList<OrganizationModel>) organizationModels);
-                addFragment(organizationFragment);
+//                OrganizationFragment organizationFragment =
+//                        OrganizationFragment.newInstance((ArrayList<OrganizationModel>) organizationModels);
+//                addFragment(organizationFragment);
 //                addFragmentWithBackStack(organizationFragment);
 
                 mDataSource.insertOrUpdateOrganizations(organizationModels);
                 mDataSource.insertOrUpdateCurrencies(currenciesModels);
+
+                callback.onSuccess("Success");
             }
 
             @Override
             public void onError(String message) {
-
+                callback.onError("Error");
             }
         });
+    }
+
+    public interface SuccessDataCallback {
+
+        void onSuccess(String message);
+
+        void onError(String message);
+    }
+
+    public List<OrganizationModel> getOrganizationDataFromDB() {
+        return mDataSource.getAllOrganizationItems();
+    }
+
+    public List<CurrenciesModel> getCurrenciesDataFromDB(String[] currencyId) {
+        return mDataSource.getCurrenciesItemsForOrganization(currencyId);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
     }
 
     @Override

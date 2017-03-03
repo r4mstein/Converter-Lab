@@ -17,8 +17,6 @@ public final class OrganizationModel implements Parcelable {
     private String link;
     private String[] currencyId;
 
-
-
     public ContentValues toValues() {
         ContentValues values = new ContentValues();
 

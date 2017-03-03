@@ -4,6 +4,7 @@ import ua.r4mstein.converterlab.presentation.ui_models.CurrenciesModel;
 import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
 
 public final class Validator implements IValidator {
+
     @Override
     public OrganizationModel validateOrganizationModel(OrganizationModel model) {
 

@@ -76,6 +76,7 @@ public final class Converter implements IConverter {
         }
     }
 
+    @Override
     public List<OrganizationModel> getOrganizationModels() {
         return mOrganizationModels;
     }

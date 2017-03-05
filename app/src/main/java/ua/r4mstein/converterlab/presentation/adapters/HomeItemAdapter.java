@@ -1,6 +1,5 @@
 package ua.r4mstein.converterlab.presentation.adapters;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -110,6 +109,12 @@ public final class HomeItemAdapter extends RecyclerView.Adapter<HomeItemAdapter.
                 v.getContext().startActivity(intent);
             }
         };
+    }
+
+    public void setFilter(ArrayList<OrganizationModel> newList) {
+        mOrganizationList.clear();
+        mOrganizationList.addAll(newList);
+        notifyDataSetChanged();
     }
 
     public static class HomeViewHolder extends RecyclerView.ViewHolder {

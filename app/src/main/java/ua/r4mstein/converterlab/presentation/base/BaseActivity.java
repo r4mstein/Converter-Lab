@@ -2,16 +2,16 @@ package ua.r4mstein.converterlab.presentation.base;
 
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.LayoutRes;
 import android.support.v7.app.AppCompatActivity;
 
-import ua.r4mstein.converterlab.R;
 import ua.r4mstein.converterlab.api.RetrofitManager;
 import ua.r4mstein.converterlab.util.logger.LogManager;
 import ua.r4mstein.converterlab.util.logger.Logger;
 
 public abstract class BaseActivity extends AppCompatActivity {
+
+    private static final String TAG = "BaseActivity";
 
     protected Logger logger;
     protected RetrofitManager retrofitManager;
@@ -34,6 +34,8 @@ public abstract class BaseActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(getFragmentContainerResId(), fragment)
                 .commit();
+
+        logger.d(TAG, "addFragment");
     }
 
     protected void addFragmentWithBackStack(BaseFragment fragment) {
@@ -42,5 +44,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 .addToBackStack(null)
                 .replace(getFragmentContainerResId(), fragment)
                 .commit();
+
+        logger.d(TAG, "addFragmentWithBackStack");
     }
 }

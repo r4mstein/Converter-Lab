@@ -19,8 +19,6 @@ import ua.r4mstein.converterlab.util.converter.Converter;
 
 public class MainActivity extends BaseActivity {
 
-    public static final String BASE_URL = "http://resources.finance.ua/";
-
     private static final String TAG = "MainActivity";
 
     private DataSource mDataSource;
@@ -42,24 +40,16 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(toolbar);
 
         mDataSource = new DataSource(this);
-        mDataSource.open();
 
-        retrofitManager.init(); // todo remove.
+        retrofitManager.init();
 
-        OrganizationFragment organizationFragment = new OrganizationFragment();
-        addFragment(organizationFragment);
-
-//        String[] strings = new String[]{"7oiylpmiow8iy1smazeEUR", "7oiylpmiow8iy1smazeRUB", "7oiylpmiow8iy1smazeUSD"};
-//        List<CurrenciesModel> models = getCurrenciesDataFromDB(strings);
-//        for (CurrenciesModel model : models) {
-//            logger.d(TAG, model.getName() + "--" + model.getAsk());
-//        }
-
-//        parseData();
-
+        if (savedInstanceState == null) {
+            OrganizationFragment organizationFragment = new OrganizationFragment();
+            addFragment(organizationFragment);
+        }
     }
 
-    public void parseData(final SuccessDataCallback callback) {
+    public void parseData(final DataCallback callback) {
         retrofitManager.getResponse(new RetrofitManager.RCallback() {
             @Override
             public void onSuccess(RootResponse response) {
@@ -70,25 +60,22 @@ public class MainActivity extends BaseActivity {
                 List<OrganizationModel> organizationModels = converter.getOrganizationModels();
                 List<CurrenciesModel> currenciesModels = converter.getCurrencies();
 
-//                OrganizationFragment organizationFragment =
-//                        OrganizationFragment.newInstance((ArrayList<OrganizationModel>) organizationModels);
-//                addFragment(organizationFragment);
-//                addFragmentWithBackStack(organizationFragment);
-
                 mDataSource.insertOrUpdateOrganizations(organizationModels);
                 mDataSource.insertOrUpdateCurrencies(currenciesModels);
 
                 callback.onSuccess("Success");
+                logger.d(TAG, "parseData: onSuccess");
             }
 
             @Override
             public void onError(String message) {
                 callback.onError("Error");
+                logger.d(TAG, "parseData: onError");
             }
         });
     }
 
-    public interface SuccessDataCallback {
+    public interface DataCallback {
 
         void onSuccess(String message);
 
@@ -96,10 +83,12 @@ public class MainActivity extends BaseActivity {
     }
 
     public List<OrganizationModel> getOrganizationDataFromDB() {
+        logger.d(TAG, "getOrganizationDataFromDB");
         return mDataSource.getAllOrganizationItems();
     }
 
     public List<CurrenciesModel> getCurrenciesDataFromDB(String[] currencyId) {
+        logger.d(TAG, "getCurrenciesDataFromDB");
         return mDataSource.getCurrenciesItemsForOrganization(currencyId);
     }
 
@@ -111,14 +100,14 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onStop() {
+        super.onStop();
         mDataSource.close();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         mDataSource.open();
     }
 }

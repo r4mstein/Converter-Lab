@@ -7,10 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import ua.r4mstein.converterlab.api.models.organizations.Organization;
 import ua.r4mstein.converterlab.database.DBContract.CurrenciesEntry;
 import ua.r4mstein.converterlab.database.DBContract.OrganizationEntry;
 import ua.r4mstein.converterlab.presentation.ui_models.CurrenciesModel;

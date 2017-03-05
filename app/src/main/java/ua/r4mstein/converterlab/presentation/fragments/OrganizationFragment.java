@@ -2,15 +2,11 @@ package ua.r4mstein.converterlab.presentation.fragments;
 
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ua.r4mstein.converterlab.R;
@@ -20,8 +16,6 @@ import ua.r4mstein.converterlab.presentation.base.BaseFragment;
 import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
 
 public class OrganizationFragment extends BaseFragment<MainActivity> {
-
-    private static final String BUNDLE_KEY = "bundle_key";
 
     @Override
     protected int getLayoutResId() {
@@ -33,29 +27,39 @@ public class OrganizationFragment extends BaseFragment<MainActivity> {
         super();
     }
 
-    public static OrganizationFragment newInstance(/*ArrayList<OrganizationModel> list*/) {
-        Bundle bundle = new Bundle();
-//        bundle.putParcelableArrayList(BUNDLE_KEY, list);
-
-        OrganizationFragment fragment = new OrganizationFragment();
-        fragment.setArguments(bundle);
-        return fragment;
-    }
+    private HomeItemAdapter adapter;
 
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.organization_recycler_view);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.organization_recycler_view);
+        adapter = new HomeItemAdapter();
+        recyclerView.setAdapter(adapter);
 
-        getActivityGeneric().parseData(new MainActivity.SuccessDataCallback() {
+        getData();
+
+        SwipeRefreshLayout refreshLayout =
+                (SwipeRefreshLayout) view.findViewById(R.id.organization_swipe_refresh);
+
+        swipeRefreshListener(refreshLayout);
+    }
+
+    private void swipeRefreshListener(final SwipeRefreshLayout refreshLayout) {
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getData();
+                refreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
+    private void getData() {
+        getActivityGeneric().parseData(new MainActivity.DataCallback() {
             @Override
             public void onSuccess(String message) {
-                List<OrganizationModel> models = getActivityGeneric().getOrganizationDataFromDB();
-
-                HomeItemAdapter adapter = new HomeItemAdapter(getActivityGeneric(), models);
-
-                recyclerView.setAdapter(adapter);
+                updateDataAdapter(adapter);
             }
 
             @Override
@@ -65,6 +69,8 @@ public class OrganizationFragment extends BaseFragment<MainActivity> {
         });
     }
 
-
-
+    private void updateDataAdapter(HomeItemAdapter adapter) {
+        List<OrganizationModel> models = getActivityGeneric().getOrganizationDataFromDB();
+        adapter.updateData(models);
+    }
 }

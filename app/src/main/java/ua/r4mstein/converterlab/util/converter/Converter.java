@@ -10,6 +10,7 @@ import ua.r4mstein.converterlab.api.models.organizations.Organization;
 import ua.r4mstein.converterlab.api.models.regions.Region;
 import ua.r4mstein.converterlab.presentation.ui_models.CurrenciesModel;
 import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
+import ua.r4mstein.converterlab.util.validator.IValidator;
 import ua.r4mstein.converterlab.util.validator.Validator;
 
 public final class Converter implements IConverter {
@@ -54,7 +55,7 @@ public final class Converter implements IConverter {
             organizationModel.setAddress(organization.address);
             organizationModel.setLink(organization.link);
 
-            Validator validator = new Validator();
+            IValidator validator = new Validator();
             validator.validateOrganizationModel(organizationModel);
 
             mOrganizationModels.add(organizationModel);

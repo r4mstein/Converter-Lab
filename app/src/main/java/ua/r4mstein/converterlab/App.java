@@ -3,9 +3,7 @@ package ua.r4mstein.converterlab;
 import android.app.Application;
 import android.os.StrictMode;
 
-/**
- * Created by r4mst on 28.02.2017.
- */
+import ua.r4mstein.converterlab.services.DataService;
 
 public final class App extends Application {
 
@@ -13,6 +11,8 @@ public final class App extends Application {
     public void onCreate() {
         super.onCreate();
         detectFails();
+
+        DataService.setServiceAlarm(this);
     }
 
     /**

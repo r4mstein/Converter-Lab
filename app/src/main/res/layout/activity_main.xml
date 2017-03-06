@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,91 +8,17 @@
     android:fitsSystemWindows="true"
     tools:context="ua.r4mstein.converterlab.presentation.MainActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:theme="@style/ToolbarTheme"/>
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_below="@id/toolbar"/>
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"/>
-
-    </android.support.design.widget.AppBarLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <TextView
-            tools:text="title"
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/padding_text_large"
-            android:paddingTop="@dimen/padding_text_large"
-            android:textSize="@dimen/text_size_large"
-            android:textStyle="bold"
-            />
-
-        <TextView
-            tools:text="region"
-            android:id="@+id/region"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/padding_text_large"
-            android:textSize="@dimen/text_size_medium"
-            android:layout_marginTop="@dimen/margin_text"/>
-
-        <TextView
-            tools:text="city"
-            android:id="@+id/city"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
-            android:textSize="@dimen/text_size_medium"
-            android:layout_marginTop="@dimen/margin_text"/>
-
-        <TextView
-            tools:text="phone"
-            android:id="@+id/phone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
-            android:textSize="@dimen/text_size_medium"
-            android:layout_marginTop="@dimen/margin_text"
-            />
-
-        <TextView
-            tools:text="address"
-            android:id="@+id/address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
-            android:textSize="@dimen/text_size_medium"
-            android:layout_marginTop="@dimen/margin_text"/>
-
-        <TextView
-            tools:text="currency"
-            android:id="@+id/currency"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
-            android:textSize="@dimen/text_size_medium"
-            android:layout_marginTop="@dimen/margin_text"/>
-
-    </LinearLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email"/>
-
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>

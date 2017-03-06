@@ -24,18 +24,18 @@ import ua.r4mstein.converterlab.api.models.regions.RegionsDeserializer;
 import ua.r4mstein.converterlab.util.logger.LogManager;
 import ua.r4mstein.converterlab.util.logger.Logger;
 
-import static ua.r4mstein.converterlab.presentation.MainActivity.BASE_URL;
-
 public class RetrofitManager {
 
     private static final String TAG = "RetrofitManager";
+    public static final String BASE_URL = "http://resources.finance.ua/";
 
-    private final Logger mLogger = LogManager.getLogger();
+    private final Logger mLogger;
 
     private static RetrofitManager retrofitManager;
     private ApiInterface apiInterface;
 
     private RetrofitManager() {
+        mLogger = LogManager.getLogger();
     }
 
     public static RetrofitManager getInstance() {

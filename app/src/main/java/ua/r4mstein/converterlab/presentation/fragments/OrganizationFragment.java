@@ -25,6 +25,15 @@ import ua.r4mstein.converterlab.presentation.MainActivity;
 import ua.r4mstein.converterlab.presentation.adapters.HomeItemAdapter;
 import ua.r4mstein.converterlab.presentation.base.BaseFragment;
 import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
+import ua.r4mstein.converterlab.services.DataService;
+
+import static ua.r4mstein.converterlab.util.Constants.SERVICE_ALARM_MANAGER;
+import static ua.r4mstein.converterlab.util.Constants.SERVICE_HALF_HOUR;
+import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_ERROR;
+import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_KEY;
+import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_SUCCESS;
+import static ua.r4mstein.converterlab.util.Constants.SERVICE_ONE_MINUTE;
+import static ua.r4mstein.converterlab.util.Constants.SERVICE_TIME_KEY;
 
 public class OrganizationFragment extends BaseFragment<MainActivity> implements SearchView.OnQueryTextListener {
 
@@ -51,6 +60,7 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
         super.onStart();
         LocalBroadcastManager.getInstance(getActivityGeneric()).registerReceiver(
                 mMessageReceiver, new IntentFilter("DataService"));
+
     }
 
     @Override
@@ -90,12 +100,21 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            updateDataAdapter(mAdapter);
+            String message;
+            if (intent != null) {
+                message = intent.getStringExtra(SERVICE_MESSAGE_KEY);
+
+                if (message.equals(SERVICE_MESSAGE_SUCCESS)) {
+                    updateDataAdapter(mAdapter);
+                } else if (message.equals(SERVICE_MESSAGE_ERROR)) {
+
+                }
+            }
         }
     };
 
     private void getData() {
-//        getActivityGeneric().parseData(new MainActivity.DataCallback() {
+//        getActivityGeneric().loadDataFromServer(new MainActivity.DataCallback() {
 //            @Override
 //            public void onSuccess(String message) {
 //                updateDataAdapter(mAdapter);

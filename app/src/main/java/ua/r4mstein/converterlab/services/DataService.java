@@ -22,6 +22,15 @@ import ua.r4mstein.converterlab.util.converter.IConverter;
 import ua.r4mstein.converterlab.util.logger.LogManager;
 import ua.r4mstein.converterlab.util.logger.Logger;
 
+import static ua.r4mstein.converterlab.util.Constants.SERVICE_ALARM_MANAGER;
+import static ua.r4mstein.converterlab.util.Constants.SERVICE_HALF_HOUR;
+import static ua.r4mstein.converterlab.util.Constants.SERVICE_INIT;
+import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_ERROR;
+import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_KEY;
+import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_SUCCESS;
+import static ua.r4mstein.converterlab.util.Constants.SERVICE_ONE_MINUTE;
+import static ua.r4mstein.converterlab.util.Constants.SERVICE_START;
+
 public class DataService extends Service {
 
     private static final String TAG = "DataService";
@@ -38,6 +47,7 @@ public class DataService extends Service {
         mLogger = LogManager.getLogger();
         mDataSource = new DataSource(this);
         mRetrofitManager = RetrofitManager.getInstance();
+        mRetrofitManager.init();
     }
 
     @Nullable
@@ -50,39 +60,41 @@ public class DataService extends Service {
         super();
     }
 
-    public static void setServiceAlarm(Context context) {
+    public void setServiceAlarm(Context context, long interval) {
         Intent intent = new Intent(context, DataService.class);
+        intent.setAction(SERVICE_ALARM_MANAGER);
         PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent, 0);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-                SystemClock.elapsedRealtime(), HALF_HOUR, pendingIntent);
+                SystemClock.elapsedRealtime() + interval, interval, pendingIntent);
+
+        LogManager.getLogger().d(TAG, "setServiceAlarm");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mRetrofitManager.init();
 
-        parseData(new DataCallback() {
-            @Override
-            public void onSuccess(String message) {
-                sendMessage();
-
+        if (intent != null) {
+            switch (intent.getAction()) {
+                case SERVICE_START:
+                    loadDataFromServer();
+                    break;
+                case SERVICE_ALARM_MANAGER:
+                    loadDataFromServer();
+                    break;
+                case SERVICE_INIT:
+                    break;
             }
+        }
 
-            @Override
-            public void onError(String message) {
-
-            }
-        });
-
-        mLogger.d(TAG, "onStartCommand");
+        mLogger.d(TAG, "onStartCommand" + intent.getAction());
 
         return super.onStartCommand(intent, flags, startId);
     }
 
-    public void parseData(final DataCallback callback) {
+    public void loadDataFromServer() {
 
         mRetrofitManager.getResponse(new RetrofitManager.RCallback() {
             @Override
@@ -94,35 +106,39 @@ public class DataService extends Service {
                 List<OrganizationModel> organizationModels = converter.getOrganizationModels();
                 List<CurrenciesModel> currenciesModels = converter.getCurrencies();
 
+                mDataSource.open();
+                mLogger.d(TAG, "DataSource open");
+
                 mDataSource.insertOrUpdateOrganizations(organizationModels);
                 mDataSource.insertOrUpdateCurrencies(currenciesModels);
 
-                callback.onSuccess("Success");
-                mLogger.d(TAG, "parseData: onSuccess");
+                mDataSource.close();
+                mLogger.d(TAG, "DataSource close");
+
+                sendMessage(SERVICE_MESSAGE_SUCCESS);
+                setServiceAlarm(DataService.this, SERVICE_ONE_MINUTE);
+
+                mLogger.d(TAG, "loadDataFromServer: onSuccess");
             }
 
             @Override
             public void onError(String message) {
-                callback.onError("Error");
-                mLogger.d(TAG, "parseData: onError");
+                sendMessage(SERVICE_MESSAGE_ERROR);
+                setServiceAlarm(DataService.this, SERVICE_ONE_MINUTE);
+                mLogger.d(TAG, "loadDataFromServer: onError");
             }
         });
     }
 
-    private void sendMessage() {
+    private void sendMessage(String message) {
         Intent intent = new Intent("DataService");
+        intent.putExtra(SERVICE_MESSAGE_KEY, message);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
    }
-
-    public interface DataCallback {
-
-        void onSuccess(String message);
-
-        void onError(String message);
-    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mLogger.d(TAG, "onDestroy");
     }
 }

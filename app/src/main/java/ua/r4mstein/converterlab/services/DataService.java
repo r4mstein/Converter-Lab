@@ -76,7 +76,7 @@ public class DataService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (intent != null) {
+        if (intent.getAction() != null) {
             switch (intent.getAction()) {
                 case SERVICE_START:
                     loadDataFromServer();

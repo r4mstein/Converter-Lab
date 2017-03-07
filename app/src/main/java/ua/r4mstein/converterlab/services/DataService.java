@@ -44,6 +44,7 @@ public class DataService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        mLogger.d(TAG, "onCreate");
         mLogger = LogManager.getLogger();
         mDataSource = new DataSource(this);
         mRetrofitManager = RetrofitManager.getInstance();
@@ -70,7 +71,7 @@ public class DataService extends Service {
         alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                 SystemClock.elapsedRealtime() + interval, interval, pendingIntent);
 
-        LogManager.getLogger().d(TAG, "setServiceAlarm");
+        mLogger.d(TAG, "setServiceAlarm");
     }
 
     @Override

@@ -28,7 +28,6 @@ public final class App extends Application {
 
         detectFails();
 
-
         mLogger.d(TAG, "SERVICE_INIT");
         Intent intent = new Intent(this, DataService.class);
         intent.setAction(SERVICE_INIT);

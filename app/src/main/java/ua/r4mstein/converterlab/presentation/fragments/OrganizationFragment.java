@@ -78,8 +78,6 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
         mAdapter = new HomeItemAdapter();
         recyclerView.setAdapter(mAdapter);
 
-//        getData();
-
         SwipeRefreshLayout refreshLayout =
                 (SwipeRefreshLayout) view.findViewById(R.id.organization_swipe_refresh);
 
@@ -91,7 +89,7 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getData();
+                updateDataAdapter(mAdapter);
                 refreshLayout.setRefreshing(false);
             }
         });
@@ -112,20 +110,6 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
             }
         }
     };
-
-    private void getData() {
-//        getActivityGeneric().loadDataFromServer(new MainActivity.DataCallback() {
-//            @Override
-//            public void onSuccess(String message) {
-//                updateDataAdapter(mAdapter);
-//            }
-//
-//            @Override
-//            public void onError(String message) {
-//
-//            }
-//        });
-    }
 
     private void updateDataAdapter(HomeItemAdapter adapter) {
         List<OrganizationModel> models = getActivityGeneric().getOrganizationDataFromDB();

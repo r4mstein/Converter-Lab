@@ -1,5 +1,6 @@
 package ua.r4mstein.converterlab.presentation;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
@@ -13,8 +14,11 @@ import ua.r4mstein.converterlab.presentation.base.BaseActivity;
 import ua.r4mstein.converterlab.presentation.fragments.OrganizationFragment;
 import ua.r4mstein.converterlab.presentation.ui_models.CurrenciesModel;
 import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
+import ua.r4mstein.converterlab.services.DataService;
 import ua.r4mstein.converterlab.util.converter.Converter;
 import ua.r4mstein.converterlab.util.converter.IConverter;
+
+import static ua.r4mstein.converterlab.util.Constants.SERVICE_START;
 
 public class MainActivity extends BaseActivity  {
 
@@ -40,7 +44,9 @@ public class MainActivity extends BaseActivity  {
 
         mDataSource = new DataSource(this);
 
-//        retrofitManager.init();
+        Intent intent = new Intent(this, DataService.class);
+        intent.setAction(SERVICE_START);
+        startService(intent);
 
         if (savedInstanceState == null) {
             OrganizationFragment organizationFragment = new OrganizationFragment();
@@ -63,13 +69,13 @@ public class MainActivity extends BaseActivity  {
                 mDataSource.insertOrUpdateCurrencies(currenciesModels);
 
                 callback.onSuccess("Success");
-                logger.d(TAG, "parseData: onSuccess");
+                logger.d(TAG, "loadDataFromServer: onSuccess");
             }
 
             @Override
             public void onError(String message) {
                 callback.onError("Error");
-                logger.d(TAG, "parseData: onError");
+                logger.d(TAG, "loadDataFromServer: onError");
             }
         });
     }

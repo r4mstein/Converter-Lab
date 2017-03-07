@@ -37,6 +37,7 @@ public final class App extends Application {
 
     /**
      * See logs with tag: StrictMode
+     * https://developer.android.com/reference/android/os/StrictMode.html
      */
     private void detectFails() {
         if (BuildConfig.DEBUG) {

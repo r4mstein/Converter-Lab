@@ -42,7 +42,6 @@ public class DataService extends Service {
     private Logger mLogger;
     private RetrofitManager mRetrofitManager;
     private DataSource mDataSource;
-    private PendingIntent mPendingIntent;
     private AlarmManager mAlarmManager;
 
     @Override
@@ -69,11 +68,11 @@ public class DataService extends Service {
     public void setServiceAlarm(Context context, long interval) {
         Intent intent = new Intent(context, DataService.class);
         intent.setAction(SERVICE_ALARM_MANAGER);
-        mPendingIntent = PendingIntent.getService(context, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent, 0);
 //        mAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         mAlarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-                SystemClock.elapsedRealtime() + interval, interval, mPendingIntent);
+                SystemClock.elapsedRealtime() + interval, interval, pendingIntent);
 
         mLogger.d(TAG, "setServiceAlarm");
     }
@@ -145,7 +144,7 @@ public class DataService extends Service {
         });
     }
 
-    private static boolean resetDataServiceAlarm(Context context, AlarmManager alarmManager) {
+    private boolean resetDataServiceAlarm(Context context, AlarmManager alarmManager) {
         Intent intent = new Intent(context, DataService.class);
         intent.setAction(SERVICE_ALARM_MANAGER);
         PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent,

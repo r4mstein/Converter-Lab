@@ -67,6 +67,11 @@ public final class HomeItemAdapter extends RecyclerView.Adapter<HomeItemAdapter.
         return mOrganizationList.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
+    }
+
     @NonNull
     private View.OnClickListener nextClickListener(final OrganizationModel model) {
         return new View.OnClickListener() {
@@ -133,11 +138,11 @@ public final class HomeItemAdapter extends RecyclerView.Adapter<HomeItemAdapter.
         public HomeViewHolder(View itemView) {
             super(itemView);
 
-            titleTextView = (TextView) itemView.findViewById(R.id.home_title);
-            regionTextView = (TextView) itemView.findViewById(R.id.home_region);
-            cityTextView = (TextView) itemView.findViewById(R.id.home_city);
-            phoneTextView = (TextView) itemView.findViewById(R.id.home_phone);
-            addressTextView = (TextView) itemView.findViewById(R.id.home_address);
+            titleTextView = (TextView) itemView.findViewById(R.id.detail_organization_title);
+            regionTextView = (TextView) itemView.findViewById(R.id.detail_organization_region);
+            cityTextView = (TextView) itemView.findViewById(R.id.detail_organization_city);
+            phoneTextView = (TextView) itemView.findViewById(R.id.detail_organization_phone);
+            addressTextView = (TextView) itemView.findViewById(R.id.detail_organization_address);
 
             linkImageButton = (ImageButton) itemView.findViewById(R.id.home_link_ib);
             locationImageButton = (ImageButton) itemView.findViewById(R.id.home_location_ib);

@@ -10,16 +10,20 @@ public final class CurrenciesModel {
     private String organization_id;
     private String name;
     private String ask;
+    private String ask_color;
     private String bid;
+    private String bid_color;
 
     public ContentValues toValues() {
         ContentValues values = new ContentValues();
 
         values.put(DBContract.CurrenciesEntry.COLUMN_ID, id);
-        values.put(DBContract.CurrenciesEntry.COLUMN_ORGANIZATION_ID, id);
+        values.put(DBContract.CurrenciesEntry.COLUMN_ORGANIZATION_ID, organization_id);
         values.put(DBContract.CurrenciesEntry.COLUMN_NAME, name);
         values.put(DBContract.CurrenciesEntry.COLUMN_ASK, ask);
+        values.put(DBContract.CurrenciesEntry.COLUMN_ASK_COLOR, ask_color);
         values.put(DBContract.CurrenciesEntry.COLUMN_BID, bid);
+        values.put(DBContract.CurrenciesEntry.COLUMN_BID_COLOR, bid_color);
 
         return values;
     }
@@ -62,5 +66,21 @@ public final class CurrenciesModel {
 
     public void setBid(String bid) {
         this.bid = bid;
+    }
+
+    public String getAsk_color() {
+        return ask_color;
+    }
+
+    public void setAsk_color(String ask_color) {
+        this.ask_color = ask_color;
+    }
+
+    public String getBid_color() {
+        return bid_color;
+    }
+
+    public void setBid_color(String bid_color) {
+        this.bid_color = bid_color;
     }
 }

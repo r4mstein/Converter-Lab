@@ -71,10 +71,15 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        getActivityGeneric().getSupportActionBar().setTitle(R.string.app_name);
+        getActivityGeneric().getSupportActionBar().setSubtitle(null);
+
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.organization_recycler_view);
         mAdapter = new HomeItemAdapter();
         mAdapter.setActionsListener(mHomeItemActionsListener);
         recyclerView.setAdapter(mAdapter);
+
+        updateDataAdapter(mAdapter);
 
         SwipeRefreshLayout refreshLayout =
                 (SwipeRefreshLayout) view.findViewById(R.id.organization_swipe_refresh);

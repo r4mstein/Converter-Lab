@@ -1,13 +1,11 @@
 <resources>
     <string name="app_name">Converter Lab</string>
     <string name="action_search">Search</string>
+    <string name="action_share">Share</string>
 
     <string name="home_item_link">Link</string>
     <string name="home_item_map">Map</string>
     <string name="home_item_phone">Phone</string>
     <string name="home_item_detail">Detail</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

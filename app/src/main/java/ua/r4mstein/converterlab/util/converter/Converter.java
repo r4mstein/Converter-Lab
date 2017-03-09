@@ -14,6 +14,8 @@ import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
 import ua.r4mstein.converterlab.util.validator.IValidator;
 import ua.r4mstein.converterlab.util.validator.Validator;
 
+import static ua.r4mstein.converterlab.util.Constants.DETAIL_FRAGMENT_COLOR_GREEN;
+
 public final class Converter implements IConverter {
 
     private List<OrganizationModel> mOrganizationModels = new ArrayList<>();
@@ -64,7 +66,6 @@ public final class Converter implements IConverter {
 
             //
             Map<String, Organization.Currency> currenciesMap = organization.currencies;
-            List<String> currenciesKey = new ArrayList<>();
 
             for (String key: currenciesMap.keySet()) {
                 CurrenciesModel currenciesModel = new CurrenciesModel();
@@ -84,11 +85,12 @@ public final class Converter implements IConverter {
                 currenciesModel.setAsk(currenciesMap.get(key).ask);
                 currenciesModel.setBid(currenciesMap.get(key).bid);
 
-                currenciesKey.add(currenciesModel.getId());
+                currenciesModel.setAsk_color(DETAIL_FRAGMENT_COLOR_GREEN);
+                currenciesModel.setBid_color(DETAIL_FRAGMENT_COLOR_GREEN);
+
                 mCurrenciesModels.add(currenciesModel);
             }
 
-            organizationModel.setCurrencyId(currenciesKey);
             mOrganizationModels.add(organizationModel);
         }
     }

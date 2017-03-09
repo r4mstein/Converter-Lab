@@ -27,6 +27,8 @@ import ua.r4mstein.converterlab.util.converter.IConverter;
 import ua.r4mstein.converterlab.util.logger.LogManager;
 import ua.r4mstein.converterlab.util.logger.Logger;
 
+import static ua.r4mstein.converterlab.util.Constants.DETAIL_FRAGMENT_COLOR_GREEN;
+import static ua.r4mstein.converterlab.util.Constants.DETAIL_FRAGMENT_COLOR_RED;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_ALARM_MANAGER;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_INIT;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_ERROR;
@@ -120,6 +122,26 @@ public class DataService extends Service {
 
                 mDataSource.open();
                 mLogger.d(TAG, "DataSource open");
+
+                List<CurrenciesModel> currenciesModelsFromDB = mDataSource.getAllCurrenciesItems();
+                for (CurrenciesModel model : currenciesModels) {
+                    for (CurrenciesModel modelDB : currenciesModelsFromDB) {
+                        if (model.getId().equals(modelDB.getId())) {
+
+                            if (Double.parseDouble(model.getAsk()) >= Double.parseDouble(modelDB.getAsk())) {
+                                model.setAsk_color(DETAIL_FRAGMENT_COLOR_GREEN);
+                            } else {
+                                model.setAsk_color(DETAIL_FRAGMENT_COLOR_RED);
+                            }
+
+                            if (Double.parseDouble(model.getBid()) >= Double.parseDouble(modelDB.getBid())) {
+                                model.setBid_color(DETAIL_FRAGMENT_COLOR_GREEN);
+                            } else {
+                                model.setBid_color(DETAIL_FRAGMENT_COLOR_RED);
+                            }
+                        }
+                    }
+                }
 
                 mDataSource.insertOrUpdateOrganizations(organizationModels);
                 mDataSource.insertOrUpdateCurrencies(currenciesModels);

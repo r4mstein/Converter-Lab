@@ -1,5 +1,6 @@
 package ua.r4mstein.converterlab.presentation.adapters.detail;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,8 @@ import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
 import ua.r4mstein.converterlab.util.logger.LogManager;
 import ua.r4mstein.converterlab.util.logger.Logger;
 
+import static ua.r4mstein.converterlab.util.Constants.DETAIL_FRAGMENT_COLOR_GREEN;
+
 public final class DetailItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final String TAG = "DetailItemAdapter";
@@ -22,10 +25,12 @@ public final class DetailItemAdapter extends RecyclerView.Adapter<RecyclerView.V
     private static final int CURRENCY = 2;
 
     private Logger mLogger;
+    private Context mContext;
 
     private List<Object> mItemsList = new ArrayList<>();
 
-    public DetailItemAdapter() {
+    public DetailItemAdapter(Context context) {
+        mContext = context;
         mLogger = LogManager.getLogger();
     }
 
@@ -111,8 +116,24 @@ public final class DetailItemAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         if (model != null) {
             currencyViewHolder.nameTextView.setText(model.getName());
+
             currencyViewHolder.askTextView.setText(model.getAsk());
+            if (model.getAsk_color().equals(DETAIL_FRAGMENT_COLOR_GREEN)) {
+                currencyViewHolder.askTextView.setTextColor(mContext.getResources().getColor(R.color.colorGreen));
+                currencyViewHolder.arrowAskImageView.setImageResource(R.drawable.ic_arrow_up_green);
+            } else {
+                currencyViewHolder.askTextView.setTextColor(mContext.getResources().getColor(R.color.colorRed));
+                currencyViewHolder.arrowAskImageView.setImageResource(R.drawable.ic_arrow_down_red);
+            }
+
             currencyViewHolder.bidTextView.setText(model.getBid());
+            if (model.getBid_color().equals(DETAIL_FRAGMENT_COLOR_GREEN)) {
+                currencyViewHolder.bidTextView.setTextColor(mContext.getResources().getColor(R.color.colorGreen));
+                currencyViewHolder.arrowBidImageView.setImageResource(R.drawable.ic_arrow_up_green);
+            } else {
+                currencyViewHolder.bidTextView.setTextColor(mContext.getResources().getColor(R.color.colorRed));
+                currencyViewHolder.arrowBidImageView.setImageResource(R.drawable.ic_arrow_down_red);
+            }
         }
     }
 }

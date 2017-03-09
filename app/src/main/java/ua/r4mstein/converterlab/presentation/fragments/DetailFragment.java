@@ -3,9 +3,12 @@ package ua.r4mstein.converterlab.presentation.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +38,17 @@ public class DetailFragment extends BaseFragment<MainActivity> {
     private DetailItemAdapter mAdapter;
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.detail_recycler_view);
-        mAdapter = new DetailItemAdapter();
+        mAdapter = new DetailItemAdapter(getActivityGeneric());
         recyclerView.setAdapter(mAdapter);
 
         updateDataAdapter(getArguments().getString(DETAIL_FRAGMENT_BUNDLE_KEY));
@@ -49,6 +58,10 @@ public class DetailFragment extends BaseFragment<MainActivity> {
         List<Object> objectList = new ArrayList<>();
 
         OrganizationModel organizationModel = getActivityGeneric().getOrganizationModelFromDB(key);
+
+        getActivityGeneric().getSupportActionBar().setTitle(organizationModel.getTitle());
+        getActivityGeneric().getSupportActionBar().setSubtitle(organizationModel.getCity());
+
         String currencyHeader = "currencyHeader";
         List<CurrenciesModel> currenciesModels = getActivityGeneric().getCurrenciesDataFromDB(organizationModel.getId());
 
@@ -60,5 +73,21 @@ public class DetailFragment extends BaseFragment<MainActivity> {
         }
 
         mAdapter.updateData(objectList);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_share, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_share) {
+            Toast.makeText(getActivityGeneric(), "Share menu", Toast.LENGTH_SHORT).show();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

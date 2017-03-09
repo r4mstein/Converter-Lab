@@ -6,4 +6,5 @@
 
     <color name="colorItemBackground">#B0BEC5</color>
     <color name="colorRed">#f44336</color>
+    <color name="colorGreen">#4caf50</color>
 </resources>

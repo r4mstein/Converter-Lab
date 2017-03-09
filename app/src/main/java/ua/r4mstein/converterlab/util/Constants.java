@@ -13,4 +13,6 @@ public interface Constants {
    long SERVICE_ONE_MINUTE = 60 * 1000;
 
    String DETAIL_FRAGMENT_BUNDLE_KEY = "detail_fragment_bundle_key";
+   String DETAIL_FRAGMENT_COLOR_GREEN = "color_green";
+   String DETAIL_FRAGMENT_COLOR_RED = "color_red";
 }

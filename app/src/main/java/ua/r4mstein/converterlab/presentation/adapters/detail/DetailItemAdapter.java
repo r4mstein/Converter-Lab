@@ -1,26 +1,39 @@
-package ua.r4mstein.converterlab.presentation.adapters;
+package ua.r4mstein.converterlab.presentation.adapters.detail;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ua.r4mstein.converterlab.R;
 import ua.r4mstein.converterlab.presentation.ui_models.CurrenciesModel;
 import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
+import ua.r4mstein.converterlab.util.logger.LogManager;
+import ua.r4mstein.converterlab.util.logger.Logger;
 
 public final class DetailItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private static final String TAG = "DetailItemAdapter";
     private static final int ORGANIZATION = 0;
     private static final int CURRENCY_HEADER = 1;
     private static final int CURRENCY = 2;
 
-    private List<Object> mItemsList;
+    private Logger mLogger;
 
-    public DetailItemAdapter(List<Object> itemsList) {
-        this.mItemsList = itemsList;
+    private List<Object> mItemsList = new ArrayList<>();
+
+    public DetailItemAdapter() {
+        mLogger = LogManager.getLogger();
+    }
+
+    public void updateData(List<Object> itemsList) {
+        mItemsList.clear();
+        mItemsList = itemsList;
+        notifyDataSetChanged();
+        mLogger.d(TAG, "updateData");
     }
 
     @Override

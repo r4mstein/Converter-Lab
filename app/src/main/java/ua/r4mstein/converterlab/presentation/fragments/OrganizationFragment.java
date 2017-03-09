@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -22,18 +23,14 @@ import java.util.List;
 
 import ua.r4mstein.converterlab.R;
 import ua.r4mstein.converterlab.presentation.MainActivity;
-import ua.r4mstein.converterlab.presentation.adapters.HomeItemAdapter;
+import ua.r4mstein.converterlab.presentation.adapters.home.HomeItemAdapter;
+import ua.r4mstein.converterlab.presentation.adapters.home.IHomeItemActionsListener;
 import ua.r4mstein.converterlab.presentation.base.BaseFragment;
 import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
-import ua.r4mstein.converterlab.services.DataService;
 
-import static ua.r4mstein.converterlab.util.Constants.SERVICE_ALARM_MANAGER;
-import static ua.r4mstein.converterlab.util.Constants.SERVICE_HALF_HOUR;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_ERROR;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_KEY;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_SUCCESS;
-import static ua.r4mstein.converterlab.util.Constants.SERVICE_ONE_MINUTE;
-import static ua.r4mstein.converterlab.util.Constants.SERVICE_TIME_KEY;
 
 public class OrganizationFragment extends BaseFragment<MainActivity> implements SearchView.OnQueryTextListener {
 
@@ -76,6 +73,7 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.organization_recycler_view);
         mAdapter = new HomeItemAdapter();
+        mAdapter.setActionsListener(mHomeItemActionsListener);
         recyclerView.setAdapter(mAdapter);
 
         SwipeRefreshLayout refreshLayout =
@@ -84,6 +82,30 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
         swipeRefreshListener(refreshLayout);
 
     }
+
+    private final IHomeItemActionsListener mHomeItemActionsListener = new IHomeItemActionsListener() {
+        @Override
+        public void openOrganizationDetail(String key) {
+            getActivityGeneric().openDetailFragment(key);
+        }
+
+        @Override
+        public void openOrganizationLink(String link) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+            getActivityGeneric().startActivity(intent);
+        }
+
+        @Override
+        public void openOrganizationLocation() {
+
+        }
+
+        @Override
+        public void openOrganizationPhone(String phone) {
+            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone));
+            getActivityGeneric().startActivity(intent);
+        }
+    };
 
     private void swipeRefreshListener(final SwipeRefreshLayout refreshLayout) {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

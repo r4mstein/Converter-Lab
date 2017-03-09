@@ -6,6 +6,7 @@ import java.util.Map;
 
 import ua.r4mstein.converterlab.api.models.RootResponse;
 import ua.r4mstein.converterlab.api.models.cities.City;
+import ua.r4mstein.converterlab.api.models.currencies.Currency;
 import ua.r4mstein.converterlab.api.models.organizations.Organization;
 import ua.r4mstein.converterlab.api.models.regions.Region;
 import ua.r4mstein.converterlab.presentation.ui_models.CurrenciesModel;
@@ -17,15 +18,18 @@ public final class Converter implements IConverter {
 
     private List<OrganizationModel> mOrganizationModels = new ArrayList<>();
     private List<CurrenciesModel> mCurrenciesModels = new ArrayList<>();
+    private List<Currency> mCurrencyModels = new ArrayList<>();
 
     @Override
     public void convert(RootResponse response) {
         mOrganizationModels.clear();
         mCurrenciesModels.clear();
+        mCurrencyModels.clear();
 
         List<Organization> organizations = response.getOrganizations();
         List<Region> regions = response.getRegions();
         List<City> cities = response.getCities();
+        List<Currency> currencyList = response.getCurrencies();
 
         for (Organization organization : organizations) {
             OrganizationModel organizationModel = new OrganizationModel();
@@ -58,22 +62,34 @@ public final class Converter implements IConverter {
             IValidator validator = new Validator();
             validator.validateOrganizationModel(organizationModel);
 
-            mOrganizationModels.add(organizationModel);
-
             //
             Map<String, Organization.Currency> currenciesMap = organization.currencies;
+            List<String> currenciesKey = new ArrayList<>();
 
             for (String key: currenciesMap.keySet()) {
                 CurrenciesModel currenciesModel = new CurrenciesModel();
 
                 currenciesModel.setId(organization.id + key);
-                currenciesModel.setName(key);
+                currenciesModel.setOrganization_id(organization.id);
+
+                String currenciesName = null;
+                for (Currency currency : currencyList) {
+                    if (currency.id.equals(key)) {
+                        currenciesName = currency.name;
+                        break;
+                    }
+                }
+                currenciesModel.setName(currenciesName);
+
                 currenciesModel.setAsk(currenciesMap.get(key).ask);
                 currenciesModel.setBid(currenciesMap.get(key).bid);
 
+                currenciesKey.add(currenciesModel.getId());
                 mCurrenciesModels.add(currenciesModel);
             }
 
+            organizationModel.setCurrencyId(currenciesKey);
+            mOrganizationModels.add(organizationModel);
         }
     }
 

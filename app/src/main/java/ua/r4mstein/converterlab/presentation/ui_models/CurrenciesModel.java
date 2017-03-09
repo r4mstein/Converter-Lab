@@ -7,6 +7,7 @@ import ua.r4mstein.converterlab.database.DBContract;
 public final class CurrenciesModel {
 
     private String id;
+    private String organization_id;
     private String name;
     private String ask;
     private String bid;
@@ -15,6 +16,7 @@ public final class CurrenciesModel {
         ContentValues values = new ContentValues();
 
         values.put(DBContract.CurrenciesEntry.COLUMN_ID, id);
+        values.put(DBContract.CurrenciesEntry.COLUMN_ORGANIZATION_ID, id);
         values.put(DBContract.CurrenciesEntry.COLUMN_NAME, name);
         values.put(DBContract.CurrenciesEntry.COLUMN_ASK, ask);
         values.put(DBContract.CurrenciesEntry.COLUMN_BID, bid);
@@ -28,6 +30,14 @@ public final class CurrenciesModel {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getOrganization_id() {
+        return organization_id;
+    }
+
+    public void setOrganization_id(String organization_id) {
+        this.organization_id = organization_id;
     }
 
     public String getName() {

@@ -4,9 +4,11 @@ import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 import ua.r4mstein.converterlab.database.DBContract.OrganizationEntry;
 
-public final class OrganizationModel implements Parcelable {
+public final class OrganizationModel {
 
     private String id;
     private String title;
@@ -15,7 +17,7 @@ public final class OrganizationModel implements Parcelable {
     private String phone;
     private String address;
     private String link;
-    private String[] currencyId;
+    private List<String> currencyId;
 
     public ContentValues toValues() {
         ContentValues values = new ContentValues();
@@ -39,11 +41,11 @@ public final class OrganizationModel implements Parcelable {
         this.id = id;
     }
 
-    public String[] getCurrencyId() {
+    public List<String> getCurrencyId() {
         return currencyId;
     }
 
-    public void setCurrencyId(String[] currencyId) {
+    public void setCurrencyId(List<String> currencyId) {
         this.currencyId = currencyId;
     }
 
@@ -95,46 +97,4 @@ public final class OrganizationModel implements Parcelable {
         this.link = link;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
-        dest.writeString(this.title);
-        dest.writeString(this.region);
-        dest.writeString(this.city);
-        dest.writeString(this.phone);
-        dest.writeString(this.address);
-        dest.writeString(this.link);
-        dest.writeStringArray(this.currencyId);
-    }
-
-    public OrganizationModel() {
-    }
-
-    protected OrganizationModel(Parcel in) {
-        this.id = in.readString();
-        this.title = in.readString();
-        this.region = in.readString();
-        this.city = in.readString();
-        this.phone = in.readString();
-        this.address = in.readString();
-        this.link = in.readString();
-        this.currencyId = in.createStringArray();
-    }
-
-    public static final Parcelable.Creator<OrganizationModel> CREATOR = new Parcelable.Creator<OrganizationModel>() {
-        @Override
-        public OrganizationModel createFromParcel(Parcel source) {
-            return new OrganizationModel(source);
-        }
-
-        @Override
-        public OrganizationModel[] newArray(int size) {
-            return new OrganizationModel[size];
-        }
-    };
 }

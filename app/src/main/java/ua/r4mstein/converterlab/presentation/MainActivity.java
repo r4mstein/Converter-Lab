@@ -9,14 +9,16 @@ import java.util.List;
 import ua.r4mstein.converterlab.R;
 import ua.r4mstein.converterlab.database.DataSource;
 import ua.r4mstein.converterlab.presentation.base.BaseActivity;
+import ua.r4mstein.converterlab.presentation.fragments.DetailFragment;
 import ua.r4mstein.converterlab.presentation.fragments.OrganizationFragment;
 import ua.r4mstein.converterlab.presentation.ui_models.CurrenciesModel;
 import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
 import ua.r4mstein.converterlab.services.DataService;
 
+import static ua.r4mstein.converterlab.util.Constants.DETAIL_FRAGMENT_BUNDLE_KEY;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_START;
 
-public class MainActivity extends BaseActivity  {
+public class MainActivity extends BaseActivity {
 
     private static final String TAG = "MainActivity";
 
@@ -45,9 +47,23 @@ public class MainActivity extends BaseActivity  {
         startService(intent);
 
         if (savedInstanceState == null) {
-            OrganizationFragment organizationFragment = new OrganizationFragment();
-            addFragment(organizationFragment);
+            openOrganizationFragment();
         }
+    }
+
+    private void openOrganizationFragment() {
+        OrganizationFragment organizationFragment = new OrganizationFragment();
+        addFragment(organizationFragment);
+    }
+
+    public void openDetailFragment(String key) {
+        DetailFragment detailFragment = new DetailFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(DETAIL_FRAGMENT_BUNDLE_KEY, key);
+
+        detailFragment.setArguments(bundle);
+        addFragmentWithBackStack(detailFragment);
     }
 
     public List<OrganizationModel> getOrganizationDataFromDB() {
@@ -55,9 +71,14 @@ public class MainActivity extends BaseActivity  {
         return mDataSource.getAllOrganizationItems();
     }
 
-    public List<CurrenciesModel> getCurrenciesDataFromDB(String[] currencyId) {
+    public OrganizationModel getOrganizationModelFromDB(String key) {
+        logger.d(TAG, "getOrganizationModelFromDB");
+        return mDataSource.getOrganizationItem(key);
+    }
+
+    public List<CurrenciesModel> getCurrenciesDataFromDB(String organizationId) {
         logger.d(TAG, "getCurrenciesDataFromDB");
-        return mDataSource.getCurrenciesItemsForOrganization(currencyId);
+        return mDataSource.getCurrenciesItemsForOrganization(organizationId);
     }
 
     @Override

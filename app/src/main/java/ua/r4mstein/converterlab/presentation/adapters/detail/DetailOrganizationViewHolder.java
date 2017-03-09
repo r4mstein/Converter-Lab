@@ -1,4 +1,4 @@
-package ua.r4mstein.converterlab.presentation.adapters;
+package ua.r4mstein.converterlab.presentation.adapters.detail;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

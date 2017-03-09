@@ -38,16 +38,18 @@ public class DBContract {
         public static final String TABLE_NAME = "currencies_models";
 
         public static final String COLUMN_ID = "id";
+        public static final String COLUMN_ORGANIZATION_ID = "organization_id";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_ASK = "ask";
         public static final String COLUMN_BID = "bid";
 
         public static final String[] ALL_COLUMNS =
-                {COLUMN_ID, COLUMN_NAME, COLUMN_ASK, COLUMN_BID};
+                {COLUMN_ID, COLUMN_ORGANIZATION_ID, COLUMN_NAME, COLUMN_ASK, COLUMN_BID};
 
         public static final String SQL_CREATE =
                 "CREATE TABLE " + TABLE_NAME + "(" +
                         COLUMN_ID + " TEXT PRIMARY KEY," +
+                        COLUMN_ORGANIZATION_ID + " TEXT," +
                         COLUMN_NAME + " TEXT," +
                         COLUMN_ASK + " TEXT," +
                         COLUMN_BID + " TEXT" + ");";

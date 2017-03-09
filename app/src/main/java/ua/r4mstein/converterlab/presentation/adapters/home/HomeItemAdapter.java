@@ -1,15 +1,11 @@
-package ua.r4mstein.converterlab.presentation.adapters;
+package ua.r4mstein.converterlab.presentation.adapters.home;
 
-import android.content.Intent;
-import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +22,8 @@ public final class HomeItemAdapter extends RecyclerView.Adapter<HomeItemAdapter.
     private List<OrganizationModel> mOrganizationList = new ArrayList<>();
 
     private Logger mLogger;
+
+    private IHomeItemActionsListener mActionsListener;
 
     public HomeItemAdapter() {
         mLogger = LogManager.getLogger();
@@ -48,18 +46,15 @@ public final class HomeItemAdapter extends RecyclerView.Adapter<HomeItemAdapter.
     @Override
     public void onBindViewHolder(HomeViewHolder holder, int position) {
         final OrganizationModel model = mOrganizationList.get(position);
+        holder.bindData(model);
+        holder.setActionsListener(mActionsListener);
 
-        holder.titleTextView.setText(model.getTitle());
-        holder.regionTextView.setText(model.getRegion());
-        holder.cityTextView.setText(model.getCity());
-        holder.phoneTextView.setText(model.getPhone());
-        holder.addressTextView.setText(model.getAddress());
+    }
 
-        holder.linkImageButton.setOnClickListener(linkClickListener(model));
-        holder.locationImageButton.setOnClickListener(locationClickListener(model));
-        holder.phoneImageButton.setOnClickListener(phoneClickListener(model));
-        holder.nextImageButton.setOnClickListener(nextClickListener(model));
-
+    @Override
+    public void onViewRecycled(HomeViewHolder holder) {
+        super.onViewRecycled(holder);
+        holder.unbindData();
     }
 
     @Override
@@ -72,48 +67,8 @@ public final class HomeItemAdapter extends RecyclerView.Adapter<HomeItemAdapter.
         return super.getItemViewType(position);
     }
 
-    @NonNull
-    private View.OnClickListener nextClickListener(final OrganizationModel model) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Next", Toast.LENGTH_SHORT).show();
-                model.getCity();
-            }
-        };
-    }
-
-    @NonNull
-    private View.OnClickListener phoneClickListener(final OrganizationModel model) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + model.getPhone()));
-                v.getContext().startActivity(intent);
-            }
-        };
-    }
-
-    @NonNull
-    private View.OnClickListener locationClickListener(final OrganizationModel model) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Location", Toast.LENGTH_SHORT).show();
-                model.getAddress();
-            }
-        };
-    }
-
-    @NonNull
-    private View.OnClickListener linkClickListener(final OrganizationModel model) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(model.getLink()));
-                v.getContext().startActivity(intent);
-            }
-        };
+    public void setActionsListener(IHomeItemActionsListener actionsListener) {
+        mActionsListener = actionsListener;
     }
 
     public void setFilter(ArrayList<OrganizationModel> newList) {
@@ -122,18 +77,21 @@ public final class HomeItemAdapter extends RecyclerView.Adapter<HomeItemAdapter.
         notifyDataSetChanged();
     }
 
-    public static class HomeViewHolder extends RecyclerView.ViewHolder {
+    public static class HomeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public TextView titleTextView;
-        public TextView regionTextView;
-        public TextView cityTextView;
-        public TextView phoneTextView;
-        public TextView addressTextView;
+        TextView titleTextView;
+        TextView regionTextView;
+        TextView cityTextView;
+        TextView phoneTextView;
+        TextView addressTextView;
 
-        public ImageButton linkImageButton;
-        public ImageButton locationImageButton;
-        public ImageButton phoneImageButton;
-        public ImageButton nextImageButton;
+        ImageButton linkImageButton;
+        ImageButton locationImageButton;
+        ImageButton phoneImageButton;
+        ImageButton nextImageButton;
+
+        private OrganizationModel mModel;
+        private IHomeItemActionsListener mActionsListener;
 
         public HomeViewHolder(View itemView) {
             super(itemView);
@@ -149,6 +107,46 @@ public final class HomeItemAdapter extends RecyclerView.Adapter<HomeItemAdapter.
             phoneImageButton = (ImageButton) itemView.findViewById(R.id.home_phone_ib);
             nextImageButton = (ImageButton) itemView.findViewById(R.id.home_next_ib);
 
+            linkImageButton.setOnClickListener(this);
+            locationImageButton.setOnClickListener(this);
+            phoneImageButton.setOnClickListener(this);
+            nextImageButton.setOnClickListener(this);
+
+        }
+
+        public void setActionsListener(IHomeItemActionsListener actionsListener) {
+            mActionsListener = actionsListener;
+        }
+
+        public void bindData(final OrganizationModel _model) {
+            mModel = _model;
+
+            titleTextView.setText(mModel.getTitle());
+            regionTextView.setText(mModel.getRegion());
+            cityTextView.setText(mModel.getCity());
+            phoneTextView.setText(mModel.getPhone());
+            addressTextView.setText(mModel.getAddress());
+        }
+
+        public void unbindData() {
+            mModel = null;
+        }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.home_next_ib:
+                    mActionsListener.openOrganizationDetail(mModel.getId());
+                    break;
+                case R.id.home_link_ib:
+                    mActionsListener.openOrganizationLink(mModel.getLink());
+                    break;
+                case R.id.home_location_ib:
+                    mActionsListener.openOrganizationLocation();
+                    break;
+                case R.id.home_phone_ib:
+                    mActionsListener.openOrganizationPhone(mModel.getPhone());
+            }
         }
     }
 }

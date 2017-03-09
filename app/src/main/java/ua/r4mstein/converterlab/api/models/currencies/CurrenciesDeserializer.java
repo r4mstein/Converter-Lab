@@ -23,8 +23,6 @@ public final class CurrenciesDeserializer implements JsonDeserializer<List<Curre
         final Type type = new TypeToken<Map<String, String>>() {
         }.getType();
 
-//        if(json.isJsonObject()) return currencies;
-
         final Map<String, String> currencyMap =
                 Collections.checkedMap(new Gson().<Map<String, String>>fromJson(json, type),
                         String.class, String.class);

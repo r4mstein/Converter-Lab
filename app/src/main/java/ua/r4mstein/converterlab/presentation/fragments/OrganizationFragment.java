@@ -101,8 +101,9 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
         }
 
         @Override
-        public void openOrganizationLocation() {
-
+        public void openOrganizationLocation(String request) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + request));
+            getActivityGeneric().startActivity(intent);
         }
 
         @Override

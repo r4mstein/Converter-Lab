@@ -6,7 +6,7 @@ public interface IHomeItemActionsListener {
 
     void openOrganizationLink(String link);
 
-    void openOrganizationLocation();
+    void openOrganizationLocation(String request);
 
     void openOrganizationPhone(String phone);
 }

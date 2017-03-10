@@ -10,31 +10,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ua.r4mstein.converterlab.R;
-import ua.r4mstein.converterlab.presentation.ui_models.CurrenciesModel;
-import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
+import ua.r4mstein.converterlab.presentation.adapters.detail.base.DataHolderBase;
+import ua.r4mstein.converterlab.presentation.adapters.detail.base.ViewHolderBase;
+import ua.r4mstein.converterlab.presentation.adapters.detail.data_holders.CurrencyDataHolder;
+import ua.r4mstein.converterlab.presentation.adapters.detail.data_holders.CurrencyHeaderDataHolder;
+import ua.r4mstein.converterlab.presentation.adapters.detail.data_holders.OrganizationDataHolder;
+import ua.r4mstein.converterlab.presentation.adapters.detail.view_holders.CurrencyHeaderViewHolder;
+import ua.r4mstein.converterlab.presentation.adapters.detail.view_holders.CurrencyViewHolder;
+import ua.r4mstein.converterlab.presentation.adapters.detail.view_holders.OrganizationViewHolder;
 import ua.r4mstein.converterlab.util.logger.LogManager;
 import ua.r4mstein.converterlab.util.logger.Logger;
 
-import static ua.r4mstein.converterlab.util.Constants.DETAIL_FRAGMENT_COLOR_GREEN;
+import static ua.r4mstein.converterlab.util.Constants.DETAIL_ADAPTER_CURRENCY;
+import static ua.r4mstein.converterlab.util.Constants.DETAIL_ADAPTER_CURRENCY_HEADER;
+import static ua.r4mstein.converterlab.util.Constants.DETAIL_ADAPTER_ORGANIZATION;
 
-public final class DetailItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public final class DetailItemAdapter extends RecyclerView.Adapter<ViewHolderBase> {
 
     private static final String TAG = "DetailItemAdapter";
-    private static final int ORGANIZATION = 0;
-    private static final int CURRENCY_HEADER = 1;
-    private static final int CURRENCY = 2;
 
     private Logger mLogger;
     private Context mContext;
 
-    private List<Object> mItemsList = new ArrayList<>();
+    private List<DataHolderBase> mItemsList = new ArrayList<>();
 
     public DetailItemAdapter(Context context) {
         mContext = context;
         mLogger = LogManager.getLogger();
     }
 
-    public void updateData(List<Object> itemsList) {
+    public void updateData(List<DataHolderBase> itemsList) {
         mItemsList.clear();
         mItemsList = itemsList;
         notifyDataSetChanged();
@@ -43,53 +48,44 @@ public final class DetailItemAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemViewType(int position) {
-        if (mItemsList.get(position) instanceof OrganizationModel) {
-            return ORGANIZATION;
-        } else if (mItemsList.get(position) instanceof String) {
-            return CURRENCY_HEADER;
-        } else if (mItemsList.get(position) instanceof CurrenciesModel) {
-            return CURRENCY;
-        }
-        return -1;
+        return mItemsList.get(position).itemViewType();
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolderBase onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        RecyclerView.ViewHolder viewHolder = null;
+        ViewHolderBase viewHolder = null;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
         switch (viewType) {
-            case ORGANIZATION:
+            case DETAIL_ADAPTER_ORGANIZATION:
                 View organizationView = inflater.inflate(R.layout.detail_organization_item, parent, false);
-                viewHolder = new DetailOrganizationViewHolder(organizationView);
+                viewHolder = new OrganizationViewHolder(organizationView);
                 break;
-            case CURRENCY_HEADER:
+            case DETAIL_ADAPTER_CURRENCY_HEADER:
                 View currencyHeaderView = inflater.inflate(R.layout.detail_currency_header_item, parent, false);
-                viewHolder = new DetailCurrencyHeaderViewHolder(currencyHeaderView);
+                viewHolder = new CurrencyHeaderViewHolder(currencyHeaderView);
                 break;
-            case CURRENCY:
+            case DETAIL_ADAPTER_CURRENCY:
                 View currencyView = inflater.inflate(R.layout.detail_currency_item, parent, false);
-                viewHolder = new DetailCurrencyViewHolder(currencyView);
+                viewHolder = new CurrencyViewHolder(currencyView, mContext);
                 break;
         }
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolderBase holder, int position) {
 
         switch (holder.getItemViewType()) {
-            case ORGANIZATION:
-                DetailOrganizationViewHolder organizationViewHolder = (DetailOrganizationViewHolder) holder;
-                configureOrganizationViewHolder(organizationViewHolder, position);
+            case DETAIL_ADAPTER_ORGANIZATION:
+                ((OrganizationViewHolder) holder).setData((OrganizationDataHolder) mItemsList.get(position));
                 break;
-            case CURRENCY_HEADER:
-//                DetailCurrencyHeaderViewHolder currencyHeaderViewHolder = (DetailCurrencyHeaderViewHolder) holder;
+            case DETAIL_ADAPTER_CURRENCY_HEADER:
+                ((CurrencyHeaderViewHolder) holder).setData((CurrencyHeaderDataHolder) mItemsList.get(position));
                 break;
-            case CURRENCY:
-                DetailCurrencyViewHolder currencyViewHolder = (DetailCurrencyViewHolder) holder;
-                configureCurrencyViewHolder(currencyViewHolder, position);
+            case DETAIL_ADAPTER_CURRENCY:
+                ((CurrencyViewHolder) holder).setData((CurrencyDataHolder) mItemsList.get(position));
                 break;
         }
     }
@@ -97,43 +93,5 @@ public final class DetailItemAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public int getItemCount() {
         return mItemsList.size();
-    }
-
-    private void configureOrganizationViewHolder(DetailOrganizationViewHolder organizationViewHolder, int position) {
-        OrganizationModel model = (OrganizationModel) mItemsList.get(position);
-
-        if (model != null) {
-            organizationViewHolder.titleTextView.setText(model.getTitle());
-            organizationViewHolder.regionTextView.setText(model.getRegion());
-            organizationViewHolder.cityTextView.setText(model.getCity());
-            organizationViewHolder.phoneTextView.setText(model.getPhone());
-            organizationViewHolder.addressTextView.setText(model.getAddress());
-        }
-    }
-
-    private void configureCurrencyViewHolder(DetailCurrencyViewHolder currencyViewHolder, int position) {
-        CurrenciesModel model = (CurrenciesModel) mItemsList.get(position);
-
-        if (model != null) {
-            currencyViewHolder.nameTextView.setText(model.getName());
-
-            currencyViewHolder.askTextView.setText(model.getAsk());
-            if (model.getAsk_color().equals(DETAIL_FRAGMENT_COLOR_GREEN)) {
-                currencyViewHolder.askTextView.setTextColor(mContext.getResources().getColor(R.color.colorGreen));
-                currencyViewHolder.arrowAskImageView.setImageResource(R.drawable.ic_arrow_up_green);
-            } else {
-                currencyViewHolder.askTextView.setTextColor(mContext.getResources().getColor(R.color.colorRed));
-                currencyViewHolder.arrowAskImageView.setImageResource(R.drawable.ic_arrow_down_red);
-            }
-
-            currencyViewHolder.bidTextView.setText(model.getBid());
-            if (model.getBid_color().equals(DETAIL_FRAGMENT_COLOR_GREEN)) {
-                currencyViewHolder.bidTextView.setTextColor(mContext.getResources().getColor(R.color.colorGreen));
-                currencyViewHolder.arrowBidImageView.setImageResource(R.drawable.ic_arrow_up_green);
-            } else {
-                currencyViewHolder.bidTextView.setTextColor(mContext.getResources().getColor(R.color.colorRed));
-                currencyViewHolder.arrowBidImageView.setImageResource(R.drawable.ic_arrow_down_red);
-            }
-        }
     }
 }

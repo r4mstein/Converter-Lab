@@ -16,7 +16,11 @@ import java.util.List;
 
 import ua.r4mstein.converterlab.R;
 import ua.r4mstein.converterlab.presentation.MainActivity;
+import ua.r4mstein.converterlab.presentation.adapters.detail.base.DataHolderBase;
 import ua.r4mstein.converterlab.presentation.adapters.detail.DetailItemAdapter;
+import ua.r4mstein.converterlab.presentation.adapters.detail.data_holders.CurrencyDataHolder;
+import ua.r4mstein.converterlab.presentation.adapters.detail.data_holders.CurrencyHeaderDataHolder;
+import ua.r4mstein.converterlab.presentation.adapters.detail.data_holders.OrganizationDataHolder;
 import ua.r4mstein.converterlab.presentation.base.BaseFragment;
 import ua.r4mstein.converterlab.presentation.ui_models.CurrenciesModel;
 import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
@@ -62,7 +66,7 @@ public class DetailFragment extends BaseFragment<MainActivity> {
     }
 
     private void updateDataAdapter(String key) {
-        List<Object> objectList = new ArrayList<>();
+        List<DataHolderBase> objectList = new ArrayList<>();
 
         OrganizationModel organizationModel = getActivityGeneric().getOrganizationModelFromDB(key);
 
@@ -72,11 +76,11 @@ public class DetailFragment extends BaseFragment<MainActivity> {
         String currencyHeader = "currencyHeader";
         List<CurrenciesModel> currenciesModels = getActivityGeneric().getCurrenciesDataFromDB(organizationModel.getId());
 
-        objectList.add(organizationModel);
-        objectList.add(currencyHeader);
+        objectList.add(new OrganizationDataHolder(organizationModel));
+        objectList.add(new CurrencyHeaderDataHolder(currencyHeader));
 
         for (CurrenciesModel model : currenciesModels) {
-            objectList.add(model);
+            objectList.add(new CurrencyDataHolder(model));
         }
 
         mAdapter.updateData(objectList);

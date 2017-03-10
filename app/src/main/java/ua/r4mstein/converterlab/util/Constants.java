@@ -15,4 +15,8 @@ public interface Constants {
    String DETAIL_FRAGMENT_BUNDLE_KEY = "detail_fragment_bundle_key";
    String DETAIL_FRAGMENT_COLOR_GREEN = "color_green";
    String DETAIL_FRAGMENT_COLOR_RED = "color_red";
+
+   int DETAIL_ADAPTER_ORGANIZATION = 0;
+   int DETAIL_ADAPTER_CURRENCY_HEADER = 1;
+   int DETAIL_ADAPTER_CURRENCY = 2;
 }

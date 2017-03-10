@@ -70,8 +70,8 @@ public class DetailFragment extends BaseFragment<MainActivity> {
 
         OrganizationModel organizationModel = getActivityGeneric().getOrganizationModelFromDB(key);
 
-        getActivityGeneric().getSupportActionBar().setTitle(organizationModel.getTitle());
-        getActivityGeneric().getSupportActionBar().setSubtitle(organizationModel.getCity());
+        getActivityGeneric().setToolbarTitle(organizationModel.getTitle());
+        getActivityGeneric().setToolbarSubTitle(organizationModel.getCity());
 
         String currencyHeader = "currencyHeader";
         List<CurrenciesModel> currenciesModels = getActivityGeneric().getCurrenciesDataFromDB(organizationModel.getId());

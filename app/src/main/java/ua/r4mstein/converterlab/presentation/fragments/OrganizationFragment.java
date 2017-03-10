@@ -71,8 +71,8 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        getActivityGeneric().getSupportActionBar().setTitle(R.string.app_name);
-        getActivityGeneric().getSupportActionBar().setSubtitle(null);
+        getActivityGeneric().setToolbarTitle(getResources().getString(R.string.app_name));
+        getActivityGeneric().setToolbarSubTitle(null);
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.organization_recycler_view);
         mAdapter = new HomeItemAdapter();

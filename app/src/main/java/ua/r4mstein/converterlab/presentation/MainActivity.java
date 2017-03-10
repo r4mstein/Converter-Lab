@@ -23,6 +23,7 @@ public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
 
     private DataSource mDataSource;
+    private Toolbar mToolbar;
 
     @Override
     protected int getLayoutResId() {
@@ -37,8 +38,8 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
 
         mDataSource = new DataSource(this);
 
@@ -79,6 +80,14 @@ public class MainActivity extends BaseActivity {
     public List<CurrenciesModel> getCurrenciesDataFromDB(String organizationId) {
         logger.d(TAG, "getCurrenciesDataFromDB");
         return mDataSource.getCurrenciesItemsForOrganization(organizationId);
+    }
+
+    public void setToolbarTitle(String title) {
+        mToolbar.setTitle(title);
+    }
+
+    public void setToolbarSubTitle(String subTitle) {
+        mToolbar.setSubtitle(subTitle);
     }
 
     @Override

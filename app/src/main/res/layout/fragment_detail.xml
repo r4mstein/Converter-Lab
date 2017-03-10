@@ -6,10 +6,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="ua.r4mstein.converterlab.presentation.fragments.DetailFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/detail_recycler_view"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/detail_swipe_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="LinearLayoutManager"/>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/detail_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="LinearLayoutManager"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 
 </FrameLayout>

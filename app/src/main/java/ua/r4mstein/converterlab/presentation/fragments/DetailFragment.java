@@ -3,6 +3,7 @@ package ua.r4mstein.converterlab.presentation.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +25,7 @@ import static ua.r4mstein.converterlab.util.Constants.DETAIL_FRAGMENT_BUNDLE_KEY
 
 public class DetailFragment extends BaseFragment<MainActivity> {
 
+    private String mKey;
 
     @Override
     protected int getLayoutResId() {
@@ -51,7 +53,12 @@ public class DetailFragment extends BaseFragment<MainActivity> {
         mAdapter = new DetailItemAdapter(getActivityGeneric());
         recyclerView.setAdapter(mAdapter);
 
-        updateDataAdapter(getArguments().getString(DETAIL_FRAGMENT_BUNDLE_KEY));
+        mKey = getArguments().getString(DETAIL_FRAGMENT_BUNDLE_KEY);
+        updateDataAdapter(mKey);
+
+        SwipeRefreshLayout refreshLayout =
+                (SwipeRefreshLayout) view.findViewById(R.id.detail_swipe_refresh);
+        swipeRefreshListener(refreshLayout);
     }
 
     private void updateDataAdapter(String key) {
@@ -73,6 +80,16 @@ public class DetailFragment extends BaseFragment<MainActivity> {
         }
 
         mAdapter.updateData(objectList);
+    }
+
+    private void swipeRefreshListener(final SwipeRefreshLayout refreshLayout) {
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateDataAdapter(mKey);
+                refreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     @Override

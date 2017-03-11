@@ -38,8 +38,8 @@ public final class OrganizationViewHolder extends ViewHolderBase<OrganizationDat
             titleTextView.setText(model.getTitle());
             regionTextView.setText(model.getRegion());
             cityTextView.setText(model.getCity());
-            phoneTextView.setText(model.getPhone());
-            addressTextView.setText(model.getAddress());
+            phoneTextView.setText(String.format("%s %s", "Тел.: ", model.getPhone()));
+            addressTextView.setText(String.format("%s %s", "Адрес: ", model.getAddress()));
         }
     }
 }

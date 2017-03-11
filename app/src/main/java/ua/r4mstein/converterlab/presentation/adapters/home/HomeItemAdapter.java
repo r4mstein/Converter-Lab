@@ -124,8 +124,8 @@ public final class HomeItemAdapter extends RecyclerView.Adapter<HomeItemAdapter.
             titleTextView.setText(mModel.getTitle());
             regionTextView.setText(mModel.getRegion());
             cityTextView.setText(mModel.getCity());
-            phoneTextView.setText(mModel.getPhone());
-            addressTextView.setText(mModel.getAddress());
+            phoneTextView.setText(String.format("%s %s", "Тел.: ", mModel.getPhone()));
+            addressTextView.setText(String.format("%s %s", "Адрес: ", mModel.getAddress()));
         }
 
         public void unbindData() {

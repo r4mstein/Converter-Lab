@@ -88,6 +88,8 @@ public final class Converter implements IConverter {
                 currenciesModel.setAsk_color(DETAIL_FRAGMENT_COLOR_GREEN);
                 currenciesModel.setBid_color(DETAIL_FRAGMENT_COLOR_GREEN);
 
+                validator.validateCurrenciesModel(currenciesModel);
+
                 mCurrenciesModels.add(currenciesModel);
             }
 

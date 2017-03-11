@@ -70,7 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_below="@id/detail_organization_address"
-            android:background="@color/colorItemBackground">
+            android:background="@drawable/button_background">
 
             <ImageButton
                 android:id="@+id/home_link_ib"

@@ -17,6 +17,7 @@
     <string name="fab_map">Карта</string>
     <string name="fab_link">Сайт</string>
     <string name="fab_phone">Позвонить</string>
+
     <string name="detail_currency_name">Название валюты</string>
     <string name="detail_purchase_sale">Покупка / \nПродажа</string>
 

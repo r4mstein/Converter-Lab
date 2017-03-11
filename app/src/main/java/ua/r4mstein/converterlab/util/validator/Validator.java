@@ -11,8 +11,8 @@ public final class Validator implements IValidator {
         if (model.getTitle() == null) model.setTitle("");
         if (model.getRegion() == null) model.setRegion("");
         if (model.getCity() == null) model.setCity("");
-        if (model.getPhone() == null) model.setPhone("Phone not available");
-        if (model.getAddress() == null) model.setAddress("Address not available");
+        if (model.getPhone() == null) model.setPhone("Нет информации");
+        if (model.getAddress() == null) model.setAddress("Нет информации");
         if (model.getLink() == null) model.setLink("");
 
         return model;
@@ -21,6 +21,9 @@ public final class Validator implements IValidator {
     @Override
     public CurrenciesModel validateCurrenciesModel(CurrenciesModel model) {
 
-        return null;
+        if (model.getAsk() == null) model.setAsk("0");
+        if (model.getBid() == null) model.setBid("0");
+
+        return model;
     }
 }

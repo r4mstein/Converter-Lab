@@ -5,14 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -58,6 +56,8 @@ public class DetailFragment extends BaseFragment<MainActivity> {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        getActivityGeneric().setToolbarIconBack();
 
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.detail_recycler_view);
         mAdapter = new DetailItemAdapter(getActivityGeneric());

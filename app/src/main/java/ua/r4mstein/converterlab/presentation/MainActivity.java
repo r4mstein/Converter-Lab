@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import java.util.List;
 
@@ -90,6 +91,17 @@ public class MainActivity extends BaseActivity {
 
     public void setToolbarSubTitle(String subTitle) {
         mToolbar.setSubtitle(subTitle);
+    }
+
+    public void setToolbarIconBack() {
+        mToolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back));
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mToolbar.setNavigationIcon(null);
+                onBackPressed();
+            }
+        });
     }
 
     public void showDialog() {

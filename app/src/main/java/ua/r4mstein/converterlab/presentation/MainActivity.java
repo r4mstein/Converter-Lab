@@ -2,6 +2,7 @@ package ua.r4mstein.converterlab.presentation;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
 import ua.r4mstein.converterlab.R;
 import ua.r4mstein.converterlab.database.DataSource;
 import ua.r4mstein.converterlab.presentation.base.BaseActivity;
+import ua.r4mstein.converterlab.presentation.fragments.DetailDialogFragment;
 import ua.r4mstein.converterlab.presentation.fragments.DetailFragment;
 import ua.r4mstein.converterlab.presentation.fragments.OrganizationFragment;
 import ua.r4mstein.converterlab.presentation.ui_models.CurrenciesModel;
@@ -88,6 +90,12 @@ public class MainActivity extends BaseActivity {
 
     public void setToolbarSubTitle(String subTitle) {
         mToolbar.setSubtitle(subTitle);
+    }
+
+    public void showDialog() {
+        FragmentManager manager = getSupportFragmentManager();
+        DetailDialogFragment dialogFragment = new DetailDialogFragment();
+        dialogFragment.show(manager, "dialog");
     }
 
     @Override

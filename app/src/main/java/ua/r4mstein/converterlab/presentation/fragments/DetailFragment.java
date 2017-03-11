@@ -1,18 +1,17 @@
 package ua.r4mstein.converterlab.presentation.fragments;
 
 
-import android.animation.StateListAnimator;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
@@ -23,8 +22,8 @@ import java.util.List;
 
 import ua.r4mstein.converterlab.R;
 import ua.r4mstein.converterlab.presentation.MainActivity;
-import ua.r4mstein.converterlab.presentation.adapters.detail.base.DataHolderBase;
 import ua.r4mstein.converterlab.presentation.adapters.detail.DetailItemAdapter;
+import ua.r4mstein.converterlab.presentation.adapters.detail.base.DataHolderBase;
 import ua.r4mstein.converterlab.presentation.adapters.detail.data_holders.CurrencyDataHolder;
 import ua.r4mstein.converterlab.presentation.adapters.detail.data_holders.CurrencyHeaderDataHolder;
 import ua.r4mstein.converterlab.presentation.adapters.detail.data_holders.OrganizationDataHolder;
@@ -78,8 +77,6 @@ public class DetailFragment extends BaseFragment<MainActivity> {
     private void updateDataAdapter(OrganizationModel organizationModel) {
         List<DataHolderBase> objectList = new ArrayList<>();
 
-//        OrganizationModel mOrganizationModel = getActivityGeneric().getOrganizationModelFromDB(key);
-
         getActivityGeneric().setToolbarTitle(organizationModel.getTitle());
         getActivityGeneric().setToolbarSubTitle(organizationModel.getCity());
 
@@ -103,26 +100,6 @@ public class DetailFragment extends BaseFragment<MainActivity> {
         FloatingActionButton phoneFAB = (FloatingActionButton) view.findViewById(R.id.floating_action_menu_phone);
 
 //        actionMenu.getMenuIconView().setImageResource(R.drawable.ic_location);
-
-
-//        actionMenu.setOnMenuButtonClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(getActivityGeneric(), "MENU", Toast.LENGTH_SHORT).show();
-//                actionMenu.setAnimation((Animation) getResources().getAnimation(R.anim.fab_scale_up));
-//
-//            }
-//        });
-//        actionMenu.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-////                if () {
-////                    actionMenu.getMenuIconView().setImageResource(R.drawable.ic_location);
-////                }
-//                Toast.makeText(getActivityGeneric(), "FAB", Toast.LENGTH_SHORT).show();
-//
-//            }
-//        });
 
         mapFAB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,7 +148,7 @@ public class DetailFragment extends BaseFragment<MainActivity> {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.action_share) {
-            Toast.makeText(getActivityGeneric(), "Share menu", Toast.LENGTH_SHORT).show();
+            getActivityGeneric().showDialog();
         }
 
         return super.onOptionsItemSelected(item);

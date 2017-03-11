@@ -30,6 +30,7 @@ import ua.r4mstein.converterlab.util.logger.Logger;
 import static ua.r4mstein.converterlab.util.Constants.DETAIL_FRAGMENT_COLOR_GREEN;
 import static ua.r4mstein.converterlab.util.Constants.DETAIL_FRAGMENT_COLOR_RED;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_ALARM_MANAGER;
+import static ua.r4mstein.converterlab.util.Constants.SERVICE_HALF_HOUR;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_INIT;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_ERROR;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_KEY;
@@ -151,7 +152,7 @@ public class DataService extends Service {
 
                 sendMessage(SERVICE_MESSAGE_SUCCESS);
 
-                setServiceAlarm(DataService.this, SERVICE_ONE_MINUTE);
+                setServiceAlarm(DataService.this, SERVICE_HALF_HOUR);
                 sendNotification(DataService.this, "Data downloaded.");
                 mLogger.d(TAG, "loadDataFromServer: onSuccess");
             }

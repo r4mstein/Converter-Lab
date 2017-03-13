@@ -19,4 +19,6 @@ public interface Constants {
    int DETAIL_ADAPTER_ORGANIZATION = 0;
    int DETAIL_ADAPTER_CURRENCY_HEADER = 1;
    int DETAIL_ADAPTER_CURRENCY = 2;
+
+   String DETAIL_DIALOG_BUNDLE_KEY = "detail_dialog_bundle_key";
 }

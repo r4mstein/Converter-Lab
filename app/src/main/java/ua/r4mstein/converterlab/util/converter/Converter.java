@@ -81,6 +81,7 @@ public final class Converter implements IConverter {
                     }
                 }
                 currenciesModel.setName(currenciesName);
+                currenciesModel.setName_key(key);
 
                 currenciesModel.setAsk(currenciesMap.get(key).ask);
                 currenciesModel.setBid(currenciesMap.get(key).bid);

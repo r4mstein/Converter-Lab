@@ -20,6 +20,7 @@ import android.view.animation.OvershootInterpolator;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +40,7 @@ import static ua.r4mstein.converterlab.util.Constants.DETAIL_FRAGMENT_BUNDLE_KEY
 public class DetailFragment extends BaseFragment<MainActivity> {
 
     private OrganizationModel mOrganizationModel;
+    private ArrayList<String> mStrings = new ArrayList<>();
 
     @Override
     protected int getLayoutResId() {
@@ -77,6 +79,8 @@ public class DetailFragment extends BaseFragment<MainActivity> {
         swipeRefreshListener(refreshLayout);
 
         initFloatingActionMenu(view, mOrganizationModel);
+
+        initDataForDialog();
     }
 
     private void updateDataAdapter(OrganizationModel organizationModel) {
@@ -183,9 +187,25 @@ public class DetailFragment extends BaseFragment<MainActivity> {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.action_share) {
-            getActivityGeneric().showDialog();
+            getActivityGeneric().showDialog(mStrings);
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initDataForDialog() {
+        List<CurrenciesModel> currenciesModels = getActivityGeneric().getCurrenciesDataFromDB(mOrganizationModel.getId());
+
+        mStrings.add(mOrganizationModel.getTitle());
+        mStrings.add(mOrganizationModel.getRegion());
+        mStrings.add(mOrganizationModel.getCity());
+
+        for (CurrenciesModel model : currenciesModels) {
+            DecimalFormat format = new DecimalFormat("00.00");
+            String ask = format.format(Double.parseDouble(model.getAsk())).trim();
+            String bid = format.format(Double.parseDouble(model.getBid())).trim();
+
+            mStrings.add(model.getName_key().trim() + "\t\t\t\t\t\t\t" + ask + "/" + bid);
+        }
     }
 }

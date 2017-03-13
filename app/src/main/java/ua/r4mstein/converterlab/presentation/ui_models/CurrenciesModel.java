@@ -9,6 +9,7 @@ public final class CurrenciesModel {
     private String id;
     private String organization_id;
     private String name;
+    private String name_key;
     private String ask;
     private String ask_color;
     private String bid;
@@ -20,6 +21,7 @@ public final class CurrenciesModel {
         values.put(DBContract.CurrenciesEntry.COLUMN_ID, id);
         values.put(DBContract.CurrenciesEntry.COLUMN_ORGANIZATION_ID, organization_id);
         values.put(DBContract.CurrenciesEntry.COLUMN_NAME, name);
+        values.put(DBContract.CurrenciesEntry.COLUMN_NAME_KEY, name_key);
         values.put(DBContract.CurrenciesEntry.COLUMN_ASK, ask);
         values.put(DBContract.CurrenciesEntry.COLUMN_ASK_COLOR, ask_color);
         values.put(DBContract.CurrenciesEntry.COLUMN_BID, bid);
@@ -50,6 +52,14 @@ public final class CurrenciesModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getName_key() {
+        return name_key;
+    }
+
+    public void setName_key(String name_key) {
+        this.name_key = name_key;
     }
 
     public String getAsk() {

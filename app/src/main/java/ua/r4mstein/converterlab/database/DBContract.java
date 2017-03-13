@@ -40,13 +40,14 @@ public class DBContract {
         public static final String COLUMN_ID = "id";
         public static final String COLUMN_ORGANIZATION_ID = "organization_id";
         public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_NAME_KEY = "name_key";
         public static final String COLUMN_ASK = "ask";
         public static final String COLUMN_ASK_COLOR = "ask_color";
         public static final String COLUMN_BID = "bid";
         public static final String COLUMN_BID_COLOR = "bid_color";
 
         public static final String[] ALL_COLUMNS =
-                {COLUMN_ID, COLUMN_ORGANIZATION_ID, COLUMN_NAME, COLUMN_ASK, COLUMN_ASK_COLOR,
+                {COLUMN_ID, COLUMN_ORGANIZATION_ID, COLUMN_NAME, COLUMN_NAME_KEY, COLUMN_ASK, COLUMN_ASK_COLOR,
                         COLUMN_BID, COLUMN_BID_COLOR};
 
         public static final String SQL_CREATE =
@@ -54,6 +55,7 @@ public class DBContract {
                         COLUMN_ID + " TEXT PRIMARY KEY," +
                         COLUMN_ORGANIZATION_ID + " TEXT," +
                         COLUMN_NAME + " TEXT," +
+                        COLUMN_NAME_KEY + " TEXT," +
                         COLUMN_ASK + " TEXT," +
                         COLUMN_ASK_COLOR + " TEXT," +
                         COLUMN_BID + " TEXT," +

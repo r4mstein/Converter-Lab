@@ -150,11 +150,12 @@ public class DataSource {
                 CurrenciesEntry.COLUMN_ID + ", " +
                 CurrenciesEntry.COLUMN_ORGANIZATION_ID + ", " +
                 CurrenciesEntry.COLUMN_NAME + ", " +
+                CurrenciesEntry.COLUMN_NAME_KEY + ", " +
                 CurrenciesEntry.COLUMN_ASK + ", " +
                 CurrenciesEntry.COLUMN_ASK_COLOR + ", " +
                 CurrenciesEntry.COLUMN_BID + ", " +
                 CurrenciesEntry.COLUMN_BID_COLOR + ") " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         mDatabase.beginTransaction();
         mLogger.d(TAG, "insertOrUpdateCurrencies: mDatabase.beginTransaction");
 
@@ -163,10 +164,11 @@ public class DataSource {
             statement.bindString(1, list.get(i).getId());
             statement.bindString(2, list.get(i).getOrganization_id());
             statement.bindString(3, list.get(i).getName());
-            statement.bindString(4, list.get(i).getAsk());
-            statement.bindString(5, list.get(i).getAsk_color());
-            statement.bindString(6, list.get(i).getBid());
-            statement.bindString(7, list.get(i).getBid_color());
+            statement.bindString(4, list.get(i).getName_key());
+            statement.bindString(5, list.get(i).getAsk());
+            statement.bindString(6, list.get(i).getAsk_color());
+            statement.bindString(7, list.get(i).getBid());
+            statement.bindString(8, list.get(i).getBid_color());
 
             statement.execute();
             statement.clearBindings();
@@ -182,6 +184,7 @@ public class DataSource {
 
         values.put(CurrenciesEntry.COLUMN_ORGANIZATION_ID, model.getOrganization_id());
         values.put(CurrenciesEntry.COLUMN_NAME, model.getName());
+        values.put(CurrenciesEntry.COLUMN_NAME_KEY, model.getName_key());
         values.put(CurrenciesEntry.COLUMN_ASK, model.getAsk());
         values.put(CurrenciesEntry.COLUMN_ASK_COLOR, model.getAsk_color());
         values.put(CurrenciesEntry.COLUMN_BID, model.getBid());
@@ -221,6 +224,7 @@ public class DataSource {
             model.setId(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ID)));
             model.setOrganization_id(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ORGANIZATION_ID)));
             model.setName(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_NAME)));
+            model.setName_key(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_NAME_KEY)));
             model.setAsk(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ASK)));
             model.setAsk_color(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ASK_COLOR)));
             model.setBid(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_BID)));
@@ -246,6 +250,7 @@ public class DataSource {
             model.setId(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ID)));
             model.setOrganization_id(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ORGANIZATION_ID)));
             model.setName(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_NAME)));
+            model.setName_key(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_NAME_KEY)));
             model.setAsk(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ASK)));
             model.setAsk_color(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ASK_COLOR)));
             model.setBid(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_BID)));

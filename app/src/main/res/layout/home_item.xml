@@ -17,6 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/padding_text_large"
+            android:paddingRight="@dimen/padding_text_large"
             android:paddingTop="@dimen/padding_text_large"
             tools:text="Title"
             android:textSize="@dimen/text_size_large"
@@ -29,6 +30,7 @@
             android:layout_below="@id/detail_organization_title"
             android:layout_marginTop="@dimen/margin_text"
             android:paddingLeft="@dimen/padding_text_large"
+            android:paddingRight="@dimen/padding_text_large"
             tools:text="Region"
             android:textSize="@dimen/text_size_medium"/>
 
@@ -39,6 +41,7 @@
             android:layout_below="@id/detail_organization_region"
             android:layout_marginTop="@dimen/margin_text"
             android:paddingLeft="16dp"
+            android:paddingRight="@dimen/padding_text_large"
             tools:text="City"
             android:textSize="@dimen/text_size_medium"/>
 
@@ -50,6 +53,7 @@
             android:layout_below="@+id/detail_organization_city"
             android:layout_marginTop="@dimen/margin_text"
             android:paddingRight="@dimen/padding_text_large"
+            android:paddingLeft="@dimen/padding_text_large"
             tools:text="Phone"
             android:textSize="@dimen/text_size_medium"/>
 
@@ -62,6 +66,7 @@
             android:layout_marginTop="@dimen/margin_text"
             android:paddingBottom="@dimen/padding_text_large"
             android:paddingRight="@dimen/padding_text_large"
+            android:paddingLeft="@dimen/padding_text_large"
             tools:text="Address"
             android:textSize="@dimen/text_size_medium"/>
 

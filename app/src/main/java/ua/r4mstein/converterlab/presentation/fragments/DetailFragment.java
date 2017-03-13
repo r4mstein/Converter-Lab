@@ -1,6 +1,10 @@
 package ua.r4mstein.converterlab.presentation.fragments;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.OvershootInterpolator;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -99,7 +104,7 @@ public class DetailFragment extends BaseFragment<MainActivity> {
         FloatingActionButton linkFAB = (FloatingActionButton) view.findViewById(R.id.floating_action_menu_link);
         FloatingActionButton phoneFAB = (FloatingActionButton) view.findViewById(R.id.floating_action_menu_phone);
 
-//        actionMenu.getMenuIconView().setImageResource(R.drawable.ic_location);
+        createCustomAnimation(actionMenu);
 
         mapFAB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,6 +141,36 @@ public class DetailFragment extends BaseFragment<MainActivity> {
                 refreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    private void createCustomAnimation(final FloatingActionMenu actionMenu) {
+        AnimatorSet set = new AnimatorSet();
+
+        ObjectAnimator scaleOutX = ObjectAnimator.ofFloat(actionMenu.getMenuIconView(), "scaleX", 1.0f, 0.2f);
+        ObjectAnimator scaleOutY = ObjectAnimator.ofFloat(actionMenu.getMenuIconView(), "scaleY", 1.0f, 0.2f);
+
+        ObjectAnimator scaleInX = ObjectAnimator.ofFloat(actionMenu.getMenuIconView(), "scaleX", 0.2f, 1.0f);
+        ObjectAnimator scaleInY = ObjectAnimator.ofFloat(actionMenu.getMenuIconView(), "scaleY", 0.2f, 1.0f);
+
+        scaleOutX.setDuration(50);
+        scaleOutY.setDuration(50);
+
+        scaleInX.setDuration(150);
+        scaleInY.setDuration(150);
+
+        scaleInX.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                actionMenu.getMenuIconView().setImageResource(actionMenu.isOpened()
+                        ? R.drawable.ic_close : R.drawable.ic_fab_menu);
+            }
+        });
+
+        set.play(scaleOutX).with(scaleOutY);
+        set.play(scaleInX).with(scaleInY).after(scaleOutX);
+        set.setInterpolator(new OvershootInterpolator(2));
+
+        actionMenu.setIconToggleAnimatorSet(set);
     }
 
     @Override

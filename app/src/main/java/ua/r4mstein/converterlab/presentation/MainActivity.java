@@ -104,6 +104,16 @@ public class MainActivity extends BaseActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mToolbar.getNavigationIcon() != null) {
+            mToolbar.setNavigationIcon(null);
+            super.onBackPressed();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     public void showDialog() {
         FragmentManager manager = getSupportFragmentManager();
         DetailDialogFragment dialogFragment = new DetailDialogFragment();

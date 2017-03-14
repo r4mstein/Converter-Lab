@@ -72,7 +72,6 @@ public class DataService extends Service {
         Intent intent = new Intent(context, DataService.class);
         intent.setAction(SERVICE_ALARM_MANAGER);
         PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent, 0);
-//        mAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         mAlarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                 SystemClock.elapsedRealtime() + interval, interval, pendingIntent);
@@ -88,14 +87,12 @@ public class DataService extends Service {
             switch (intent.getAction()) {
                 case SERVICE_START:
                     sendNotification(this, "Start data download...");
-                    resetDataServiceAlarm(DataService.this, mAlarmManager);
                     loadDataFromServer();
                     stopSelf();
 
                     break;
                 case SERVICE_ALARM_MANAGER:
                     sendNotification(this, "Start data download...");
-                    resetDataServiceAlarm(DataService.this, mAlarmManager);
                     loadDataFromServer();
                     stopSelf();
 
@@ -104,8 +101,6 @@ public class DataService extends Service {
                     break;
             }
         }
-
-//        return super.onStartCommand(intent, flags, startId);
         return START_NOT_STICKY;
     }
 
@@ -123,6 +118,22 @@ public class DataService extends Service {
 
                 mDataSource.open();
                 mLogger.d(TAG, "DataSource open");
+
+                if (mDataSource.checkDB() != 0) {
+                    List<OrganizationModel> organizationModelsFromDB = mDataSource.getAllOrganizationItems();
+
+                    if (organizationModelsFromDB.get(0).getDate().equals(organizationModels.get(0).getDate())) {
+                        sendMessage(SERVICE_MESSAGE_SUCCESS);
+                        mDataSource.close();
+                        sendNotification(DataService.this, "The data was not updated on the server.");
+                        mLogger.d(TAG, "DataSource close");
+                        mLogger.d(TAG, "The SAME date");
+
+                        return;
+                    }
+                }
+
+                resetDataServiceAlarm(DataService.this, mAlarmManager);
 
                 List<CurrenciesModel> currenciesModelsFromDB = mDataSource.getAllCurrenciesItems();
                 for (CurrenciesModel model : currenciesModels) {
@@ -187,25 +198,25 @@ public class DataService extends Service {
         Intent intent = new Intent("DataService");
         intent.putExtra(SERVICE_MESSAGE_KEY, message);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-   }
+    }
 
-   private void sendNotification(Context context, String message) {
-       Resources resources = context.getResources();
+    private void sendNotification(Context context, String message) {
+        Resources resources = context.getResources();
 
-       Notification notification = new NotificationCompat.Builder(context)
-               .setTicker(message)
-               .setSmallIcon(R.drawable.ic_notification)
-               .setContentTitle(resources.getString(R.string.app_name))
-               .setContentText(message)
-               .setAutoCancel(true)
-               .setDefaults(Notification.DEFAULT_SOUND)
-               .build();
+        Notification notification = new NotificationCompat.Builder(context)
+                .setTicker(message)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle(resources.getString(R.string.app_name))
+                .setContentText(message)
+                .setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_SOUND)
+                .build();
 
-       NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-       notificationManager.notify(100, notification);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(100, notification);
 
-       LogManager.getLogger().d(TAG, "sendNotification");
-   }
+        LogManager.getLogger().d(TAG, "sendNotification");
+    }
 
     @Override
     public void onDestroy() {

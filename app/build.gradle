@@ -1,9 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        config_debug {
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storePassword 'android'
+            storeFile file('debug.keystore')
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
-
     defaultConfig {
         applicationId "ua.r4mstein.converterlab"
 
@@ -16,6 +23,7 @@ android {
     }
     buildTypes {
         debug {
+            signingConfig signingConfigs.config_debug
             debuggable true
             useProguard false
         }

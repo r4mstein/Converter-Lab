@@ -32,11 +32,13 @@ public final class Converter implements IConverter {
         List<Region> regions = response.getRegions();
         List<City> cities = response.getCities();
         List<Currency> currencyList = response.getCurrencies();
+        String date = response.getDate();
 
         for (Organization organization : organizations) {
             OrganizationModel organizationModel = new OrganizationModel();
 
             organizationModel.setId(organization.id);
+            organizationModel.setDate(date);
             organizationModel.setTitle(organization.title);
 
             String regionUI = null;

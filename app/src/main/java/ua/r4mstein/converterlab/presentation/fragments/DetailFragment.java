@@ -34,13 +34,18 @@ import ua.r4mstein.converterlab.presentation.adapters.detail.data_holders.Organi
 import ua.r4mstein.converterlab.presentation.base.BaseFragment;
 import ua.r4mstein.converterlab.presentation.ui_models.CurrenciesModel;
 import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
+import ua.r4mstein.converterlab.util.logger.LogManager;
+import ua.r4mstein.converterlab.util.logger.Logger;
 
 import static ua.r4mstein.converterlab.util.Constants.DETAIL_FRAGMENT_BUNDLE_KEY;
 
 public class DetailFragment extends BaseFragment<MainActivity> {
 
+    private static final String TAG = "DetailFragment";
+
     private OrganizationModel mOrganizationModel;
     private ArrayList<String> mStrings = new ArrayList<>();
+    private Logger mLogger;
 
     @Override
     protected int getLayoutResId() {
@@ -63,6 +68,7 @@ public class DetailFragment extends BaseFragment<MainActivity> {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mLogger = LogManager.getLogger();
 
         getActivityGeneric().setToolbarIconBack();
 
@@ -73,6 +79,7 @@ public class DetailFragment extends BaseFragment<MainActivity> {
         String key = getArguments().getString(DETAIL_FRAGMENT_BUNDLE_KEY);
         mOrganizationModel = getActivityGeneric().getOrganizationModelFromDB(key);
         updateDataAdapter(mOrganizationModel);
+        mLogger.d(TAG, "onViewCreated");
 
         SwipeRefreshLayout refreshLayout =
                 (SwipeRefreshLayout) view.findViewById(R.id.detail_swipe_refresh);

@@ -1,8 +1,6 @@
 package ua.r4mstein.converterlab.presentation.ui_models;
 
 import android.content.ContentValues;
-import android.os.Parcel;
-import android.os.Parcelable;
 
 import java.util.List;
 
@@ -11,6 +9,7 @@ import ua.r4mstein.converterlab.database.DBContract.OrganizationEntry;
 public final class OrganizationModel {
 
     private String id;
+    private String date;
     private String title;
     private String region;
     private String city;
@@ -23,6 +22,7 @@ public final class OrganizationModel {
         ContentValues values = new ContentValues();
 
         values.put(OrganizationEntry.COLUMN_ID, id);
+        values.put(OrganizationEntry.COLUMN_DATE, date);
         values.put(OrganizationEntry.COLUMN_TITLE, title);
         values.put(OrganizationEntry.COLUMN_REGION, region);
         values.put(OrganizationEntry.COLUMN_CITY, city);
@@ -39,6 +39,14 @@ public final class OrganizationModel {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public List<String> getCurrencyId() {

@@ -52,25 +52,27 @@ public class DataSource {
     public void insertOrUpdateOrganizations(List<OrganizationModel> list) {
         String sql = "INSERT OR REPLACE INTO " + OrganizationEntry.TABLE_NAME + " (" +
                 OrganizationEntry.COLUMN_ID + ", " +
+                OrganizationEntry.COLUMN_DATE + ", " +
                 OrganizationEntry.COLUMN_TITLE + ", " +
                 OrganizationEntry.COLUMN_REGION + ", " +
                 OrganizationEntry.COLUMN_CITY + ", " +
                 OrganizationEntry.COLUMN_PHONE + ", " +
                 OrganizationEntry.COLUMN_ADDRESS + ", " +
                 OrganizationEntry.COLUMN_LINK + ") " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         mDatabase.beginTransaction();
         mLogger.d(TAG, "insertOrUpdateOrganizations: mDatabase.beginTransaction");
 
         SQLiteStatement statement = mDatabase.compileStatement(sql);
         for (int i = 0; i < list.size(); i++) {
             statement.bindString(1, list.get(i).getId());
-            statement.bindString(2, list.get(i).getTitle());
-            statement.bindString(3, list.get(i).getRegion());
-            statement.bindString(4, list.get(i).getCity());
-            statement.bindString(5, list.get(i).getPhone());
-            statement.bindString(6, list.get(i).getAddress());
-            statement.bindString(7, list.get(i).getLink());
+            statement.bindString(2, list.get(i).getDate());
+            statement.bindString(3, list.get(i).getTitle());
+            statement.bindString(4, list.get(i).getRegion());
+            statement.bindString(5, list.get(i).getCity());
+            statement.bindString(6, list.get(i).getPhone());
+            statement.bindString(7, list.get(i).getAddress());
+            statement.bindString(8, list.get(i).getLink());
 
             statement.execute();
             statement.clearBindings();
@@ -84,6 +86,7 @@ public class DataSource {
     public void updateOrganizationItem(OrganizationModel model) {
         ContentValues values = new ContentValues();
 
+        values.put(OrganizationEntry.COLUMN_DATE, model.getDate());
         values.put(OrganizationEntry.COLUMN_TITLE, model.getTitle());
         values.put(OrganizationEntry.COLUMN_REGION, model.getRegion());
         values.put(OrganizationEntry.COLUMN_CITY, model.getCity());
@@ -123,6 +126,7 @@ public class DataSource {
             OrganizationModel model = new OrganizationModel();
 
             model.setId(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_ID)));
+            model.setDate(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_DATE)));
             model.setTitle(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_TITLE)));
             model.setRegion(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_REGION)));
             model.setCity(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_CITY)));
@@ -135,6 +139,28 @@ public class DataSource {
         mLogger.d(TAG, "getAllOrganizationItems");
         cursor.close();
         return modelList;
+    }
+
+    public OrganizationModel getOrganizationItem(String key) {
+        OrganizationModel model = new OrganizationModel();
+
+        String[] strings = new String[]{key};
+        Cursor cursor = mDatabase.query(OrganizationEntry.TABLE_NAME, OrganizationEntry.ALL_COLUMNS,
+                OrganizationEntry.COLUMN_ID + "=?", strings, null, null, null);
+
+        while (cursor.moveToNext()) {
+            model.setId(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_ID)));
+            model.setDate(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_DATE)));
+            model.setTitle(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_TITLE)));
+            model.setRegion(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_REGION)));
+            model.setCity(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_CITY)));
+            model.setPhone(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_PHONE)));
+            model.setAddress(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_ADDRESS)));
+            model.setLink(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_LINK)));
+        }
+        cursor.close();
+        mLogger.d(TAG, "getOrganizationItem");
+        return model;
     }
 
     public long insertCurrenciesItem(CurrenciesModel model) {
@@ -264,25 +290,18 @@ public class DataSource {
         return modelList;
     }
 
-    public OrganizationModel getOrganizationItem(String key) {
-        OrganizationModel model = new OrganizationModel();
+    public int checkDB() {
+        int result;
 
-        String[] strings = new String[]{key};
-        Cursor cursor = mDatabase.query(OrganizationEntry.TABLE_NAME, OrganizationEntry.ALL_COLUMNS,
-                OrganizationEntry.COLUMN_ID + "=?", strings, null, null, null);
-
-        while (cursor.moveToNext()) {
-            model.setId(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_ID)));
-            model.setTitle(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_TITLE)));
-            model.setRegion(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_REGION)));
-            model.setCity(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_CITY)));
-            model.setPhone(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_PHONE)));
-            model.setAddress(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_ADDRESS)));
-            model.setLink(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_LINK)));
+        Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + DBContract.OrganizationEntry.TABLE_NAME,
+                null);
+        try {
+            result =  cursor.getCount();
+        } finally {
+            cursor.close();
         }
-        cursor.close();
-        mLogger.d(TAG, "getOrganizationItem");
-        return model;
-    }
 
+        mLogger.d(TAG, "checkDB: " + String.valueOf(result));
+        return result;
+    }
 }

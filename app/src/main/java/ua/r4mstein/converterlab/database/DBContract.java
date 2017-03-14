@@ -7,6 +7,7 @@ public class DBContract {
         public static final String TABLE_NAME = "organization_models";
 
         public static final String COLUMN_ID = "id";
+        public static final String COLUMN_DATE = "date";
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_REGION = "region";
         public static final String COLUMN_CITY = "city";
@@ -15,12 +16,13 @@ public class DBContract {
         public static final String COLUMN_LINK = "link";
 
         public static final String[] ALL_COLUMNS =
-                {COLUMN_ID, COLUMN_TITLE, COLUMN_REGION, COLUMN_CITY, COLUMN_PHONE,
+                {COLUMN_ID, COLUMN_DATE, COLUMN_TITLE, COLUMN_REGION, COLUMN_CITY, COLUMN_PHONE,
                         COLUMN_ADDRESS, COLUMN_LINK};
 
         public static final String SQL_CREATE =
                 "CREATE TABLE " + TABLE_NAME + "(" +
                         COLUMN_ID + " TEXT PRIMARY KEY," +
+                        COLUMN_DATE + " TEXT," +
                         COLUMN_TITLE + " TEXT," +
                         COLUMN_REGION + " TEXT," +
                         COLUMN_CITY + " TEXT," +

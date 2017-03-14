@@ -10,7 +10,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite">
 
         <TextView
             android:id="@+id/detail_organization_title"
@@ -21,6 +22,7 @@
             android:paddingTop="@dimen/padding_text_large"
             tools:text="Title"
             android:textSize="@dimen/text_size_large"
+            android:textColor="@color/colorBlack"
             android:textStyle="bold"/>
 
         <TextView
@@ -32,6 +34,7 @@
             android:paddingLeft="@dimen/padding_text_large"
             android:paddingRight="@dimen/padding_text_large"
             tools:text="Region"
+            android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_size_medium"/>
 
         <TextView
@@ -43,6 +46,7 @@
             android:paddingLeft="16dp"
             android:paddingRight="@dimen/padding_text_large"
             tools:text="City"
+            android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_size_medium"/>
 
         <TextView
@@ -55,6 +59,7 @@
             android:paddingRight="@dimen/padding_text_large"
             android:paddingLeft="@dimen/padding_text_large"
             tools:text="Phone"
+            android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_size_medium"/>
 
         <TextView
@@ -68,6 +73,7 @@
             android:paddingRight="@dimen/padding_text_large"
             android:paddingLeft="@dimen/padding_text_large"
             tools:text="Address"
+            android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_size_medium"/>
 
         <LinearLayout

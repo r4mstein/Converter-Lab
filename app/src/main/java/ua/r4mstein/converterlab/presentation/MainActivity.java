@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
-import android.text.SpannableString;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -45,6 +44,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+        logger.d(TAG, "onCreate");
 
         mDataSource = new DataSource(this);
 
@@ -55,6 +55,8 @@ public class MainActivity extends BaseActivity {
         if (savedInstanceState == null) {
             openOrganizationFragment();
         }
+
+//        Geocoder
     }
 
     private void openOrganizationFragment() {
@@ -88,11 +90,13 @@ public class MainActivity extends BaseActivity {
     }
 
     public void setToolbarTitle(String title) {
-        mToolbar.setTitle(title);
+        getSupportActionBar().setTitle(title);
+        logger.d(TAG, "setToolbarTitle");
     }
 
     public void setToolbarSubTitle(String subTitle) {
         mToolbar.setSubtitle(subTitle);
+        logger.d(TAG, "setToolbarSubTitle");
     }
 
     public void setToolbarIconBack() {

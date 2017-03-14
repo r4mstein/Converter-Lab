@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="@color/colorWhite"
     android:layout_margin="8dp"
     app:cardCornerRadius="6dp">
 
@@ -31,6 +32,7 @@
             android:layout_marginTop="@dimen/margin_text"
             android:paddingLeft="@dimen/padding_text_large"
             android:textSize="@dimen/text_size_medium"
+            android:textColor="@color/colorBlack"
             tools:text="Region"/>
 
         <TextView
@@ -41,6 +43,7 @@
             android:layout_marginTop="@dimen/margin_text"
             android:paddingLeft="@dimen/padding_text_large"
             android:textSize="@dimen/text_size_medium"
+            android:textColor="@color/colorBlack"
             tools:text="City"/>
 
         <TextView
@@ -51,6 +54,7 @@
             android:layout_marginTop="@dimen/margin_text"
             android:paddingLeft="@dimen/padding_text_large"
             android:textSize="@dimen/text_size_medium"
+            android:textColor="@color/colorBlack"
             tools:text="Phone"/>
 
         <TextView
@@ -62,6 +66,7 @@
             android:paddingBottom="@dimen/padding_text_large"
             android:paddingLeft="@dimen/padding_text_large"
             android:textSize="@dimen/text_size_medium"
+            android:textColor="@color/colorBlack"
             tools:text="Address"/>
 
     </RelativeLayout>

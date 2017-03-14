@@ -5,13 +5,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,12 +30,18 @@ import ua.r4mstein.converterlab.presentation.adapters.home.HomeItemAdapter;
 import ua.r4mstein.converterlab.presentation.adapters.home.IHomeItemActionsListener;
 import ua.r4mstein.converterlab.presentation.base.BaseFragment;
 import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
+import ua.r4mstein.converterlab.util.logger.LogManager;
+import ua.r4mstein.converterlab.util.logger.Logger;
 
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_ERROR;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_KEY;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_SUCCESS;
 
 public class OrganizationFragment extends BaseFragment<MainActivity> implements SearchView.OnQueryTextListener {
+
+    private static final String TAG = "OrganizationFragment";
+
+    private Logger mLogger;
 
     @Override
     protected int getLayoutResId() {
@@ -73,6 +79,7 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mLogger = LogManager.getLogger();
 
         getActivityGeneric().setToolbarTitle(getResources().getString(R.string.app_name));
         getActivityGeneric().setToolbarSubTitle(null);
@@ -95,24 +102,51 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
         @Override
         public void openOrganizationDetail(String key) {
             getActivityGeneric().openDetailFragment(key);
+            mLogger.d(TAG, "openOrganizationDetail");
         }
 
         @Override
         public void openOrganizationLink(String link) {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
             getActivityGeneric().startActivity(intent);
+            mLogger.d(TAG, "openOrganizationLink");
         }
 
         @Override
-        public void openOrganizationLocation(String request) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + request));
-            getActivityGeneric().startActivity(intent);
+        public void openOrganizationLocation(final String request) {
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Geocoder geocoder = new Geocoder(getActivityGeneric());
+
+                    try {
+                        List<Address> address = geocoder.getFromLocationName(request, 5);
+
+                        if (address != null && !address.isEmpty()) {
+
+                            double latitude = address.get(0).getLatitude();
+                            double longitude = address.get(0).getLongitude();
+
+                            getActivityGeneric().openMapsFragment(latitude, longitude, request);
+
+                            mLogger.d(TAG, "latitude: " + latitude);
+                            mLogger.d(TAG, "longitude: " + longitude);
+                        }
+                        mLogger.d(TAG, "address size: " + address.size());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+            mLogger.d(TAG, "openOrganizationLocation");
         }
 
         @Override
         public void openOrganizationPhone(String phone) {
             Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone));
             getActivityGeneric().startActivity(intent);
+            mLogger.d(TAG, "openOrganizationPhone");
         }
     };
 

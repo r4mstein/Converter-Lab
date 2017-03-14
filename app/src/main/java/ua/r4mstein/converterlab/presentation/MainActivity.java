@@ -14,6 +14,7 @@ import ua.r4mstein.converterlab.database.DataSource;
 import ua.r4mstein.converterlab.presentation.base.BaseActivity;
 import ua.r4mstein.converterlab.presentation.fragments.DetailDialogFragment;
 import ua.r4mstein.converterlab.presentation.fragments.DetailFragment;
+import ua.r4mstein.converterlab.presentation.fragments.MapsFragment;
 import ua.r4mstein.converterlab.presentation.fragments.OrganizationFragment;
 import ua.r4mstein.converterlab.presentation.ui_models.CurrenciesModel;
 import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
@@ -56,7 +57,6 @@ public class MainActivity extends BaseActivity {
             openOrganizationFragment();
         }
 
-//        Geocoder
     }
 
     private void openOrganizationFragment() {
@@ -72,6 +72,11 @@ public class MainActivity extends BaseActivity {
 
         detailFragment.setArguments(bundle);
         addFragmentWithBackStack(detailFragment);
+    }
+
+    public void openMapsFragment(double latitude, double longitude, String address) {
+        MapsFragment mapsFragment = MapsFragment.newInstance(latitude, longitude, address);
+        addFragmentWithBackStack(mapsFragment);
     }
 
     public List<OrganizationModel> getOrganizationDataFromDB() {

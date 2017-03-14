@@ -21,4 +21,8 @@ public interface Constants {
    int DETAIL_ADAPTER_CURRENCY = 2;
 
    String DETAIL_DIALOG_BUNDLE_KEY = "detail_dialog_bundle_key";
+
+   String MAPS_FRAGMENT_LATITUDE = "maps_fragment_latitude";
+   String MAPS_FRAGMENT_LONGITUDE = "maps_fragment_longitude";
+   String MAPS_FRAGMENT_ADDRESS = "maps_fragment_address";
 }

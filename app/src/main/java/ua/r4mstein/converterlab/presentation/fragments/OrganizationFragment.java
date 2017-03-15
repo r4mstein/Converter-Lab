@@ -5,8 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,7 +18,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,30 +112,49 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
         @Override
         public void openOrganizationLocation(final String request) {
 
+//            /// Geocoder
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Geocoder geocoder = new Geocoder(getActivityGeneric());
+//
+//                    try {
+//                        List<Address> address = geocoder.getFromLocationName(request, 5);
+//
+//                        if (address != null && !address.isEmpty()) {
+//
+//                            double latitude = address.get(0).getLatitude();
+//                            double longitude = address.get(0).getLongitude();
+//
+//                            getActivityGeneric().openMapsFragment(latitude, longitude, request);
+//
+//                            mLogger.d(TAG, "latitude: " + latitude);
+//                            mLogger.d(TAG, "longitude: " + longitude);
+//                        }
+//                        mLogger.d(TAG, "address size: " + address.size());
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }).start();
+
+            /// API
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    Geocoder geocoder = new Geocoder(getActivityGeneric());
+                    String url = request.replace(" ", "+");
+                    List<String> coordinates = MapsFragment.getCoordinates(url);
 
-                    try {
-                        List<Address> address = geocoder.getFromLocationName(request, 5);
-
-                        if (address != null && !address.isEmpty()) {
-
-                            double latitude = address.get(0).getLatitude();
-                            double longitude = address.get(0).getLongitude();
-
-                            getActivityGeneric().openMapsFragment(latitude, longitude, request);
-
-                            mLogger.d(TAG, "latitude: " + latitude);
-                            mLogger.d(TAG, "longitude: " + longitude);
-                        }
-                        mLogger.d(TAG, "address size: " + address.size());
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    if (coordinates != null && !coordinates.isEmpty()) {
+                        getActivityGeneric().openMapsFragment(
+                                Double.parseDouble(coordinates.get(0)),
+                                Double.parseDouble(coordinates.get(1)),
+                                request);
+                        mLogger.d(TAG, "lat: " + coordinates.get(0) + " -- lng: " + coordinates.get(1));
                     }
                 }
             }).start();
+
             mLogger.d(TAG, "openOrganizationLocation");
         }
 

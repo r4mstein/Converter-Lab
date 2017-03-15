@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +32,7 @@ import ua.r4mstein.converterlab.presentation.base.BaseFragment;
 import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
 import ua.r4mstein.converterlab.util.logger.LogManager;
 import ua.r4mstein.converterlab.util.logger.Logger;
+import ua.r4mstein.converterlab.util.map_api.MapApi;
 
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_ERROR;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_KEY;
@@ -112,48 +116,42 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
         @Override
         public void openOrganizationLocation(final String request) {
 
-//            /// Geocoder
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Geocoder geocoder = new Geocoder(getActivityGeneric());
-//
-//                    try {
-//                        List<Address> address = geocoder.getFromLocationName(request, 5);
-//
-//                        if (address != null && !address.isEmpty()) {
-//
-//                            double latitude = address.get(0).getLatitude();
-//                            double longitude = address.get(0).getLongitude();
-//
-//                            getActivityGeneric().openMapsFragment(latitude, longitude, request);
-//
-//                            mLogger.d(TAG, "latitude: " + latitude);
-//                            mLogger.d(TAG, "longitude: " + longitude);
-//                        }
-//                        mLogger.d(TAG, "address size: " + address.size());
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }).start();
+            Geocoder geocoder = new Geocoder(getActivityGeneric());
 
-            /// API
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    String url = request.replace(" ", "+");
-                    List<String> coordinates = MapsFragment.getCoordinates(url);
+                    try {
+                        List<Address> address = geocoder.getFromLocationName(request, 5);
 
-                    if (coordinates != null && !coordinates.isEmpty()) {
-                        getActivityGeneric().openMapsFragment(
-                                Double.parseDouble(coordinates.get(0)),
-                                Double.parseDouble(coordinates.get(1)),
-                                request);
-                        mLogger.d(TAG, "lat: " + coordinates.get(0) + " -- lng: " + coordinates.get(1));
+                        if (address != null && !address.isEmpty()) {
+
+                            double latitude = address.get(0).getLatitude();
+                            double longitude = address.get(0).getLongitude();
+
+                            getActivityGeneric().openMapsFragment(latitude, longitude, request);
+
+                            mLogger.d(TAG, "Geocoder: lat: " + latitude + "lng: " + longitude);
+                        } else {
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    MapApi api = new MapApi();
+
+                                    String url = request.replace(" ", "+");
+                                    List<String> coordinates = api.getCoordinates(url);
+
+                                    if (coordinates != null && !coordinates.isEmpty()) {
+                                        getActivityGeneric().openMapsFragment(
+                                                Double.parseDouble(coordinates.get(0)),
+                                                Double.parseDouble(coordinates.get(1)),
+                                                request);
+                                        mLogger.d(TAG, "API: lat: " + coordinates.get(0) +
+                                                " -- lng: " + coordinates.get(1));
+                                    }
+                                }
+                            }).start();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                }
-            }).start();
 
             mLogger.d(TAG, "openOrganizationLocation");
         }

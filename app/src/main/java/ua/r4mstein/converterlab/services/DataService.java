@@ -7,6 +7,8 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
@@ -87,15 +89,27 @@ public class DataService extends Service {
             switch (intent.getAction()) {
                 case SERVICE_START:
                     sendNotification(this, "Start data download...");
-                    loadDataFromServer();
+                    if (isOnline()) {
+                        loadDataFromServer();
+                    } else {
+                        sendNotification(this, "Internet not available");
+                        resetDataServiceAlarm(DataService.this, mAlarmManager);
+                        setServiceAlarm(DataService.this, SERVICE_ONE_MINUTE);
+                        mLogger.d(TAG, "onStartCommand: SERVICE_START: Internet not available");
+                    }
                     stopSelf();
-
                     break;
                 case SERVICE_ALARM_MANAGER:
                     sendNotification(this, "Start data download...");
-                    loadDataFromServer();
+                    if (isOnline()) {
+                        loadDataFromServer();
+                    } else {
+                        sendNotification(this, "Internet not available");
+                        resetDataServiceAlarm(DataService.this, mAlarmManager);
+                        setServiceAlarm(DataService.this, SERVICE_ONE_MINUTE);
+                        mLogger.d(TAG, "onStartCommand: SERVICE_ALARM_MANAGER: Internet not available");
+                    }
                     stopSelf();
-
                     break;
                 case SERVICE_INIT:
                     break;
@@ -216,6 +230,13 @@ public class DataService extends Service {
         notificationManager.notify(100, notification);
 
         LogManager.getLogger().d(TAG, "sendNotification");
+    }
+
+    private boolean isOnline() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        return  (networkInfo != null && networkInfo.isConnectedOrConnecting());
     }
 
     @Override

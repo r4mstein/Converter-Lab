@@ -37,6 +37,7 @@ public class MapsFragment extends BaseFragment<MainActivity> implements OnMapRea
     }
 
     public MapsFragment() {
+        super();
         // Required empty public constructor
     }
 

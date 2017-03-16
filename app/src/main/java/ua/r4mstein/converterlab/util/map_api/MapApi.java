@@ -1,5 +1,13 @@
 package ua.r4mstein.converterlab.util.map_api;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Process;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,15 +21,23 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import ua.r4mstein.converterlab.presentation.fragments.OrganizationFragment;
+import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
 import ua.r4mstein.converterlab.util.logger.LogManager;
 
 public final class MapApi implements IMapApi {
 
     private static final String TAG = "MapApi";
 
+    private MapApiCallback mMapApiCallback;
+
+    public void setMapApiCallback(MapApiCallback mapApiCallback) {
+        mMapApiCallback = mapApiCallback;
+    }
+
     @Override
-    public List<String> getCoordinates(String request) {
-        LogManager.getLogger().d(TAG, "getCoordinates");
+    public List<String> getCoordinatesWithApi(String request) {
+        LogManager.getLogger().d(TAG, "getCoordinatesWithApi");
         List<String> result = new ArrayList<>();
 
         String url = String.format("https://maps.googleapis.com/maps/api/geocode/json?address=%s", request);
@@ -81,5 +97,69 @@ public final class MapApi implements IMapApi {
             e.printStackTrace();
         }
         return response;
+    }
+
+    public void getCoordinates(final String request, Context context) {
+
+        final Handler handler = new Handler(Looper.getMainLooper());
+
+        final List<Double> result = new ArrayList<>();
+        Geocoder geocoder = new Geocoder(context);
+
+        try {
+            List<Address> address = geocoder.getFromLocationName(request, 5);
+
+            if (address != null && !address.isEmpty()) {
+                result.add(address.get(0).getLatitude());
+                result.add(address.get(0).getLongitude());
+
+                mMapApiCallback.onSuccess(result);
+                LogManager.getLogger().d(TAG, "onSuccess -- Geocoder");
+            } else {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String url = request.replace(" ", "+");
+                        List<String> coordinates = getCoordinatesWithApi(url);
+
+                        if (coordinates != null && !coordinates.isEmpty()) {
+                            result.add(Double.parseDouble(coordinates.get(0)));
+                            result.add(Double.parseDouble(coordinates.get(1)));
+
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    LogManager.getLogger().d(TAG, "onSuccess -- API");
+                                    mMapApiCallback.onSuccess(result);
+                                }
+                            });
+
+                        } else {
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mMapApiCallback.onError("Not find coordinates");
+                                }
+                            });
+
+                        }
+                    }
+                }).start();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getRequest(OrganizationModel model) {
+        return model.getRegion().trim() + " " + model.getCity().trim() + " " +
+                model.getAddress().trim();
+    }
+
+    public interface MapApiCallback {
+
+        void onSuccess(List<Double> coordinates);
+
+        void onError(String message);
     }
 }

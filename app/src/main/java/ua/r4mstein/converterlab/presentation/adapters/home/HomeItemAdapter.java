@@ -142,9 +142,7 @@ public final class HomeItemAdapter extends RecyclerView.Adapter<HomeItemAdapter.
                     mActionsListener.openOrganizationLink(mModel.getLink());
                     break;
                 case R.id.home_location_ib:
-                    String request = mModel.getRegion().trim() + " " + mModel.getCity().trim() + " " +
-                            mModel.getAddress().trim();
-                    mActionsListener.openOrganizationLocation(request);
+                    mActionsListener.openOrganizationLocation(mModel);
                     break;
                 case R.id.home_phone_ib:
                     mActionsListener.openOrganizationPhone(mModel.getPhone());

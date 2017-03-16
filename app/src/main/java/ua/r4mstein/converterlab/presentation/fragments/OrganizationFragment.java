@@ -5,8 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,8 +17,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +41,8 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
     private static final String TAG = "OrganizationFragment";
 
     private Logger mLogger;
+    private String mRequest;
+    private MapApi mapApi;
 
     @Override
     protected int getLayoutResId() {
@@ -68,6 +68,7 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
         LocalBroadcastManager.getInstance(getActivityGeneric()).registerReceiver(
                 mMessageReceiver, new IntentFilter("DataService"));
 
+        mapApi.setMapApiCallback(mMapApiCallback);
     }
 
     @Override
@@ -75,12 +76,15 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
         super.onStop();
         LocalBroadcastManager.getInstance(getActivityGeneric()).unregisterReceiver(
                 mMessageReceiver);
+
+        mapApi.setMapApiCallback(null);
     }
 
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mLogger = LogManager.getLogger();
+        mapApi = new MapApi();
 
         getActivityGeneric().setToolbarTitle(getResources().getString(R.string.app_name));
         getActivityGeneric().setToolbarSubTitle(null);
@@ -99,6 +103,18 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
 
     }
 
+    private MapApi.MapApiCallback mMapApiCallback = new MapApi.MapApiCallback() {
+        @Override
+        public void onSuccess(List<Double> coordinates) {
+            getActivityGeneric().openMapsFragment(coordinates.get(0), coordinates.get(1), mRequest);
+        }
+
+        @Override
+        public void onError(String message) {
+            Toast.makeText(getActivityGeneric(), message, Toast.LENGTH_SHORT).show();
+        }
+    };
+
     private final IHomeItemActionsListener mHomeItemActionsListener = new IHomeItemActionsListener() {
         @Override
         public void openOrganizationDetail(String key) {
@@ -114,44 +130,10 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
         }
 
         @Override
-        public void openOrganizationLocation(final String request) {
+        public void openOrganizationLocation(OrganizationModel model) {
+            mRequest = mapApi.getRequest(model);
 
-            Geocoder geocoder = new Geocoder(getActivityGeneric());
-
-                    try {
-                        List<Address> address = geocoder.getFromLocationName(request, 5);
-
-                        if (address != null && !address.isEmpty()) {
-
-                            double latitude = address.get(0).getLatitude();
-                            double longitude = address.get(0).getLongitude();
-
-                            getActivityGeneric().openMapsFragment(latitude, longitude, request);
-
-                            mLogger.d(TAG, "Geocoder: lat: " + latitude + "lng: " + longitude);
-                        } else {
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    MapApi api = new MapApi();
-
-                                    String url = request.replace(" ", "+");
-                                    List<String> coordinates = api.getCoordinates(url);
-
-                                    if (coordinates != null && !coordinates.isEmpty()) {
-                                        getActivityGeneric().openMapsFragment(
-                                                Double.parseDouble(coordinates.get(0)),
-                                                Double.parseDouble(coordinates.get(1)),
-                                                request);
-                                        mLogger.d(TAG, "API: lat: " + coordinates.get(0) +
-                                                " -- lng: " + coordinates.get(1));
-                                    }
-                                }
-                            }).start();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            mapApi.getCoordinates(mRequest, getActivityGeneric());
 
             mLogger.d(TAG, "openOrganizationLocation");
         }

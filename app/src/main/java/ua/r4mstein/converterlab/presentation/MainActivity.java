@@ -16,6 +16,7 @@ import ua.r4mstein.converterlab.presentation.fragments.DetailDialogFragment;
 import ua.r4mstein.converterlab.presentation.fragments.DetailFragment;
 import ua.r4mstein.converterlab.presentation.fragments.MapsFragment;
 import ua.r4mstein.converterlab.presentation.fragments.OrganizationFragment;
+import ua.r4mstein.converterlab.presentation.fragments.ProgressDialogFragment;
 import ua.r4mstein.converterlab.presentation.ui_models.CurrenciesModel;
 import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
 import ua.r4mstein.converterlab.services.DataService;
@@ -129,6 +130,15 @@ public class MainActivity extends BaseActivity {
         FragmentManager manager = getSupportFragmentManager();
         DetailDialogFragment dialogFragment = DetailDialogFragment.newInstance(strings);
         dialogFragment.show(manager, "dialog");
+    }
+
+    public void showProgressDialog(ProgressDialogFragment fragment) {
+        FragmentManager manager = getSupportFragmentManager();
+        fragment.show(manager, "ProgressDialog");
+    }
+
+    public void cancelProgressDialog(ProgressDialogFragment fragment) {
+        fragment.dismiss();
     }
 
     @Override

@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
+import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -36,6 +37,7 @@ import ua.r4mstein.converterlab.presentation.ui_models.CurrenciesModel;
 import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
 import ua.r4mstein.converterlab.util.logger.LogManager;
 import ua.r4mstein.converterlab.util.logger.Logger;
+import ua.r4mstein.converterlab.util.map_api.MapApi;
 
 import static ua.r4mstein.converterlab.util.Constants.DETAIL_FRAGMENT_BUNDLE_KEY;
 
@@ -46,6 +48,9 @@ public class DetailFragment extends BaseFragment<MainActivity> {
     private OrganizationModel mOrganizationModel;
     private ArrayList<String> mStrings = new ArrayList<>();
     private Logger mLogger;
+    private MapApi mMapApi;
+    private String mRequest;
+    private ProgressDialogFragment mProgressDialogFragment;
 
     @Override
     protected int getLayoutResId() {
@@ -69,6 +74,8 @@ public class DetailFragment extends BaseFragment<MainActivity> {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mLogger = LogManager.getLogger();
+        mMapApi = new MapApi();
+        mProgressDialogFragment = new ProgressDialogFragment();
 
         getActivityGeneric().setToolbarIconBack();
 
@@ -89,6 +96,32 @@ public class DetailFragment extends BaseFragment<MainActivity> {
 
         initDataForDialog();
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mMapApi.setMapApiCallback(mMapApiCallback);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mMapApi.setMapApiCallback(null);
+    }
+
+    private MapApi.MapApiCallback mMapApiCallback = new MapApi.MapApiCallback() {
+        @Override
+        public void onSuccess(List<Double> coordinates) {
+            getActivityGeneric().cancelProgressDialog(mProgressDialogFragment);
+            getActivityGeneric().openMapsFragment(coordinates.get(0), coordinates.get(1), mRequest);
+        }
+
+        @Override
+        public void onError(String message) {
+            getActivityGeneric().cancelProgressDialog(mProgressDialogFragment);
+            Toast.makeText(getActivityGeneric(), message, Toast.LENGTH_SHORT).show();
+        }
+    };
 
     private void updateDataAdapter(OrganizationModel organizationModel) {
         List<DataHolderBase> objectList = new ArrayList<>();
@@ -120,10 +153,9 @@ public class DetailFragment extends BaseFragment<MainActivity> {
         mapFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String request = organizationModel.getRegion() + " " + organizationModel.getCity() + " " +
-                        organizationModel.getAddress();
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + request));
-                getActivityGeneric().startActivity(intent);
+                getActivityGeneric().showProgressDialog(mProgressDialogFragment);
+                mRequest = mMapApi.getRequest(organizationModel);
+                mMapApi.getCoordinates(mRequest, getActivityGeneric());
             }
         });
 

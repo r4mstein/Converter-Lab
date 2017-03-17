@@ -42,7 +42,8 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
 
     private Logger mLogger;
     private String mRequest;
-    private MapApi mapApi;
+    private MapApi mMapApi;
+    private ProgressDialogFragment mProgressDialogFragment;
 
     @Override
     protected int getLayoutResId() {
@@ -68,7 +69,7 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
         LocalBroadcastManager.getInstance(getActivityGeneric()).registerReceiver(
                 mMessageReceiver, new IntentFilter("DataService"));
 
-        mapApi.setMapApiCallback(mMapApiCallback);
+        mMapApi.setMapApiCallback(mMapApiCallback);
     }
 
     @Override
@@ -77,14 +78,15 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
         LocalBroadcastManager.getInstance(getActivityGeneric()).unregisterReceiver(
                 mMessageReceiver);
 
-        mapApi.setMapApiCallback(null);
+        mMapApi.setMapApiCallback(null);
     }
 
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mLogger = LogManager.getLogger();
-        mapApi = new MapApi();
+        mMapApi = new MapApi();
+        mProgressDialogFragment = new ProgressDialogFragment();
 
         getActivityGeneric().setToolbarTitle(getResources().getString(R.string.app_name));
         getActivityGeneric().setToolbarSubTitle(null);
@@ -106,11 +108,13 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
     private MapApi.MapApiCallback mMapApiCallback = new MapApi.MapApiCallback() {
         @Override
         public void onSuccess(List<Double> coordinates) {
+            getActivityGeneric().cancelProgressDialog(mProgressDialogFragment);
             getActivityGeneric().openMapsFragment(coordinates.get(0), coordinates.get(1), mRequest);
         }
 
         @Override
         public void onError(String message) {
+            getActivityGeneric().cancelProgressDialog(mProgressDialogFragment);
             Toast.makeText(getActivityGeneric(), message, Toast.LENGTH_SHORT).show();
         }
     };
@@ -131,10 +135,9 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
 
         @Override
         public void openOrganizationLocation(OrganizationModel model) {
-            mRequest = mapApi.getRequest(model);
-
-            mapApi.getCoordinates(mRequest, getActivityGeneric());
-
+            getActivityGeneric().showProgressDialog(mProgressDialogFragment);
+            mRequest = mMapApi.getRequest(model);
+            mMapApi.getCoordinates(mRequest, getActivityGeneric());
             mLogger.d(TAG, "openOrganizationLocation");
         }
 

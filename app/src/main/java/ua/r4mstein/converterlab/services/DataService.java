@@ -6,9 +6,8 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
@@ -16,6 +15,10 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.NotificationCompat;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import ua.r4mstein.converterlab.R;
@@ -28,6 +31,7 @@ import ua.r4mstein.converterlab.util.converter.Converter;
 import ua.r4mstein.converterlab.util.converter.IConverter;
 import ua.r4mstein.converterlab.util.logger.LogManager;
 import ua.r4mstein.converterlab.util.logger.Logger;
+import ua.r4mstein.converterlab.util.network.NetworkHelper;
 
 import static ua.r4mstein.converterlab.util.Constants.DETAIL_FRAGMENT_COLOR_GREEN;
 import static ua.r4mstein.converterlab.util.Constants.DETAIL_FRAGMENT_COLOR_RED;
@@ -38,6 +42,8 @@ import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_ERROR;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_KEY;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_SUCCESS;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_ONE_MINUTE;
+import static ua.r4mstein.converterlab.util.Constants.SERVICE_SAVED_DATE_KEY;
+import static ua.r4mstein.converterlab.util.Constants.SERVICE_SHARED_PREFERENCES_KEY;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_START;
 
 public class DataService extends Service {
@@ -89,7 +95,7 @@ public class DataService extends Service {
             switch (intent.getAction()) {
                 case SERVICE_START:
                     sendNotification(this, "Start data download...");
-                    if (isOnline()) {
+                    if (NetworkHelper.isOnline(this)) {
                         loadDataFromServer();
                     } else {
                         sendNotification(this, "Internet not available");
@@ -101,7 +107,7 @@ public class DataService extends Service {
                     break;
                 case SERVICE_ALARM_MANAGER:
                     sendNotification(this, "Start data download...");
-                    if (isOnline()) {
+                    if (NetworkHelper.isOnline(this)) {
                         loadDataFromServer();
                     } else {
                         sendNotification(this, "Internet not available");
@@ -124,28 +130,43 @@ public class DataService extends Service {
             @Override
             public void onSuccess(RootResponse response) {
 
-                IConverter converter = new Converter();
+                SharedPreferences preferences = DataService.this.getSharedPreferences(
+                        SERVICE_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
 
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                Date newDate = null;
+                try {
+                    newDate = dateFormat.parse(response.getDate());
+                    long dateFromPreferences = preferences.getLong(SERVICE_SAVED_DATE_KEY, 0);
+                    mLogger.d(TAG, "newDate: " + newDate);
+                    mLogger.d(TAG, "newDate: " + newDate.getTime());
+                    mLogger.d(TAG, "dateFromPreferences: " + dateFromPreferences);
+
+                    if (dateFromPreferences != 0 && newDate.getTime() == dateFromPreferences) {
+                        sendMessage(SERVICE_MESSAGE_SUCCESS);
+                        sendNotification(DataService.this, "The data was not updated on the server.");
+                        mLogger.d(TAG, "The SAME date");
+
+                        return;
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    mLogger.d(TAG, "ParseException: " + e.getMessage());
+                }
+
+                if (newDate != null) {
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putLong(SERVICE_SAVED_DATE_KEY, newDate.getTime());
+                    editor.apply();
+                }
+
+                IConverter converter = new Converter();
                 converter.convert(response);
                 List<OrganizationModel> organizationModels = converter.getOrganizationModels();
                 List<CurrenciesModel> currenciesModels = converter.getCurrencies();
 
                 mDataSource.open();
                 mLogger.d(TAG, "DataSource open");
-
-                if (mDataSource.checkDB() != 0) {
-                    List<OrganizationModel> organizationModelsFromDB = mDataSource.getAllOrganizationItems();
-
-                    if (organizationModelsFromDB.get(0).getDate().equals(organizationModels.get(0).getDate())) {
-                        sendMessage(SERVICE_MESSAGE_SUCCESS);
-                        mDataSource.close();
-                        sendNotification(DataService.this, "The data was not updated on the server.");
-                        mLogger.d(TAG, "DataSource close");
-                        mLogger.d(TAG, "The SAME date");
-
-                        return;
-                    }
-                }
 
                 resetDataServiceAlarm(DataService.this, mAlarmManager);
 
@@ -230,13 +251,6 @@ public class DataService extends Service {
         notificationManager.notify(100, notification);
 
         LogManager.getLogger().d(TAG, "sendNotification");
-    }
-
-    private boolean isOnline() {
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return  (networkInfo != null && networkInfo.isConnectedOrConnecting());
     }
 
     @Override

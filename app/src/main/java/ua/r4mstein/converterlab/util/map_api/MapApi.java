@@ -4,9 +4,8 @@ import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Looper;
-import android.os.Process;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,9 +20,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import ua.r4mstein.converterlab.presentation.fragments.OrganizationFragment;
 import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
 import ua.r4mstein.converterlab.util.logger.LogManager;
+import ua.r4mstein.converterlab.util.network.NetworkHelper;
 
 public final class MapApi implements IMapApi {
 
@@ -106,48 +105,53 @@ public final class MapApi implements IMapApi {
         final List<Double> result = new ArrayList<>();
         Geocoder geocoder = new Geocoder(context);
 
-        try {
-            List<Address> address = geocoder.getFromLocationName(request, 5);
+        if (NetworkHelper.isOnline(context)) {
+            try {
+                List<Address> address = geocoder.getFromLocationName(request, 5);
 
-            if (address != null && !address.isEmpty()) {
-                result.add(address.get(0).getLatitude());
-                result.add(address.get(0).getLongitude());
+                if (address != null && !address.isEmpty()) {
+                    result.add(address.get(0).getLatitude());
+                    result.add(address.get(0).getLongitude());
 
-                mMapApiCallback.onSuccess(result);
-                LogManager.getLogger().d(TAG, "onSuccess -- Geocoder");
-            } else {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String url = request.replace(" ", "+");
-                        List<String> coordinates = getCoordinatesWithApi(url);
+                    if (mMapApiCallback != null) mMapApiCallback.onSuccess(result);
+                    LogManager.getLogger().d(TAG, "onSuccess -- Geocoder");
+                } else {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String url = request.replace(" ", "+");
+                            List<String> coordinates = getCoordinatesWithApi(url);
 
-                        if (coordinates != null && !coordinates.isEmpty()) {
-                            result.add(Double.parseDouble(coordinates.get(0)));
-                            result.add(Double.parseDouble(coordinates.get(1)));
+                            if (coordinates != null && !coordinates.isEmpty()) {
+                                result.add(Double.parseDouble(coordinates.get(0)));
+                                result.add(Double.parseDouble(coordinates.get(1)));
 
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    LogManager.getLogger().d(TAG, "onSuccess -- API");
-                                    mMapApiCallback.onSuccess(result);
-                                }
-                            });
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        LogManager.getLogger().d(TAG, "onSuccess -- API");
+                                        if (mMapApiCallback != null)
+                                            mMapApiCallback.onSuccess(result);
+                                    }
+                                });
 
-                        } else {
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mMapApiCallback.onError("Not find coordinates");
-                                }
-                            });
-
+                            } else {
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (mMapApiCallback != null)
+                                            mMapApiCallback.onError("Not found coordinates");
+                                    }
+                                });
+                            }
                         }
-                    }
-                }).start();
+                    }).start();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            Toast.makeText(context, "Internet not available", Toast.LENGTH_SHORT).show();
         }
     }
 

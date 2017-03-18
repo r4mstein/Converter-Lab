@@ -27,7 +27,7 @@ import ua.r4mstein.converterlab.util.logger.Logger;
 public class RetrofitManager {
 
     private static final String TAG = "RetrofitManager";
-    public static final String BASE_URL = "http://resources.finance.ua/";
+    private static final String BASE_URL = "http://resources.finance.ua/";
 
     private final Logger mLogger;
 

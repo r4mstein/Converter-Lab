@@ -41,7 +41,7 @@ import ua.r4mstein.converterlab.util.map_api.MapApi;
 
 import static ua.r4mstein.converterlab.util.Constants.DETAIL_FRAGMENT_BUNDLE_KEY;
 
-public class DetailFragment extends BaseFragment<MainActivity> {
+public final class DetailFragment extends BaseFragment<MainActivity> {
 
     private static final String TAG = "DetailFragment";
 
@@ -114,12 +114,15 @@ public class DetailFragment extends BaseFragment<MainActivity> {
         public void onSuccess(List<Double> coordinates) {
             getActivityGeneric().cancelProgressDialog(mProgressDialogFragment);
             getActivityGeneric().openMapsFragment(coordinates.get(0), coordinates.get(1), mRequest);
+            mLogger.d(TAG, "mMapApiCallback: onSuccess: coordinates " + coordinates.get(0) +
+                    " - " + coordinates.get(1));
         }
 
         @Override
         public void onError(String message) {
             getActivityGeneric().cancelProgressDialog(mProgressDialogFragment);
             Toast.makeText(getActivityGeneric(), message, Toast.LENGTH_SHORT).show();
+            mLogger.d(TAG, "MapApiCallback: onError: " + message);
         }
     };
 
@@ -156,6 +159,7 @@ public class DetailFragment extends BaseFragment<MainActivity> {
                 getActivityGeneric().showProgressDialog(mProgressDialogFragment);
                 mRequest = mMapApi.getRequest(organizationModel);
                 mMapApi.getCoordinates(mRequest, getActivityGeneric());
+                mLogger.d(TAG, "initFloatingActionMenu: map FAB clicked: address: " + mRequest);
             }
         });
 
@@ -164,6 +168,7 @@ public class DetailFragment extends BaseFragment<MainActivity> {
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(organizationModel.getLink()));
                 getActivityGeneric().startActivity(intent);
+                mLogger.d(TAG, "initFloatingActionMenu: link FAB clicked: Link: " + organizationModel.getLink());
             }
         });
 
@@ -172,6 +177,7 @@ public class DetailFragment extends BaseFragment<MainActivity> {
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + organizationModel.getPhone()));
                 getActivityGeneric().startActivity(intent);
+                mLogger.d(TAG, "initFloatingActionMenu: phone FAB clicked: Phone: " + organizationModel.getPhone());
             }
         });
     }
@@ -226,7 +232,7 @@ public class DetailFragment extends BaseFragment<MainActivity> {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.action_share) {
-            getActivityGeneric().showDialog(mStrings);
+            getActivityGeneric().showDetailDialog(mStrings);
         }
 
         return super.onOptionsItemSelected(item);

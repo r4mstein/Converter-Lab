@@ -15,7 +15,6 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.NotificationCompat;
 
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -46,7 +45,7 @@ import static ua.r4mstein.converterlab.util.Constants.SERVICE_SAVED_DATE_KEY;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_SHARED_PREFERENCES_KEY;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_START;
 
-public class DataService extends Service {
+public final class DataService extends Service {
 
     private static final String TAG = "DataService";
 
@@ -84,7 +83,7 @@ public class DataService extends Service {
         mAlarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
                 SystemClock.elapsedRealtime() + interval, interval, pendingIntent);
 
-        mLogger.d(TAG, "setServiceAlarm");
+        mLogger.d(TAG, "setServiceAlarm: with interval: " + interval);
     }
 
     @Override
@@ -138,20 +137,20 @@ public class DataService extends Service {
                 try {
                     newDate = dateFormat.parse(response.getDate());
                     long dateFromPreferences = preferences.getLong(SERVICE_SAVED_DATE_KEY, 0);
-                    mLogger.d(TAG, "newDate: " + newDate);
-                    mLogger.d(TAG, "newDate: " + newDate.getTime());
-                    mLogger.d(TAG, "dateFromPreferences: " + dateFromPreferences);
+                    mLogger.d(TAG, "loadDataFromServer: newDate: " + newDate);
+                    mLogger.d(TAG, "loadDataFromServer: newDate: " + newDate.getTime());
+                    mLogger.d(TAG, "loadDataFromServer: dateFromPreferences: " + dateFromPreferences);
 
                     if (dateFromPreferences != 0 && newDate.getTime() == dateFromPreferences) {
                         sendMessage(SERVICE_MESSAGE_SUCCESS);
                         sendNotification(DataService.this, "The data was not updated on the server.");
-                        mLogger.d(TAG, "The SAME date");
+                        mLogger.d(TAG, "loadDataFromServer: The date was not changed");
 
                         return;
                     }
                 } catch (ParseException e) {
                     e.printStackTrace();
-                    mLogger.d(TAG, "ParseException: " + e.getMessage());
+                    mLogger.d(TAG, "loadDataFromServer: ParseException: " + e.getMessage());
                 }
 
                 if (newDate != null) {
@@ -166,7 +165,7 @@ public class DataService extends Service {
                 List<CurrenciesModel> currenciesModels = converter.getCurrencies();
 
                 mDataSource.open();
-                mLogger.d(TAG, "DataSource open");
+                mLogger.d(TAG, "loadDataFromServer: DataSource open");
 
                 resetDataServiceAlarm(DataService.this, mAlarmManager);
 
@@ -194,7 +193,7 @@ public class DataService extends Service {
                 mDataSource.insertOrUpdateCurrencies(currenciesModels);
 
                 mDataSource.close();
-                mLogger.d(TAG, "DataSource close");
+                mLogger.d(TAG, "loadDataFromServer: DataSource close");
 
                 sendMessage(SERVICE_MESSAGE_SUCCESS);
 
@@ -224,7 +223,7 @@ public class DataService extends Service {
             alarmManager.cancel(pendingIntent);
             pendingIntent.cancel();
         }
-        LogManager.getLogger().d(TAG, "resetDataServiceAlarm: " + result);
+        mLogger.d(TAG, "resetDataServiceAlarm: AlarmManager exists: " + result);
 
         return result;
     }
@@ -233,6 +232,7 @@ public class DataService extends Service {
         Intent intent = new Intent("DataService");
         intent.putExtra(SERVICE_MESSAGE_KEY, message);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+        mLogger.d(TAG, "sendMessage: " + message);
     }
 
     private void sendNotification(Context context, String message) {
@@ -250,7 +250,7 @@ public class DataService extends Service {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(100, notification);
 
-        LogManager.getLogger().d(TAG, "sendNotification");
+        mLogger.d(TAG, "sendNotification: with message: " + message);
     }
 
     @Override

@@ -3,7 +3,7 @@ package ua.r4mstein.converterlab.util.logger;
 
 import android.util.Log;
 
-public class LoggerDefault implements Logger {
+public final class LoggerDefault implements Logger {
 
     @Override
     public int d(String tag, String msg) {

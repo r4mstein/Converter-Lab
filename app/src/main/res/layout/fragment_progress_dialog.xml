@@ -5,7 +5,6 @@
              android:background="@android:color/transparent"
              tools:context="ua.r4mstein.converterlab.presentation.fragments.ProgressDialogFragment">
 
-
     <ProgressBar
         android:id="@+id/dialog_progress_bar"
         style="?android:attr/progressBarStyle"

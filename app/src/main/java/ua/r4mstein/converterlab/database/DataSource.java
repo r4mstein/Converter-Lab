@@ -16,10 +16,9 @@ import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
 import ua.r4mstein.converterlab.util.logger.LogManager;
 import ua.r4mstein.converterlab.util.logger.Logger;
 
-public class DataSource {
+public final class DataSource {
 
     private static final String TAG = "DataSource";
-
     private final Logger mLogger;
 
     private Context mContext;
@@ -35,10 +34,12 @@ public class DataSource {
 
     public void open() {
         mDatabase = mDBHelper.getWritableDatabase();
+        mLogger.d(TAG, "Open DB");
     }
 
     public void close() {
         mDBHelper.close();
+        mLogger.d(TAG, "Close DB");
     }
 
     public long insertOrganizationItem(OrganizationModel model) {
@@ -61,7 +62,7 @@ public class DataSource {
                 OrganizationEntry.COLUMN_LINK + ") " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         mDatabase.beginTransaction();
-        mLogger.d(TAG, "insertOrUpdateOrganizations: mDatabase.beginTransaction");
+        mLogger.d(TAG, "insertOrUpdateOrganizations: Begin Transaction");
 
         SQLiteStatement statement = mDatabase.compileStatement(sql);
         for (int i = 0; i < list.size(); i++) {
@@ -80,7 +81,7 @@ public class DataSource {
 
         mDatabase.setTransactionSuccessful();
         mDatabase.endTransaction();
-        mLogger.d(TAG, "insertOrUpdateOrganizations: mDatabase.endTransaction");
+        mLogger.d(TAG, "insertOrUpdateOrganizations: End Transaction");
     }
 
     public void updateOrganizationItem(OrganizationModel model) {
@@ -159,7 +160,7 @@ public class DataSource {
             model.setLink(cursor.getString(cursor.getColumnIndex(OrganizationEntry.COLUMN_LINK)));
         }
         cursor.close();
-        mLogger.d(TAG, "getOrganizationItem");
+        mLogger.d(TAG, "getOrganizationItem: Item Title: " + model.getTitle());
         return model;
     }
 
@@ -183,7 +184,7 @@ public class DataSource {
                 CurrenciesEntry.COLUMN_BID_COLOR + ") " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         mDatabase.beginTransaction();
-        mLogger.d(TAG, "insertOrUpdateCurrencies: mDatabase.beginTransaction");
+        mLogger.d(TAG, "insertOrUpdateCurrencies: Begin Transaction");
 
         SQLiteStatement statement = mDatabase.compileStatement(sql);
         for (int i = 0; i < list.size(); i++) {
@@ -202,7 +203,7 @@ public class DataSource {
 
         mDatabase.setTransactionSuccessful();
         mDatabase.endTransaction();
-        mLogger.d(TAG, "insertOrUpdateCurrencies: mDatabase.endTransaction");
+        mLogger.d(TAG, "insertOrUpdateCurrencies: End Transaction");
     }
 
     public void updateCurrenciesItem(CurrenciesModel model) {
@@ -286,22 +287,7 @@ public class DataSource {
         }
         cursor.close();
 
-        mLogger.d(TAG, "getCurrenciesItemsForOrganization");
+        mLogger.d(TAG, "getCurrenciesItemsForOrganization: Count of Currencies = " + modelList.size());
         return modelList;
-    }
-
-    public int checkDB() {
-        int result;
-
-        Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + DBContract.OrganizationEntry.TABLE_NAME,
-                null);
-        try {
-            result =  cursor.getCount();
-        } finally {
-            cursor.close();
-        }
-
-        mLogger.d(TAG, "checkDB: " + String.valueOf(result));
-        return result;
     }
 }

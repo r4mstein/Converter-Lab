@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import ua.r4mstein.converterlab.database.DBContract.CurrenciesEntry;
 import ua.r4mstein.converterlab.database.DBContract.OrganizationEntry;
 
-public class DBHelper extends SQLiteOpenHelper {
+public final class DBHelper extends SQLiteOpenHelper {
 
     public static final String DB_NAME = "currency.db";
     public static final int DB_VERSION = 1;

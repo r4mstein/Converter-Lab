@@ -1,6 +1,6 @@
 package ua.r4mstein.converterlab.database;
 
-public class DBContract {
+public final class DBContract {
 
     public static class OrganizationEntry {
 

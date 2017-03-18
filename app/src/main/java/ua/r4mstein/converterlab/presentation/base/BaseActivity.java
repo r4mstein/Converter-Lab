@@ -35,7 +35,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 .replace(getFragmentContainerResId(), fragment)
                 .commit();
 
-        logger.d(TAG, "addFragment");
+        logger.d(TAG, "addFragment: " + fragment.getClass().getSimpleName());
     }
 
     protected void addFragmentWithBackStack(BaseFragment fragment) {
@@ -45,6 +45,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                 .replace(getFragmentContainerResId(), fragment)
                 .commit();
 
-        logger.d(TAG, "addFragmentWithBackStack");
+        logger.d(TAG, "addFragmentWithBackStack: " + fragment.getClass().getSimpleName());
     }
 }

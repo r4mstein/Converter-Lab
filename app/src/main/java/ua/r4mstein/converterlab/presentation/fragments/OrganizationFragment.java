@@ -36,7 +36,7 @@ import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_ERROR;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_KEY;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_SUCCESS;
 
-public class OrganizationFragment extends BaseFragment<MainActivity> implements SearchView.OnQueryTextListener {
+public final class OrganizationFragment extends BaseFragment<MainActivity> implements SearchView.OnQueryTextListener {
 
     private static final String TAG = "OrganizationFragment";
 
@@ -110,12 +110,15 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
         public void onSuccess(List<Double> coordinates) {
             getActivityGeneric().cancelProgressDialog(mProgressDialogFragment);
             getActivityGeneric().openMapsFragment(coordinates.get(0), coordinates.get(1), mRequest);
+            mLogger.d(TAG, "mMapApiCallback: onSuccess: coordinates " + coordinates.get(0) +
+                    " - " + coordinates.get(1));
         }
 
         @Override
         public void onError(String message) {
             getActivityGeneric().cancelProgressDialog(mProgressDialogFragment);
             Toast.makeText(getActivityGeneric(), message, Toast.LENGTH_SHORT).show();
+            mLogger.d(TAG, "MapApiCallback: onError: " + message);
         }
     };
 
@@ -123,14 +126,14 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
         @Override
         public void openOrganizationDetail(String key) {
             getActivityGeneric().openDetailFragment(key);
-            mLogger.d(TAG, "openOrganizationDetail");
+            mLogger.d(TAG, "openOrganizationDetail with Key: " + key);
         }
 
         @Override
         public void openOrganizationLink(String link) {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
             getActivityGeneric().startActivity(intent);
-            mLogger.d(TAG, "openOrganizationLink");
+            mLogger.d(TAG, "openOrganizationLink: Link: " + link);
         }
 
         @Override
@@ -138,14 +141,14 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
             getActivityGeneric().showProgressDialog(mProgressDialogFragment);
             mRequest = mMapApi.getRequest(model);
             mMapApi.getCoordinates(mRequest, getActivityGeneric());
-            mLogger.d(TAG, "openOrganizationLocation");
+            mLogger.d(TAG, "openOrganizationLocation: Address: " + mRequest);
         }
 
         @Override
         public void openOrganizationPhone(String phone) {
             Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone));
             getActivityGeneric().startActivity(intent);
-            mLogger.d(TAG, "openOrganizationPhone");
+            mLogger.d(TAG, "openOrganizationPhone: Phone: " + phone);
         }
     };
 
@@ -168,8 +171,9 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
 
                 if (message.equals(SERVICE_MESSAGE_SUCCESS)) {
                     updateDataAdapter(mAdapter);
+                    mLogger.d(TAG, "mMessageReceiver: BroadcastReceiver got message: " + SERVICE_MESSAGE_SUCCESS);
                 } else if (message.equals(SERVICE_MESSAGE_ERROR)) {
-
+                    mLogger.d(TAG, "mMessageReceiver: BroadcastReceiver got message: " + SERVICE_MESSAGE_ERROR);
                 }
             }
         }
@@ -212,6 +216,7 @@ public class OrganizationFragment extends BaseFragment<MainActivity> implements 
             else if (region.contains(newText)) newModelList.add(model);
         }
 
+        mLogger.d(TAG, "onQueryTextChange: text for search: " + newText);
         mAdapter.setFilter(newModelList);
         return true;
     }

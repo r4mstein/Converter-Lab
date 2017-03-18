@@ -36,11 +36,10 @@ public final class MapApi implements IMapApi {
 
     @Override
     public List<String> getCoordinatesWithApi(String request) {
-        LogManager.getLogger().d(TAG, "getCoordinatesWithApi");
+        LogManager.getLogger().d(TAG, "getCoordinatesWithApi: request: " + request);
         List<String> result = new ArrayList<>();
 
         String url = String.format("https://maps.googleapis.com/maps/api/geocode/json?address=%s", request);
-        LogManager.getLogger().d(TAG, url);
         String response = getHTTPData(url);
 
         try {
@@ -63,7 +62,7 @@ public final class MapApi implements IMapApi {
 
     @Override
     public String getHTTPData(String requestURL) {
-        LogManager.getLogger().d(TAG, "getHTTPData");
+        LogManager.getLogger().d(TAG, "getHTTPData: URL: " + requestURL);
         URL url;
         String response = "";
 
@@ -114,13 +113,14 @@ public final class MapApi implements IMapApi {
                     result.add(address.get(0).getLongitude());
 
                     if (mMapApiCallback != null) mMapApiCallback.onSuccess(result);
-                    LogManager.getLogger().d(TAG, "onSuccess -- Geocoder");
+                    LogManager.getLogger().d(TAG, "getCoordinates: Success/Geocoder: coordinates: "
+                            + address.get(0).getLatitude() + " - " + address.get(0).getLongitude());
                 } else {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
                             String url = request.replace(" ", "+");
-                            List<String> coordinates = getCoordinatesWithApi(url);
+                            final List<String> coordinates = getCoordinatesWithApi(url);
 
                             if (coordinates != null && !coordinates.isEmpty()) {
                                 result.add(Double.parseDouble(coordinates.get(0)));
@@ -129,7 +129,8 @@ public final class MapApi implements IMapApi {
                                 handler.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        LogManager.getLogger().d(TAG, "onSuccess -- API");
+                                        LogManager.getLogger().d(TAG, "getCoordinates: Success/API: coordinates: "
+                                                + coordinates.get(0) + " - " + coordinates.get(1));
                                         if (mMapApiCallback != null)
                                             mMapApiCallback.onSuccess(result);
                                     }
@@ -139,6 +140,8 @@ public final class MapApi implements IMapApi {
                                 handler.post(new Runnable() {
                                     @Override
                                     public void run() {
+                                        LogManager.getLogger().d(TAG,
+                                                "getCoordinates: Error: Not found coordinates");
                                         if (mMapApiCallback != null)
                                             mMapApiCallback.onError("Not found coordinates");
                                     }

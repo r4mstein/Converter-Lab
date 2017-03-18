@@ -23,7 +23,7 @@ import static ua.r4mstein.converterlab.util.Constants.MAPS_FRAGMENT_ADDRESS;
 import static ua.r4mstein.converterlab.util.Constants.MAPS_FRAGMENT_LATITUDE;
 import static ua.r4mstein.converterlab.util.Constants.MAPS_FRAGMENT_LONGITUDE;
 
-public class MapsFragment extends BaseFragment<MainActivity> implements OnMapReadyCallback {
+public final class MapsFragment extends BaseFragment<MainActivity> implements OnMapReadyCallback {
 
     private static final String TAG = "MapsFragment";
 

@@ -61,11 +61,13 @@ public class MainActivity extends BaseActivity {
     }
 
     private void openOrganizationFragment() {
+        logger.d(TAG, "openOrganizationFragment");
         OrganizationFragment organizationFragment = new OrganizationFragment();
         addFragment(organizationFragment);
     }
 
     public void openDetailFragment(String key) {
+        logger.d(TAG, "openDetailFragment: with key: " + key);
         DetailFragment detailFragment = new DetailFragment();
 
         Bundle bundle = new Bundle();
@@ -76,33 +78,34 @@ public class MainActivity extends BaseActivity {
     }
 
     public void openMapsFragment(double latitude, double longitude, String address) {
+        logger.d(TAG, "openMapsFragment: with coordinates: " + latitude + " -- " + longitude);
         MapsFragment mapsFragment = MapsFragment.newInstance(latitude, longitude, address);
         addFragmentWithBackStack(mapsFragment);
     }
 
     public List<OrganizationModel> getOrganizationDataFromDB() {
-        logger.d(TAG, "getOrganizationDataFromDB");
+        logger.d(TAG, "getOrganizationDataFromDB: get all OrganizationModel");
         return mDataSource.getAllOrganizationItems();
     }
 
     public OrganizationModel getOrganizationModelFromDB(String key) {
-        logger.d(TAG, "getOrganizationModelFromDB");
+        logger.d(TAG, "getOrganizationModelFromDB: with key: " + key);
         return mDataSource.getOrganizationItem(key);
     }
 
     public List<CurrenciesModel> getCurrenciesDataFromDB(String organizationId) {
-        logger.d(TAG, "getCurrenciesDataFromDB");
+        logger.d(TAG, "getCurrenciesDataFromDB: get all CurrenciesModel with organizationId: " + organizationId);
         return mDataSource.getCurrenciesItemsForOrganization(organizationId);
     }
 
     public void setToolbarTitle(String title) {
         getSupportActionBar().setTitle(title);
-        logger.d(TAG, "setToolbarTitle");
+        logger.d(TAG, "setToolbarTitle: " + title);
     }
 
     public void setToolbarSubTitle(String subTitle) {
         mToolbar.setSubtitle(subTitle);
-        logger.d(TAG, "setToolbarSubTitle");
+        logger.d(TAG, "setToolbarSubTitle: " + subTitle);
     }
 
     public void setToolbarIconBack() {
@@ -126,19 +129,22 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    public void showDialog(ArrayList<String> strings) {
+    public void showDetailDialog(ArrayList<String> strings) {
         FragmentManager manager = getSupportFragmentManager();
         DetailDialogFragment dialogFragment = DetailDialogFragment.newInstance(strings);
         dialogFragment.show(manager, "dialog");
+        logger.d(TAG, "showDetailDialog");
     }
 
     public void showProgressDialog(ProgressDialogFragment fragment) {
         FragmentManager manager = getSupportFragmentManager();
         fragment.show(manager, "ProgressDialog");
+        logger.d(TAG, "showProgressDialog");
     }
 
     public void cancelProgressDialog(ProgressDialogFragment fragment) {
         fragment.dismiss();
+        logger.d(TAG, "cancelProgressDialog");
     }
 
     @Override

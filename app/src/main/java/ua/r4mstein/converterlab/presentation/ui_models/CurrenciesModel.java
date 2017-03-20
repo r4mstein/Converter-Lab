@@ -7,25 +7,25 @@ import ua.r4mstein.converterlab.database.DBContract;
 public final class CurrenciesModel {
 
     private String id;
-    private String organization_id;
+    private String organizationId;
     private String name;
-    private String name_key;
+    private String nameKey;
     private String ask;
-    private String ask_color;
+    private String askColor;
     private String bid;
-    private String bid_color;
+    private String bidColor;
 
     public ContentValues toValues() {
         ContentValues values = new ContentValues();
 
         values.put(DBContract.CurrenciesEntry.COLUMN_ID, id);
-        values.put(DBContract.CurrenciesEntry.COLUMN_ORGANIZATION_ID, organization_id);
+        values.put(DBContract.CurrenciesEntry.COLUMN_ORGANIZATION_ID, organizationId);
         values.put(DBContract.CurrenciesEntry.COLUMN_NAME, name);
-        values.put(DBContract.CurrenciesEntry.COLUMN_NAME_KEY, name_key);
+        values.put(DBContract.CurrenciesEntry.COLUMN_NAME_KEY, nameKey);
         values.put(DBContract.CurrenciesEntry.COLUMN_ASK, ask);
-        values.put(DBContract.CurrenciesEntry.COLUMN_ASK_COLOR, ask_color);
+        values.put(DBContract.CurrenciesEntry.COLUMN_ASK_COLOR, askColor);
         values.put(DBContract.CurrenciesEntry.COLUMN_BID, bid);
-        values.put(DBContract.CurrenciesEntry.COLUMN_BID_COLOR, bid_color);
+        values.put(DBContract.CurrenciesEntry.COLUMN_BID_COLOR, bidColor);
 
         return values;
     }
@@ -38,12 +38,12 @@ public final class CurrenciesModel {
         this.id = id;
     }
 
-    public String getOrganization_id() {
-        return organization_id;
+    public String getOrganizationId() {
+        return organizationId;
     }
 
-    public void setOrganization_id(String organization_id) {
-        this.organization_id = organization_id;
+    public void setOrganizationId(String organizationId) {
+        this.organizationId = organizationId;
     }
 
     public String getName() {
@@ -54,12 +54,12 @@ public final class CurrenciesModel {
         this.name = name;
     }
 
-    public String getName_key() {
-        return name_key;
+    public String getNameKey() {
+        return nameKey;
     }
 
-    public void setName_key(String name_key) {
-        this.name_key = name_key;
+    public void setNameKey(String nameKey) {
+        this.nameKey = nameKey;
     }
 
     public String getAsk() {
@@ -78,19 +78,19 @@ public final class CurrenciesModel {
         this.bid = bid;
     }
 
-    public String getAsk_color() {
-        return ask_color;
+    public String getAskColor() {
+        return askColor;
     }
 
-    public void setAsk_color(String ask_color) {
-        this.ask_color = ask_color;
+    public void setAskColor(String askColor) {
+        this.askColor = askColor;
     }
 
-    public String getBid_color() {
-        return bid_color;
+    public String getBidColor() {
+        return bidColor;
     }
 
-    public void setBid_color(String bid_color) {
-        this.bid_color = bid_color;
+    public void setBidColor(String bidColor) {
+        this.bidColor = bidColor;
     }
 }

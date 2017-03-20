@@ -22,30 +22,30 @@ public final class CurrencyViewHolder extends ViewHolderBase<CurrencyDataHolder>
 
     private Context mContext;
 
-    public CurrencyViewHolder(View itemView, Context context) {
-        super(itemView);
-        mContext = context;
+    public CurrencyViewHolder(final View _itemView, final Context _context) {
+        super(_itemView);
+        mContext = _context;
 
-        nameTextView = (TextView) itemView.findViewById(R.id.detail_currency_name);
-        askTextView = (TextView) itemView.findViewById(R.id.detail_currency_ask);
-        bidTextView = (TextView) itemView.findViewById(R.id.detail_currency_bid);
-        arrowAskImageView = (ImageView) itemView.findViewById(R.id.detail_currency_ask_arrow);
-        arrowBidImageView = (ImageView) itemView.findViewById(R.id.detail_currency_bid_arrow);
+        nameTextView = (TextView) _itemView.findViewById(R.id.detail_currency_name);
+        askTextView = (TextView) _itemView.findViewById(R.id.detail_currency_ask);
+        bidTextView = (TextView) _itemView.findViewById(R.id.detail_currency_bid);
+        arrowAskImageView = (ImageView) _itemView.findViewById(R.id.detail_currency_ask_arrow);
+        arrowBidImageView = (ImageView) _itemView.findViewById(R.id.detail_currency_bid_arrow);
     }
 
     @Override
-    public void setData(CurrencyDataHolder data) {
-        super.setData(data);
-        configureCurrencyViewHolder(data.currenciesModel);
+    public void setData(final CurrencyDataHolder _data) {
+        super.setData(_data);
+        configureCurrencyViewHolder(_data.currenciesModel);
     }
 
-    private void configureCurrencyViewHolder(CurrenciesModel model) {
+    private void configureCurrencyViewHolder(final CurrenciesModel _model) {
 
-        if (model != null) {
-            nameTextView.setText(model.getName());
+        if (_model != null) {
+            nameTextView.setText(_model.getName());
 
-            askTextView.setText(model.getAsk());
-            if (model.getAsk_color().equals(DETAIL_FRAGMENT_COLOR_GREEN)) {
+            askTextView.setText(_model.getAsk());
+            if (_model.getAskColor().equals(DETAIL_FRAGMENT_COLOR_GREEN)) {
                 askTextView.setTextColor(mContext.getResources().getColor(R.color.colorGreen));
                 arrowAskImageView.setImageResource(R.drawable.ic_arrow_up_green);
             } else {
@@ -53,8 +53,8 @@ public final class CurrencyViewHolder extends ViewHolderBase<CurrencyDataHolder>
                 arrowAskImageView.setImageResource(R.drawable.ic_arrow_down_red);
             }
 
-            bidTextView.setText(model.getBid());
-            if (model.getBid_color().equals(DETAIL_FRAGMENT_COLOR_GREEN)) {
+            bidTextView.setText(_model.getBid());
+            if (_model.getBidColor().equals(DETAIL_FRAGMENT_COLOR_GREEN)) {
                 bidTextView.setTextColor(mContext.getResources().getColor(R.color.colorGreen));
                 arrowBidImageView.setImageResource(R.drawable.ic_arrow_up_green);
             } else {

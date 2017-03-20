@@ -16,7 +16,7 @@ import java.util.Map;
 public final class RegionsDeserializer implements JsonDeserializer<List<Region>> {
 
     @Override
-    public List<Region> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public List<Region> deserialize(final JsonElement _json, final Type _typeOfT, final JsonDeserializationContext _context) throws JsonParseException {
 
         final List<Region> regions = new ArrayList<>();
 
@@ -24,7 +24,7 @@ public final class RegionsDeserializer implements JsonDeserializer<List<Region>>
         }.getType();
 
         final Map<String, String> regionMap =
-                Collections.checkedMap(new Gson().<Map<String, String>>fromJson(json, type),
+                Collections.checkedMap(new Gson().<Map<String, String>>fromJson(_json, type),
                         String.class, String.class);
 
         if (regionMap != null && !regionMap.isEmpty()) {

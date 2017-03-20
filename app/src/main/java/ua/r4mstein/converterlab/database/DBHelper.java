@@ -9,24 +9,24 @@ import ua.r4mstein.converterlab.database.DBContract.OrganizationEntry;
 
 public final class DBHelper extends SQLiteOpenHelper {
 
-    public static final String DB_NAME = "currency.db";
-    public static final int DB_VERSION = 1;
+    private static final String DB_NAME = "currency.db";
+    private static final int DB_VERSION = 1;
 
-    public DBHelper(Context context) {
-        super(context, DB_NAME, null, DB_VERSION);
+    public DBHelper(final Context _context) {
+        super(_context, DB_NAME, null, DB_VERSION);
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL(OrganizationEntry.SQL_CREATE);
-        db.execSQL(CurrenciesEntry.SQL_CREATE);
+    public void onCreate(final SQLiteDatabase _db) {
+        _db.execSQL(OrganizationEntry.SQL_CREATE);
+        _db.execSQL(CurrenciesEntry.SQL_CREATE);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(OrganizationEntry.SQL_DELETE);
-        db.execSQL(CurrenciesEntry.SQL_DELETE);
+    public void onUpgrade(final SQLiteDatabase _db, final int _oldVersion, final int _newVersion) {
+        _db.execSQL(OrganizationEntry.SQL_DELETE);
+        _db.execSQL(CurrenciesEntry.SQL_DELETE);
 
-        onCreate(db);
+        onCreate(_db);
     }
 }

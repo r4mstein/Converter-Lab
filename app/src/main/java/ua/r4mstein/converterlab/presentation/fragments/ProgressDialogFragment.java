@@ -17,24 +17,25 @@ public final class ProgressDialogFragment extends DialogFragment {
 
 
     public ProgressDialogFragment() {
+        super();
     }
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+    public Dialog onCreateDialog(final Bundle _savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(_savedInstanceState);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         return dialog;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_progress_dialog, container);
+    public View onCreateView(final LayoutInflater _inflater, final ViewGroup _container,
+                             final Bundle _savedInstanceState) {
+        return _inflater.inflate(R.layout.fragment_progress_dialog, _container);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(final View _view, @Nullable final Bundle _savedInstanceState) {
+        super.onViewCreated(_view, _savedInstanceState);
     }
 }

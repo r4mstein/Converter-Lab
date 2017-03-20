@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -26,50 +27,60 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 import ua.r4mstein.converterlab.R;
+import ua.r4mstein.converterlab.util.logger.LogManager;
+import ua.r4mstein.converterlab.util.logger.Logger;
 
 import static ua.r4mstein.converterlab.util.Constants.DETAIL_DIALOG_BUNDLE_KEY;
 
 public final class DetailDialogFragment extends DialogFragment {
 
+    private static final String TAG = "DetailDialogFragment";
+
+    private Logger mLogger;
+
     public DetailDialogFragment() {
+        super();
     }
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+    public Dialog onCreateDialog(final Bundle _savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(_savedInstanceState);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         return dialog;
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_dialog_detail, container);
+    public View onCreateView(final LayoutInflater _inflater, @Nullable final ViewGroup _container,
+                             @Nullable final Bundle _savedInstanceState) {
+        return _inflater.inflate(R.layout.fragment_dialog_detail, _container);
     }
 
-    public static DetailDialogFragment newInstance(ArrayList<String> strings) {
+    public static DetailDialogFragment newInstance(final ArrayList<String> _strings) {
         DetailDialogFragment dialogFragment = new DetailDialogFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putStringArrayList(DETAIL_DIALOG_BUNDLE_KEY, strings);
+        bundle.putStringArrayList(DETAIL_DIALOG_BUNDLE_KEY, _strings);
 
         dialogFragment.setArguments(bundle);
         return dialogFragment;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(final View _view, @Nullable final Bundle _savedInstanceState) {
+        super.onViewCreated(_view, _savedInstanceState);
+        mLogger = LogManager.getLogger();
 
-        ImageView imageView = (ImageView) view.findViewById(R.id.dialog_image_view);
-        Button button = (Button) view.findViewById(R.id.dialog_button);
+        ImageView imageView = (ImageView) _view.findViewById(R.id.dialog_image_view);
+        Button button = (Button) _view.findViewById(R.id.dialog_button);
 
         final Bitmap bitmap = getBitmap();
         imageView.setImageBitmap(bitmap);
@@ -77,7 +88,13 @@ public final class DetailDialogFragment extends DialogFragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shareBitmap(bitmap, "Currency");
+                try {
+                    shareBitmap(bitmap, "Currency");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    mLogger.d(TAG, "Exception: " + e.getMessage());
+                    Toast.makeText(getActivity(), "We got the error. Try again.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -113,33 +130,33 @@ public final class DetailDialogFragment extends DialogFragment {
         int height = Resources.getSystem().getDisplayMetrics().heightPixels;
         if (width < height) {
             resWidth = width;
-        }
-        else resWidth = height;
+        } else resWidth = height;
 
         return drawText(orgStringBuilder, currencyStringBuilder, resWidth);
     }
 
-    public Bitmap drawText(SpannableStringBuilder orgText, SpannableStringBuilder currencyText, int textWidth) {
+    private Bitmap drawText(final SpannableStringBuilder _orgText,
+                            final SpannableStringBuilder _currencyText, final int _textWidth) {
 
         TextPaint textPaint = new TextPaint();
         textPaint.setColor(Color.parseColor("#1b1b1b"));
         textPaint.setTextSize(30);
         textPaint.setTypeface(Typeface.MONOSPACE);
 
-        StaticLayout orgTextLayout = new StaticLayout(orgText, textPaint, textWidth, Layout.Alignment.ALIGN_NORMAL, 1.3f, 0.0f, false);
-        StaticLayout currencyTextLayout = new StaticLayout(currencyText, textPaint, textWidth, Layout.Alignment.ALIGN_CENTER, 1.7f, 0.0f, false);
+        StaticLayout orgTextLayout = new StaticLayout(_orgText, textPaint, _textWidth, Layout.Alignment.ALIGN_NORMAL, 1.3f, 0.0f, false);
+        StaticLayout currencyTextLayout = new StaticLayout(_currencyText, textPaint, _textWidth, Layout.Alignment.ALIGN_CENTER, 1.7f, 0.0f, false);
 
-        Bitmap orgBitmap = Bitmap.createBitmap(textWidth, orgTextLayout.getHeight(), Bitmap.Config.ARGB_4444);
+        Bitmap orgBitmap = Bitmap.createBitmap(_textWidth, orgTextLayout.getHeight(), Bitmap.Config.ARGB_4444);
         Canvas orgCanvas = new Canvas(orgBitmap);
         orgCanvas.drawColor(Color.WHITE);
         orgTextLayout.draw(orgCanvas);
 
-        Bitmap currencyBitmap = Bitmap.createBitmap(textWidth, currencyTextLayout.getHeight(), Bitmap.Config.ARGB_4444);
+        Bitmap currencyBitmap = Bitmap.createBitmap(_textWidth, currencyTextLayout.getHeight(), Bitmap.Config.ARGB_4444);
         Canvas currencyCanvas = new Canvas(currencyBitmap);
         currencyCanvas.drawColor(Color.WHITE);
         currencyTextLayout.draw(currencyCanvas);
 
-        Bitmap resBitmap = Bitmap.createBitmap(textWidth, orgTextLayout.getHeight() + currencyTextLayout.getHeight(), Bitmap.Config.ARGB_4444);
+        Bitmap resBitmap = Bitmap.createBitmap(_textWidth, orgTextLayout.getHeight() + currencyTextLayout.getHeight(), Bitmap.Config.ARGB_4444);
         Canvas resCanvas = new Canvas(resBitmap);
         resCanvas.drawColor(Color.WHITE);
         resCanvas.drawBitmap(orgBitmap, 0f, 0f, null);
@@ -148,22 +165,37 @@ public final class DetailDialogFragment extends DialogFragment {
         return resBitmap;
     }
 
-    private void shareBitmap (Bitmap bitmap, String fileName) {
+    private void shareBitmap(final Bitmap _bitmap, final String _fileName) throws Exception {
+        File file = getShareFile(_bitmap, _fileName);
+
+        final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+        intent.setType("image/png");
+        startActivity(Intent.createChooser(intent, "SHARE CURRENCY"));
+    }
+
+    private File getShareFile(final Bitmap _bitmap, final String _fileName) throws Exception {
+        FileOutputStream fOut = null;
+        File file = null;
+
         try {
-            File file = new File(getContext().getCacheDir(), fileName + ".png");
-            FileOutputStream fOut = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+            File path = new File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES), "TestDir");
+            if (!path.mkdirs()) {
+
+            }
+
+            file = new File(path, _fileName + System.currentTimeMillis() + ".png");
+            fOut = new FileOutputStream(file);
+            _bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
             fOut.flush();
             fOut.close();
-            file.setReadable(true, false);
-            final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-            intent.setType("image/png");
-            startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } finally {
+            if (fOut != null)
+                fOut.close();
         }
 
+        return file;
     }
 }

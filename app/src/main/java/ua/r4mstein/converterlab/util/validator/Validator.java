@@ -3,34 +3,41 @@ package ua.r4mstein.converterlab.util.validator;
 import ua.r4mstein.converterlab.presentation.ui_models.CurrenciesModel;
 import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
 import ua.r4mstein.converterlab.util.logger.LogManager;
+import ua.r4mstein.converterlab.util.logger.Logger;
 
 public final class Validator implements IValidator {
 
     private static final String TAG = "Validator";
 
-    @Override
-    public OrganizationModel validateOrganizationModel(OrganizationModel model) {
+    private Logger mLogger;
 
-        if (model.getTitle() == null) model.setTitle("");
-        if (model.getRegion() == null) model.setRegion("");
-        if (model.getCity() == null) model.setCity("");
-        if (model.getPhone() == null) model.setPhone("Нет информации");
-        if (model.getAddress() == null) model.setAddress("Нет информации");
-        if (model.getLink() == null) model.setLink("");
-
-        LogManager.getLogger().d(TAG, "validateOrganizationModel: title: " + model.getTitle());
-
-        return model;
+    public Validator() {
+        mLogger = LogManager.getLogger();
     }
 
     @Override
-    public CurrenciesModel validateCurrenciesModel(CurrenciesModel model) {
+    public OrganizationModel validateOrganizationModel(OrganizationModel _model) {
 
-        if (model.getAsk() == null) model.setAsk("0");
-        if (model.getBid() == null) model.setBid("0");
+        if (_model.getTitle() == null) _model.setTitle("");
+        if (_model.getRegion() == null) _model.setRegion("");
+        if (_model.getCity() == null) _model.setCity("");
+        if (_model.getPhone() == null) _model.setPhone("Нет информации");
+        if (_model.getAddress() == null) _model.setAddress("Нет информации");
+        if (_model.getLink() == null) _model.setLink("");
 
-        LogManager.getLogger().d(TAG, "validateCurrenciesModel: id: " + model.getId());
+        mLogger.d(TAG, "validateOrganizationModel: title: " + _model.getTitle());
 
-        return model;
+        return _model;
+    }
+
+    @Override
+    public CurrenciesModel validateCurrenciesModel(CurrenciesModel _model) {
+
+        if (_model.getAsk() == null) _model.setAsk("0");
+        if (_model.getBid() == null) _model.setBid("0");
+
+        mLogger.d(TAG, "validateCurrenciesModel: id: " + _model.getId());
+
+        return _model;
     }
 }

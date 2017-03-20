@@ -7,15 +7,15 @@ public abstract class ViewHolderBase<T extends DataHolderBase> extends RecyclerV
 
     private T data;
 
-    public ViewHolderBase(View itemView) {
-        super(itemView);
+    public ViewHolderBase(final View _itemView) {
+        super(_itemView);
     }
 
-    public T getData() {
+    public final T getData() {
         return data;
     }
 
-    public void setData(T data) {
-        this.data = data;
+    public void setData(final T _data) {
+        this.data = _data;
     }
 }

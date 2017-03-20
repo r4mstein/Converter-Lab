@@ -5,15 +5,22 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import ua.r4mstein.converterlab.util.logger.LogManager;
+import ua.r4mstein.converterlab.util.logger.Logger;
 
 public final class NetworkHelper {
 
     private static final String TAG = "NetworkHelper";
 
-    public static boolean isOnline(final Context context) {
+    private Logger mLogger;
+
+    public NetworkHelper() {
+        mLogger = LogManager.getLogger();
+    }
+
+    public static boolean isOnline(final Context _context) {
 
         ConnectivityManager connectivityManager =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
         if (networkInfo != null) {

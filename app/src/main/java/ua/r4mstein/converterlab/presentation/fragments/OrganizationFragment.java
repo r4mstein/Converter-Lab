@@ -58,8 +58,8 @@ public final class OrganizationFragment extends BaseFragment<MainActivity> imple
     private HomeItemAdapter mAdapter;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreate(@Nullable final Bundle _savedInstanceState) {
+        super.onCreate(_savedInstanceState);
         setHasOptionsMenu(true);
     }
 
@@ -82,8 +82,8 @@ public final class OrganizationFragment extends BaseFragment<MainActivity> imple
     }
 
     @Override
-    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(final View _view, @Nullable final Bundle _savedInstanceState) {
+        super.onViewCreated(_view, _savedInstanceState);
         mLogger = LogManager.getLogger();
         mMapApi = new MapApi();
         mProgressDialogFragment = new ProgressDialogFragment();
@@ -91,7 +91,7 @@ public final class OrganizationFragment extends BaseFragment<MainActivity> imple
         getActivityGeneric().setToolbarTitle(getResources().getString(R.string.app_name));
         getActivityGeneric().setToolbarSubTitle(null);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.organization_recycler_view);
+        RecyclerView recyclerView = (RecyclerView) _view.findViewById(R.id.organization_recycler_view);
         mAdapter = new HomeItemAdapter();
         mAdapter.setActionsListener(mHomeItemActionsListener);
         recyclerView.setAdapter(mAdapter);
@@ -99,7 +99,7 @@ public final class OrganizationFragment extends BaseFragment<MainActivity> imple
         updateDataAdapter(mAdapter);
 
         SwipeRefreshLayout refreshLayout =
-                (SwipeRefreshLayout) view.findViewById(R.id.organization_swipe_refresh);
+                (SwipeRefreshLayout) _view.findViewById(R.id.organization_swipe_refresh);
 
         swipeRefreshListener(refreshLayout);
 
@@ -107,57 +107,57 @@ public final class OrganizationFragment extends BaseFragment<MainActivity> imple
 
     private MapApi.MapApiCallback mMapApiCallback = new MapApi.MapApiCallback() {
         @Override
-        public void onSuccess(List<Double> coordinates) {
+        public void onSuccess(final List<Double> _coordinates) {
             getActivityGeneric().cancelProgressDialog(mProgressDialogFragment);
-            getActivityGeneric().openMapsFragment(coordinates.get(0), coordinates.get(1), mRequest);
-            mLogger.d(TAG, "mMapApiCallback: onSuccess: coordinates " + coordinates.get(0) +
-                    " - " + coordinates.get(1));
+            getActivityGeneric().openMapsFragment(_coordinates.get(0), _coordinates.get(1), mRequest);
+            mLogger.d(TAG, "mMapApiCallback: onSuccess: coordinates " + _coordinates.get(0) +
+                    " - " + _coordinates.get(1));
         }
 
         @Override
-        public void onError(String message) {
+        public void onError(final String _message) {
             getActivityGeneric().cancelProgressDialog(mProgressDialogFragment);
-            Toast.makeText(getActivityGeneric(), message, Toast.LENGTH_SHORT).show();
-            mLogger.d(TAG, "MapApiCallback: onError: " + message);
+            Toast.makeText(getActivityGeneric(), _message, Toast.LENGTH_SHORT).show();
+            mLogger.d(TAG, "MapApiCallback: onError: " + _message);
         }
     };
 
     private final IHomeItemActionsListener mHomeItemActionsListener = new IHomeItemActionsListener() {
         @Override
-        public void openOrganizationDetail(String key) {
-            getActivityGeneric().openDetailFragment(key);
-            mLogger.d(TAG, "openOrganizationDetail with Key: " + key);
+        public void openOrganizationDetail(final String _key) {
+            getActivityGeneric().openDetailFragment(_key);
+            mLogger.d(TAG, "openOrganizationDetail with Key: " + _key);
         }
 
         @Override
-        public void openOrganizationLink(String link) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+        public void openOrganizationLink(final String _link) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(_link));
             getActivityGeneric().startActivity(intent);
-            mLogger.d(TAG, "openOrganizationLink: Link: " + link);
+            mLogger.d(TAG, "openOrganizationLink: Link: " + _link);
         }
 
         @Override
-        public void openOrganizationLocation(OrganizationModel model) {
+        public void openOrganizationLocation(final OrganizationModel _model) {
             getActivityGeneric().showProgressDialog(mProgressDialogFragment);
-            mRequest = mMapApi.getRequest(model);
+            mRequest = mMapApi.getRequest(_model);
             mMapApi.getCoordinates(mRequest, getActivityGeneric());
             mLogger.d(TAG, "openOrganizationLocation: Address: " + mRequest);
         }
 
         @Override
-        public void openOrganizationPhone(String phone) {
-            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone));
+        public void openOrganizationPhone(final String _phone) {
+            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + _phone));
             getActivityGeneric().startActivity(intent);
-            mLogger.d(TAG, "openOrganizationPhone: Phone: " + phone);
+            mLogger.d(TAG, "openOrganizationPhone: Phone: " + _phone);
         }
     };
 
-    private void swipeRefreshListener(final SwipeRefreshLayout refreshLayout) {
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+    private void swipeRefreshListener(final SwipeRefreshLayout _refreshLayout) {
+        _refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 updateDataAdapter(mAdapter);
-                refreshLayout.setRefreshing(false);
+                _refreshLayout.setRefreshing(false);
             }
         });
     }
@@ -179,29 +179,29 @@ public final class OrganizationFragment extends BaseFragment<MainActivity> imple
         }
     };
 
-    private void updateDataAdapter(HomeItemAdapter adapter) {
+    private void updateDataAdapter(final HomeItemAdapter _adapter) {
         List<OrganizationModel> models = getActivityGeneric().getOrganizationDataFromDB();
-        adapter.updateData(models);
+        _adapter.updateData(models);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_main, menu);
+    public void onCreateOptionsMenu(final Menu _menu, final MenuInflater _inflater) {
+        super.onCreateOptionsMenu(_menu, _inflater);
+        _inflater.inflate(R.menu.menu_main, _menu);
 
-        MenuItem menuItem = menu.findItem(R.id.action_search);
+        MenuItem menuItem = _menu.findItem(R.id.action_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
         searchView.setOnQueryTextListener(this);
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
+    public boolean onQueryTextSubmit(final String _query) {
         return false;
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
-        newText = newText.toLowerCase();
+    public boolean onQueryTextChange(String _newText) {
+        _newText = _newText.toLowerCase();
 
         List<OrganizationModel> modelList = getActivityGeneric().getOrganizationDataFromDB();
         ArrayList<OrganizationModel> newModelList = new ArrayList<>();
@@ -211,12 +211,12 @@ public final class OrganizationFragment extends BaseFragment<MainActivity> imple
             String region = model.getRegion().toLowerCase();
             String city = model.getCity().toLowerCase();
 
-            if (title.contains(newText)) newModelList.add(model);
-            else if (city.contains(newText)) newModelList.add(model);
-            else if (region.contains(newText)) newModelList.add(model);
+            if (title.contains(_newText)) newModelList.add(model);
+            else if (city.contains(_newText)) newModelList.add(model);
+            else if (region.contains(_newText)) newModelList.add(model);
         }
 
-        mLogger.d(TAG, "onQueryTextChange: text for search: " + newText);
+        mLogger.d(TAG, "onQueryTextChange: text for search: " + _newText);
         mAdapter.setFilter(newModelList);
         return true;
     }

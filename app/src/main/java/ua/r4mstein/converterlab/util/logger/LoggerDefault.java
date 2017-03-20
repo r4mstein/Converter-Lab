@@ -6,12 +6,12 @@ import android.util.Log;
 public final class LoggerDefault implements Logger {
 
     @Override
-    public int d(String tag, String msg) {
-        return Log.d(tag, msg);
+    public int d(String _tag, String _msg) {
+        return Log.d(_tag, _msg);
     }
 
     @Override
-    public int d(String tag, String msg, Throwable tr) {
-        return Log.d(tag, msg, tr);
+    public int d(String _tag, String _msg, Throwable _tr) {
+        return Log.d(_tag, _msg, _tr);
     }
 }

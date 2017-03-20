@@ -18,6 +18,7 @@ import ua.r4mstein.converterlab.R;
 import ua.r4mstein.converterlab.presentation.MainActivity;
 import ua.r4mstein.converterlab.presentation.base.BaseFragment;
 import ua.r4mstein.converterlab.util.logger.LogManager;
+import ua.r4mstein.converterlab.util.logger.Logger;
 
 import static ua.r4mstein.converterlab.util.Constants.MAPS_FRAGMENT_ADDRESS;
 import static ua.r4mstein.converterlab.util.Constants.MAPS_FRAGMENT_LATITUDE;
@@ -30,6 +31,7 @@ public final class MapsFragment extends BaseFragment<MainActivity> implements On
     private double mLatitude;
     private double mLongitude;
     private String mAddress;
+    private Logger mLogger;
 
     @Override
     protected int getLayoutResId() {
@@ -38,30 +40,31 @@ public final class MapsFragment extends BaseFragment<MainActivity> implements On
 
     public MapsFragment() {
         super();
+        mLogger = LogManager.getLogger();
         // Required empty public constructor
     }
 
-    public static MapsFragment newInstance(double latitude, double longitude, String address) {
+    public static MapsFragment newInstance(final double _latitude, final double _longitude, final String _address) {
         MapsFragment mapsFragment = new MapsFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putDouble(MAPS_FRAGMENT_LATITUDE, latitude);
-        bundle.putDouble(MAPS_FRAGMENT_LONGITUDE, longitude);
-        bundle.putString(MAPS_FRAGMENT_ADDRESS, address);
+        bundle.putDouble(MAPS_FRAGMENT_LATITUDE, _latitude);
+        bundle.putDouble(MAPS_FRAGMENT_LONGITUDE, _longitude);
+        bundle.putString(MAPS_FRAGMENT_ADDRESS, _address);
 
         mapsFragment.setArguments(bundle);
         return mapsFragment;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(final View _view, @Nullable final Bundle _savedInstanceState) {
+        super.onViewCreated(_view, _savedInstanceState);
 
         mLatitude = getArguments().getDouble(MAPS_FRAGMENT_LATITUDE);
         mLongitude = getArguments().getDouble(MAPS_FRAGMENT_LONGITUDE);
         mAddress = getArguments().getString(MAPS_FRAGMENT_ADDRESS);
 
-        MapView mapView = (MapView) view.findViewById(R.id.map);
+        MapView mapView = (MapView) _view.findViewById(R.id.map);
         if (mapView != null) {
             mapView.onCreate(null);
             mapView.onResume();
@@ -71,7 +74,7 @@ public final class MapsFragment extends BaseFragment<MainActivity> implements On
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        LogManager.getLogger().d(TAG, "onMapReady");
+        mLogger.d(TAG, "onMapReady: marker on coordinates: " + mLatitude + " -- " + mLongitude);
 
         MapsInitializer.initialize(getActivityGeneric());
 

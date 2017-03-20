@@ -32,18 +32,7 @@ import ua.r4mstein.converterlab.util.logger.LogManager;
 import ua.r4mstein.converterlab.util.logger.Logger;
 import ua.r4mstein.converterlab.util.network.NetworkHelper;
 
-import static ua.r4mstein.converterlab.util.Constants.DETAIL_FRAGMENT_COLOR_GREEN;
-import static ua.r4mstein.converterlab.util.Constants.DETAIL_FRAGMENT_COLOR_RED;
-import static ua.r4mstein.converterlab.util.Constants.SERVICE_ALARM_MANAGER;
-import static ua.r4mstein.converterlab.util.Constants.SERVICE_HALF_HOUR;
-import static ua.r4mstein.converterlab.util.Constants.SERVICE_INIT;
-import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_ERROR;
-import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_KEY;
-import static ua.r4mstein.converterlab.util.Constants.SERVICE_MESSAGE_SUCCESS;
-import static ua.r4mstein.converterlab.util.Constants.SERVICE_ONE_MINUTE;
-import static ua.r4mstein.converterlab.util.Constants.SERVICE_SAVED_DATE_KEY;
-import static ua.r4mstein.converterlab.util.Constants.SERVICE_SHARED_PREFERENCES_KEY;
-import static ua.r4mstein.converterlab.util.Constants.SERVICE_START;
+import static ua.r4mstein.converterlab.util.Constants.*;
 
 public final class DataService extends Service {
 
@@ -75,23 +64,23 @@ public final class DataService extends Service {
         mLogger = LogManager.getLogger();
     }
 
-    public void setServiceAlarm(Context context, long interval) {
-        Intent intent = new Intent(context, DataService.class);
+    public final void setServiceAlarm(final Context _context, final long _interval) {
+        Intent intent = new Intent(_context, DataService.class);
         intent.setAction(SERVICE_ALARM_MANAGER);
-        PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getService(_context, 0, intent, 0);
 
         mAlarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
-                SystemClock.elapsedRealtime() + interval, interval, pendingIntent);
+                SystemClock.elapsedRealtime() + _interval, _interval, pendingIntent);
 
-        mLogger.d(TAG, "setServiceAlarm: with interval: " + interval);
+        mLogger.d(TAG, "setServiceAlarm: with _interval: " + _interval);
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(final Intent _intent, final int _flags, final int _startId) {
 
-        if (intent != null) {
-            mLogger.d(TAG, "onStartCommand: intent_action: " + intent.getAction());
-            switch (intent.getAction()) {
+        if (_intent != null) {
+            mLogger.d(TAG, "onStartCommand: intent_action: " + _intent.getAction());
+            switch (_intent.getAction()) {
                 case SERVICE_START:
                     sendNotification(this, "Start data download...");
                     if (NetworkHelper.isOnline(this)) {
@@ -123,11 +112,11 @@ public final class DataService extends Service {
         return START_NOT_STICKY;
     }
 
-    public void loadDataFromServer() {
+    private void loadDataFromServer() {
 
         mRetrofitManager.getResponse(new RetrofitManager.RCallback() {
             @Override
-            public void onSuccess(RootResponse response) {
+            public void onSuccess(final RootResponse _response) {
 
                 SharedPreferences preferences = DataService.this.getSharedPreferences(
                         SERVICE_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
@@ -135,7 +124,7 @@ public final class DataService extends Service {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                 Date newDate = null;
                 try {
-                    newDate = dateFormat.parse(response.getDate());
+                    newDate = dateFormat.parse(_response.getDate());
                     long dateFromPreferences = preferences.getLong(SERVICE_SAVED_DATE_KEY, 0);
                     mLogger.d(TAG, "loadDataFromServer: newDate: " + newDate);
                     mLogger.d(TAG, "loadDataFromServer: newDate: " + newDate.getTime());
@@ -160,7 +149,7 @@ public final class DataService extends Service {
                 }
 
                 IConverter converter = new Converter();
-                converter.convert(response);
+                converter.convert(_response);
                 List<OrganizationModel> organizationModels = converter.getOrganizationModels();
                 List<CurrenciesModel> currenciesModels = converter.getCurrencies();
 
@@ -175,15 +164,15 @@ public final class DataService extends Service {
                         if (model.getId().equals(modelDB.getId())) {
 
                             if (Double.parseDouble(model.getAsk()) >= Double.parseDouble(modelDB.getAsk())) {
-                                model.setAsk_color(DETAIL_FRAGMENT_COLOR_GREEN);
+                                model.setAskColor(DETAIL_FRAGMENT_COLOR_GREEN);
                             } else {
-                                model.setAsk_color(DETAIL_FRAGMENT_COLOR_RED);
+                                model.setAskColor(DETAIL_FRAGMENT_COLOR_RED);
                             }
 
                             if (Double.parseDouble(model.getBid()) >= Double.parseDouble(modelDB.getBid())) {
-                                model.setBid_color(DETAIL_FRAGMENT_COLOR_GREEN);
+                                model.setBidColor(DETAIL_FRAGMENT_COLOR_GREEN);
                             } else {
-                                model.setBid_color(DETAIL_FRAGMENT_COLOR_RED);
+                                model.setBidColor(DETAIL_FRAGMENT_COLOR_RED);
                             }
                         }
                     }
@@ -203,7 +192,7 @@ public final class DataService extends Service {
             }
 
             @Override
-            public void onError(String message) {
+            public void onError(final String _message) {
                 sendMessage(SERVICE_MESSAGE_ERROR);
                 setServiceAlarm(DataService.this, SERVICE_ONE_MINUTE);
                 sendNotification(DataService.this, "Error data download.");
@@ -212,15 +201,15 @@ public final class DataService extends Service {
         });
     }
 
-    private boolean resetDataServiceAlarm(Context context, AlarmManager alarmManager) {
-        Intent intent = new Intent(context, DataService.class);
+    private boolean resetDataServiceAlarm(final Context _context, final AlarmManager _alarmManager) {
+        Intent intent = new Intent(_context, DataService.class);
         intent.setAction(SERVICE_ALARM_MANAGER);
-        PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent,
+        PendingIntent pendingIntent = PendingIntent.getService(_context, 0, intent,
                 PendingIntent.FLAG_NO_CREATE);
 
         boolean result = pendingIntent != null;
         if (result) {
-            alarmManager.cancel(pendingIntent);
+            _alarmManager.cancel(pendingIntent);
             pendingIntent.cancel();
         }
         mLogger.d(TAG, "resetDataServiceAlarm: AlarmManager exists: " + result);
@@ -228,29 +217,29 @@ public final class DataService extends Service {
         return result;
     }
 
-    private void sendMessage(String message) {
+    private void sendMessage(final String _message) {
         Intent intent = new Intent("DataService");
-        intent.putExtra(SERVICE_MESSAGE_KEY, message);
+        intent.putExtra(SERVICE_MESSAGE_KEY, _message);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-        mLogger.d(TAG, "sendMessage: " + message);
+        mLogger.d(TAG, "sendMessage: " + _message);
     }
 
-    private void sendNotification(Context context, String message) {
-        Resources resources = context.getResources();
+    private void sendNotification(final Context _context, final String _message) {
+        Resources resources = _context.getResources();
 
-        Notification notification = new NotificationCompat.Builder(context)
-                .setTicker(message)
+        Notification notification = new NotificationCompat.Builder(_context)
+                .setTicker(_message)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setContentTitle(resources.getString(R.string.app_name))
-                .setContentText(message)
+                .setContentText(_message)
                 .setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_SOUND)
                 .build();
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(_context);
         notificationManager.notify(100, notification);
 
-        mLogger.d(TAG, "sendNotification: with message: " + message);
+        mLogger.d(TAG, "sendNotification: with _message: " + _message);
     }
 
     @Override

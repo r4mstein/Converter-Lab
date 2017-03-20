@@ -16,7 +16,7 @@ import java.util.Map;
 public final class CurrenciesDeserializer implements JsonDeserializer<List<Currency>> {
 
     @Override
-    public List<Currency> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public List<Currency> deserialize(final JsonElement _json, final Type _typeOfT, final JsonDeserializationContext _context) throws JsonParseException {
 
         final List<Currency> currencies = new ArrayList<>();
 
@@ -24,7 +24,7 @@ public final class CurrenciesDeserializer implements JsonDeserializer<List<Curre
         }.getType();
 
         final Map<String, String> currencyMap =
-                Collections.checkedMap(new Gson().<Map<String, String>>fromJson(json, type),
+                Collections.checkedMap(new Gson().<Map<String, String>>fromJson(_json, type),
                         String.class, String.class);
 
         if (currencyMap != null && !currencyMap.isEmpty()) {

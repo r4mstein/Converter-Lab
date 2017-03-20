@@ -8,9 +8,9 @@ public final class CurrencyHeaderDataHolder extends DataHolderBase {
 
     public String header;
 
-    public CurrencyHeaderDataHolder(String header) {
+    public CurrencyHeaderDataHolder(final String _header) {
         super();
-        this.header = header;
+        this.header = _header;
     }
 
     @Override

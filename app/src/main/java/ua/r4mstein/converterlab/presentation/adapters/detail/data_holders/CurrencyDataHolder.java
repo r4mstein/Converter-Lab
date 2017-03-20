@@ -9,9 +9,9 @@ public final class CurrencyDataHolder extends DataHolderBase {
 
     public CurrenciesModel currenciesModel;
 
-    public CurrencyDataHolder(CurrenciesModel currenciesModel) {
+    public CurrencyDataHolder(final CurrenciesModel _currenciesModel) {
         super();
-        this.currenciesModel = currenciesModel;
+        this.currenciesModel = _currenciesModel;
     }
 
     @Override

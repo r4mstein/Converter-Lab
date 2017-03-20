@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import ua.r4mstein.converterlab.presentation.fragments.DetailFragment;
+
 
 public abstract class BaseFragment<A extends BaseActivity> extends Fragment {
 
@@ -19,8 +21,8 @@ public abstract class BaseFragment<A extends BaseActivity> extends Fragment {
     }
 
     @Override
-    public final View onCreateView(final LayoutInflater inflater, final ViewGroup container,
-                             final Bundle savedInstanceState) {
-        return inflater.inflate(getLayoutResId(), container, false);
+    public final View onCreateView(final LayoutInflater _inflater, final ViewGroup _container,
+                             final Bundle _savedInstanceState) {
+        return _inflater.inflate(getLayoutResId(), _container, false);
     }
 }

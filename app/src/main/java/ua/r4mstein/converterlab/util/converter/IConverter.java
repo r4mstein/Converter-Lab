@@ -8,7 +8,7 @@ import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
 
 public interface IConverter {
 
-    void convert(RootResponse rootResponse);
+    void convert(RootResponse _rootResponse);
     List<OrganizationModel> getOrganizationModels();
     List<CurrenciesModel> getCurrencies();
 }

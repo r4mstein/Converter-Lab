@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface IMapApi {
 
-    List<String> getCoordinatesWithApi(String request);
-    String getHTTPData(String requestURL);
+    List<String> getCoordinatesWithApi(String _request);
+    String getHTTPData(String _requestURL);
 }

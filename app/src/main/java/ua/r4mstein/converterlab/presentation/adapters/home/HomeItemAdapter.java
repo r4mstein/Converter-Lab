@@ -29,9 +29,9 @@ public final class HomeItemAdapter extends RecyclerView.Adapter<HomeItemAdapter.
         mLogger = LogManager.getLogger();
     }
 
-    public void updateData(List<OrganizationModel> organizationList) {
+    public final void updateData(final List<OrganizationModel> _organizationList) {
         mOrganizationList.clear();
-        mOrganizationList = organizationList;
+        mOrganizationList = _organizationList;
         notifyDataSetChanged();
         mLogger.d(TAG, "updateData");
     }
@@ -67,45 +67,45 @@ public final class HomeItemAdapter extends RecyclerView.Adapter<HomeItemAdapter.
         return super.getItemViewType(position);
     }
 
-    public void setActionsListener(IHomeItemActionsListener actionsListener) {
-        mActionsListener = actionsListener;
+    public final void setActionsListener(final IHomeItemActionsListener _actionsListener) {
+        mActionsListener = _actionsListener;
     }
 
-    public void setFilter(ArrayList<OrganizationModel> newList) {
+    public final void setFilter(final ArrayList<OrganizationModel> _newList) {
         mOrganizationList.clear();
-        mOrganizationList.addAll(newList);
+        mOrganizationList.addAll(_newList);
         notifyDataSetChanged();
     }
 
     public static class HomeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView titleTextView;
-        TextView regionTextView;
-        TextView cityTextView;
-        TextView phoneTextView;
-        TextView addressTextView;
+        private TextView titleTextView;
+        private TextView regionTextView;
+        private TextView cityTextView;
+        private TextView phoneTextView;
+        private TextView addressTextView;
 
-        ImageButton linkImageButton;
-        ImageButton locationImageButton;
-        ImageButton phoneImageButton;
-        ImageButton nextImageButton;
+        private ImageButton linkImageButton;
+        private ImageButton locationImageButton;
+        private ImageButton phoneImageButton;
+        private ImageButton nextImageButton;
 
         private OrganizationModel mModel;
         private IHomeItemActionsListener mActionsListener;
 
-        public HomeViewHolder(View itemView) {
-            super(itemView);
+        public HomeViewHolder(final View _itemView) {
+            super(_itemView);
 
-            titleTextView = (TextView) itemView.findViewById(R.id.detail_organization_title);
-            regionTextView = (TextView) itemView.findViewById(R.id.detail_organization_region);
-            cityTextView = (TextView) itemView.findViewById(R.id.detail_organization_city);
-            phoneTextView = (TextView) itemView.findViewById(R.id.detail_organization_phone);
-            addressTextView = (TextView) itemView.findViewById(R.id.detail_organization_address);
+            titleTextView = (TextView) _itemView.findViewById(R.id.detail_organization_title);
+            regionTextView = (TextView) _itemView.findViewById(R.id.detail_organization_region);
+            cityTextView = (TextView) _itemView.findViewById(R.id.detail_organization_city);
+            phoneTextView = (TextView) _itemView.findViewById(R.id.detail_organization_phone);
+            addressTextView = (TextView) _itemView.findViewById(R.id.detail_organization_address);
 
-            linkImageButton = (ImageButton) itemView.findViewById(R.id.home_link_ib);
-            locationImageButton = (ImageButton) itemView.findViewById(R.id.home_location_ib);
-            phoneImageButton = (ImageButton) itemView.findViewById(R.id.home_phone_ib);
-            nextImageButton = (ImageButton) itemView.findViewById(R.id.home_next_ib);
+            linkImageButton = (ImageButton) _itemView.findViewById(R.id.home_link_ib);
+            locationImageButton = (ImageButton) _itemView.findViewById(R.id.home_location_ib);
+            phoneImageButton = (ImageButton) _itemView.findViewById(R.id.home_phone_ib);
+            nextImageButton = (ImageButton) _itemView.findViewById(R.id.home_next_ib);
 
             linkImageButton.setOnClickListener(this);
             locationImageButton.setOnClickListener(this);
@@ -114,11 +114,11 @@ public final class HomeItemAdapter extends RecyclerView.Adapter<HomeItemAdapter.
 
         }
 
-        public void setActionsListener(IHomeItemActionsListener actionsListener) {
-            mActionsListener = actionsListener;
+        public final void setActionsListener(final IHomeItemActionsListener _actionsListener) {
+            mActionsListener = _actionsListener;
         }
 
-        public void bindData(final OrganizationModel _model) {
+        public final void bindData(final OrganizationModel _model) {
             mModel = _model;
 
             titleTextView.setText(mModel.getTitle());
@@ -128,7 +128,7 @@ public final class HomeItemAdapter extends RecyclerView.Adapter<HomeItemAdapter.
             addressTextView.setText(String.format("%s %s", "Адрес: ", mModel.getAddress()));
         }
 
-        public void unbindData() {
+        public final void unbindData() {
             mModel = null;
         }
 

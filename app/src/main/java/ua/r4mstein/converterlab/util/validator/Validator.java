@@ -29,7 +29,7 @@ public final class Validator implements IValidator {
         if (model.getAsk() == null) model.setAsk("0");
         if (model.getBid() == null) model.setBid("0");
 
-        LogManager.getLogger().d(TAG, "validateCurrenciesModel: id: " + model.getId());
+        LogManager.getLogger().d(TAG, "validateCurrenciesModel: id: " + model.getId()); // todo
 
         return model;
     }

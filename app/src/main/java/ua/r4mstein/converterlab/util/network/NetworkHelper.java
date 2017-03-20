@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import ua.r4mstein.converterlab.util.logger.LogManager;
+import ua.r4mstein.converterlab.util.logger.Logger;
 
 public final class NetworkHelper {
 
@@ -16,18 +17,20 @@ public final class NetworkHelper {
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
+        final Logger logger = LogManager.getLogger();
+
         if (networkInfo != null) {
             switch (networkInfo.getType()) {
                 case ConnectivityManager.TYPE_WIFI:
                 case ConnectivityManager.TYPE_MOBILE:
-                    LogManager.getLogger().d(TAG, "isOnline: true");
+                    logger.d(TAG, "isOnline: true");
                     return true;
                 default:
-                    LogManager.getLogger().d(TAG, "isOnline: false");
+                    logger.d(TAG, "isOnline: false");
                     return false;
             }
         } else {
-            LogManager.getLogger().d(TAG, "isOnline: false");
+            logger.d(TAG, "isOnline: false");
             return false;
         }
     }

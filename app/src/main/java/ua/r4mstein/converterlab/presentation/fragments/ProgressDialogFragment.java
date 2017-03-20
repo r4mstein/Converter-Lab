@@ -23,7 +23,7 @@ public final class ProgressDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         return dialog;
     }
 

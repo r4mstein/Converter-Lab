@@ -15,8 +15,8 @@ import ua.r4mstein.converterlab.R;
 
 public final class ProgressDialogFragment extends DialogFragment {
 
-
     public ProgressDialogFragment() {
+        super();
     }
 
     @NonNull

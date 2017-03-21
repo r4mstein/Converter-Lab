@@ -1,6 +1,22 @@
 apply plugin: 'com.android.application'
 
 android {
+
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        applicationId "ua.r4mstein.converterlab"
+
+        minSdkVersion 17
+        targetSdkVersion 25
+
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.app.Instrumentation" // no tests =)
+    }
+
     signingConfigs {
         config_debug {
             keyAlias 'androiddebugkey'
@@ -9,18 +25,7 @@ android {
             storeFile file('debug.keystore')
         }
     }
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
-    defaultConfig {
-        applicationId "ua.r4mstein.converterlab"
 
-        minSdkVersion 17
-        targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.app.Instrumentation"
-    }
     buildTypes {
         debug {
             signingConfig signingConfigs.config_debug
@@ -28,17 +33,20 @@ android {
             useProguard false
         }
         release {
+            //todo sign
             debuggable false
             useProguard true
             proguardFile getDefaultProguardFile('proguard-android.txt')
             proguardFile 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         incremental true
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
+
 }
 
 def supLibVersion = '25.3.0'

@@ -25,6 +25,7 @@ public final class DataSource {
     private SQLiteDatabase mDatabase;
     private DBHelper mDBHelper;
 
+    /** flag, that DB is opened in MainActivity while onCreate - onDestroy*/
     public boolean inUse;
 
     private DataSource(final Context _context) {
@@ -43,7 +44,8 @@ public final class DataSource {
     }
 
     public final boolean isOpen() {
-        boolean isOpen = mDatabase.isOpen();
+        //fix NullPointer ex.
+        boolean isOpen = mDatabase != null && mDatabase.isOpen();
         mLogger.d(TAG, "DB isOpen = " + isOpen);
         return isOpen;
     }

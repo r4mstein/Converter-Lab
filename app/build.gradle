@@ -47,6 +47,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
 
+    lintOptions {
+        disable 'GoogleAppIndexingWarning'
+    }
+
 }
 
 def supLibVersion = '25.3.0'

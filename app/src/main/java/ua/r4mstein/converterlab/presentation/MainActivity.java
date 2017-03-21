@@ -57,7 +57,8 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
 
         mDataSource = DataSource.getDataSource(this);
-        mDataSource.open();
+
+        if(!mDataSource.isOpen()) mDataSource.open();
         mDataSource.inUse = true;
         logger.d(TAG, "onCreate: Open DB");
 
@@ -120,7 +121,10 @@ public class MainActivity extends BaseActivity {
     }
 
     public final void setToolbarIconBack(final boolean isMenuOpen) {
+
+        //todo - use not deprecated method "getDrawable" for newer api
         mToolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back));
+
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -172,23 +176,19 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-//        mDataSource.open();
-//        mDataSource.inUse = true;
-        if (!mDataSource.inUse) {
-            mDataSource.open();
-            mDataSource.inUse = true;
-            logger.d(TAG, "onStart: Open DB");
-        }
+
+        //no need to open DB in on Start if its done in onCreate;, also better to close it in onDestroy;
 
         if (Build.VERSION.SDK_INT >= 23) checkPermissions();
         logger.d(TAG, "onStart: Build.VERSION: " + Build.VERSION.SDK_INT);
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         mDataSource.close();
         mDataSource.inUse = false;
+        mDataSource = null;
         logger.d(TAG, "onStop: Close DB");
     }
 
@@ -219,6 +219,8 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        //todo - check matching requestCode;
 
         int count = 0;
         if (grantResults.length > 0) {

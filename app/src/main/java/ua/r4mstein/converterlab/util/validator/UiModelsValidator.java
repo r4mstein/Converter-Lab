@@ -5,13 +5,13 @@ import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
 import ua.r4mstein.converterlab.util.logger.LogManager;
 import ua.r4mstein.converterlab.util.logger.Logger;
 
-public final class Validator implements IValidator {
+public final class UiModelsValidator implements IUiModelsValidator {
 
-    private static final String TAG = "Validator";
+    private static final String TAG = "UiModelsValidator";
 
     private Logger mLogger;
 
-    public Validator() {
+    public UiModelsValidator() {
         mLogger = LogManager.getLogger();
     }
 

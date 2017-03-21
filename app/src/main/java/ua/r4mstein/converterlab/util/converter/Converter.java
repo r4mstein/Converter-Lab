@@ -20,19 +20,17 @@ public final class Converter implements IConverter {
 
     private List<OrganizationModel> mOrganizationModels = new ArrayList<>();
     private List<CurrenciesModel> mCurrenciesModels = new ArrayList<>();
-    private List<Currency> mCurrencyModels = new ArrayList<>();
 
     @Override
-    public void convert(RootResponse response) {
+    public void convert(final RootResponse _rootResponse) {
         mOrganizationModels.clear();
         mCurrenciesModels.clear();
-        mCurrencyModels.clear();
 
-        List<Organization> organizations = response.getOrganizations();
-        List<Region> regions = response.getRegions();
-        List<City> cities = response.getCities();
-        List<Currency> currencyList = response.getCurrencies();
-        String date = response.getDate();
+        List<Organization> organizations = _rootResponse.getOrganizations();
+        List<Region> regions = _rootResponse.getRegions();
+        List<City> cities = _rootResponse.getCities();
+        List<Currency> currencyList = _rootResponse.getCurrencies();
+        String date = _rootResponse.getDate();
 
         for (Organization organization : organizations) {
             OrganizationModel organizationModel = new OrganizationModel();
@@ -73,7 +71,7 @@ public final class Converter implements IConverter {
                 CurrenciesModel currenciesModel = new CurrenciesModel();
 
                 currenciesModel.setId(organization.id + key);
-                currenciesModel.setOrganization_id(organization.id);
+                currenciesModel.setOrganizationId(organization.id);
 
                 String currenciesName = null;
                 for (Currency currency : currencyList) {
@@ -83,13 +81,13 @@ public final class Converter implements IConverter {
                     }
                 }
                 currenciesModel.setName(currenciesName);
-                currenciesModel.setName_key(key);
+                currenciesModel.setNameKey(key);
 
                 currenciesModel.setAsk(currenciesMap.get(key).ask);
                 currenciesModel.setBid(currenciesMap.get(key).bid);
 
-                currenciesModel.setAsk_color(DETAIL_FRAGMENT_COLOR_GREEN);
-                currenciesModel.setBid_color(DETAIL_FRAGMENT_COLOR_GREEN);
+                currenciesModel.setAskColor(DETAIL_FRAGMENT_COLOR_GREEN);
+                currenciesModel.setBidColor(DETAIL_FRAGMENT_COLOR_GREEN);
 
                 validator.validateCurrenciesModel(currenciesModel);
 

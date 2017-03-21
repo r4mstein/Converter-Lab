@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v7.app.AppCompatActivity;
 
-import ua.r4mstein.converterlab.api.RetrofitManager;
 import ua.r4mstein.converterlab.util.logger.LogManager;
 import ua.r4mstein.converterlab.util.logger.Logger;
 
@@ -14,7 +13,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     private static final String TAG = "BaseActivity";
 
     protected Logger logger;
-    protected RetrofitManager retrofitManager;
 
     @LayoutRes
     protected abstract int getLayoutResId();
@@ -25,26 +23,25 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResId());
-        retrofitManager = RetrofitManager.getInstance();
         logger = LogManager.getLogger();
     }
 
-    protected void addFragment(BaseFragment fragment) {
+    protected final void addFragment(final BaseFragment _fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(getFragmentContainerResId(), fragment)
+                .replace(getFragmentContainerResId(), _fragment)
                 .commit();
 
-        logger.d(TAG, "addFragment: " + fragment.getClass().getSimpleName());
+        logger.d(TAG, "addFragment: " + _fragment.getClass().getSimpleName());
     }
 
-    protected void addFragmentWithBackStack(BaseFragment fragment) {
+    protected final void addFragmentWithBackStack(final BaseFragment _fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .addToBackStack(null)
-                .replace(getFragmentContainerResId(), fragment)
+                .replace(getFragmentContainerResId(), _fragment)
                 .commit();
 
-        logger.d(TAG, "addFragmentWithBackStack: " + fragment.getClass().getSimpleName());
+        logger.d(TAG, "addFragmentWithBackStack: " + _fragment.getClass().getSimpleName());
     }
 }

@@ -1,6 +1,5 @@
 package ua.r4mstein.converterlab.database;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -21,36 +20,26 @@ public final class DataSource {
     private static final String TAG = "DataSource";
     private final Logger mLogger;
 
-    private Context mContext;
     private SQLiteDatabase mDatabase;
     private DBHelper mDBHelper;
 
-    public DataSource(Context context) {
-        mContext = context;
-        mDBHelper = new DBHelper(mContext);
+    public DataSource(final Context _context) {
+        mDBHelper = new DBHelper(_context);
         mDatabase = mDBHelper.getWritableDatabase();
         mLogger = LogManager.getLogger();
     }
 
-    public void open() {
+    public final void open() {
         mDatabase = mDBHelper.getWritableDatabase();
         mLogger.d(TAG, "Open DB");
     }
 
-    public void close() {
+    public final void close() {
         mDBHelper.close();
         mLogger.d(TAG, "Close DB");
     }
 
-    public long insertOrganizationItem(OrganizationModel model) {
-        ContentValues values = model.toValues();
-        long result = mDatabase.insert(OrganizationEntry.TABLE_NAME, null, values);
-        mLogger.d(TAG, "insertOrganizationItem result: " + result);
-
-        return result;
-    }
-
-    public void insertOrUpdateOrganizations(List<OrganizationModel> list) {
+    public final void insertOrUpdateOrganizations(final List<OrganizationModel> _list) {
         String sql = "INSERT OR REPLACE INTO " + OrganizationEntry.TABLE_NAME + " (" +
                 OrganizationEntry.COLUMN_ID + ", " +
                 OrganizationEntry.COLUMN_DATE + ", " +
@@ -65,15 +54,15 @@ public final class DataSource {
         mLogger.d(TAG, "insertOrUpdateOrganizations: Begin Transaction");
 
         SQLiteStatement statement = mDatabase.compileStatement(sql);
-        for (int i = 0; i < list.size(); i++) {
-            statement.bindString(1, list.get(i).getId());
-            statement.bindString(2, list.get(i).getDate());
-            statement.bindString(3, list.get(i).getTitle());
-            statement.bindString(4, list.get(i).getRegion());
-            statement.bindString(5, list.get(i).getCity());
-            statement.bindString(6, list.get(i).getPhone());
-            statement.bindString(7, list.get(i).getAddress());
-            statement.bindString(8, list.get(i).getLink());
+        for (int i = 0; i < _list.size(); i++) {
+            statement.bindString(1, _list.get(i).getId());
+            statement.bindString(2, _list.get(i).getDate());
+            statement.bindString(3, _list.get(i).getTitle());
+            statement.bindString(4, _list.get(i).getRegion());
+            statement.bindString(5, _list.get(i).getCity());
+            statement.bindString(6, _list.get(i).getPhone());
+            statement.bindString(7, _list.get(i).getAddress());
+            statement.bindString(8, _list.get(i).getLink());
 
             statement.execute();
             statement.clearBindings();
@@ -84,40 +73,7 @@ public final class DataSource {
         mLogger.d(TAG, "insertOrUpdateOrganizations: End Transaction");
     }
 
-    public void updateOrganizationItem(OrganizationModel model) {
-        ContentValues values = new ContentValues();
-
-        values.put(OrganizationEntry.COLUMN_DATE, model.getDate());
-        values.put(OrganizationEntry.COLUMN_TITLE, model.getTitle());
-        values.put(OrganizationEntry.COLUMN_REGION, model.getRegion());
-        values.put(OrganizationEntry.COLUMN_CITY, model.getCity());
-        values.put(OrganizationEntry.COLUMN_PHONE, model.getPhone());
-        values.put(OrganizationEntry.COLUMN_ADDRESS, model.getAddress());
-        values.put(OrganizationEntry.COLUMN_LINK, model.getLink());
-
-        String selection = OrganizationEntry.COLUMN_ID + " LIKE ?";
-        String[] selectionArgs = {model.getId()};
-
-        mDatabase.update(OrganizationEntry.TABLE_NAME, values, selection, selectionArgs);
-
-        mLogger.d(TAG, "updateOrganizationItem, item id: " + model.getId());
-    }
-
-    public void insertOrUpdateOrganizationItem(OrganizationModel model) {
-        Cursor cursor = mDatabase.query(OrganizationEntry.TABLE_NAME, OrganizationEntry.ALL_COLUMNS,
-                OrganizationEntry.COLUMN_ID + "=?", new String[]{model.getId()}, null, null, null);
-
-        if (cursor.moveToFirst()) {
-            mLogger.d(TAG, "insertOrUpdateOrganizationItem: update");
-            updateOrganizationItem(model);
-        } else {
-            mLogger.d(TAG, "insertOrUpdateOrganizationItem: insert");
-            insertOrganizationItem(model);
-        }
-        cursor.close();
-    }
-
-    public List<OrganizationModel> getAllOrganizationItems() {
+    public final List<OrganizationModel> getAllOrganizationItems() {
         List<OrganizationModel> modelList = new ArrayList<>();
 
         Cursor cursor = mDatabase.query(OrganizationEntry.TABLE_NAME, OrganizationEntry.ALL_COLUMNS,
@@ -142,10 +98,10 @@ public final class DataSource {
         return modelList;
     }
 
-    public OrganizationModel getOrganizationItem(String key) {
+    public final OrganizationModel getOrganizationItem(final String _key) {
         OrganizationModel model = new OrganizationModel();
 
-        String[] strings = new String[]{key};
+        String[] strings = new String[]{_key};
         Cursor cursor = mDatabase.query(OrganizationEntry.TABLE_NAME, OrganizationEntry.ALL_COLUMNS,
                 OrganizationEntry.COLUMN_ID + "=?", strings, null, null, null);
 
@@ -164,15 +120,7 @@ public final class DataSource {
         return model;
     }
 
-    public long insertCurrenciesItem(CurrenciesModel model) {
-        ContentValues values = model.toValues();
-        long result = mDatabase.insert(CurrenciesEntry.TABLE_NAME, null, values);
-        mLogger.d(TAG, "insertCurrenciesItem result: " + result);
-
-        return result;
-    }
-
-    public void insertOrUpdateCurrencies(List<CurrenciesModel> list) {
+    public final void insertOrUpdateCurrencies(final List<CurrenciesModel> _list) {
         String sql = "INSERT OR REPLACE INTO " + CurrenciesEntry.TABLE_NAME + " (" +
                 CurrenciesEntry.COLUMN_ID + ", " +
                 CurrenciesEntry.COLUMN_ORGANIZATION_ID + ", " +
@@ -187,15 +135,15 @@ public final class DataSource {
         mLogger.d(TAG, "insertOrUpdateCurrencies: Begin Transaction");
 
         SQLiteStatement statement = mDatabase.compileStatement(sql);
-        for (int i = 0; i < list.size(); i++) {
-            statement.bindString(1, list.get(i).getId());
-            statement.bindString(2, list.get(i).getOrganization_id());
-            statement.bindString(3, list.get(i).getName());
-            statement.bindString(4, list.get(i).getName_key());
-            statement.bindString(5, list.get(i).getAsk());
-            statement.bindString(6, list.get(i).getAsk_color());
-            statement.bindString(7, list.get(i).getBid());
-            statement.bindString(8, list.get(i).getBid_color());
+        for (int i = 0; i < _list.size(); i++) {
+            statement.bindString(1, _list.get(i).getId());
+            statement.bindString(2, _list.get(i).getOrganizationId());
+            statement.bindString(3, _list.get(i).getName());
+            statement.bindString(4, _list.get(i).getNameKey());
+            statement.bindString(5, _list.get(i).getAsk());
+            statement.bindString(6, _list.get(i).getAskColor());
+            statement.bindString(7, _list.get(i).getBid());
+            statement.bindString(8, _list.get(i).getBidColor());
 
             statement.execute();
             statement.clearBindings();
@@ -206,40 +154,7 @@ public final class DataSource {
         mLogger.d(TAG, "insertOrUpdateCurrencies: End Transaction");
     }
 
-    public void updateCurrenciesItem(CurrenciesModel model) {
-        ContentValues values = new ContentValues();
-
-        values.put(CurrenciesEntry.COLUMN_ORGANIZATION_ID, model.getOrganization_id());
-        values.put(CurrenciesEntry.COLUMN_NAME, model.getName());
-        values.put(CurrenciesEntry.COLUMN_NAME_KEY, model.getName_key());
-        values.put(CurrenciesEntry.COLUMN_ASK, model.getAsk());
-        values.put(CurrenciesEntry.COLUMN_ASK_COLOR, model.getAsk_color());
-        values.put(CurrenciesEntry.COLUMN_BID, model.getBid());
-        values.put(CurrenciesEntry.COLUMN_BID_COLOR, model.getBid_color());
-
-        String selection = OrganizationEntry.COLUMN_ID + " LIKE ?";
-        String[] selectionArgs = {model.getId()};
-
-        mDatabase.update(CurrenciesEntry.TABLE_NAME, values, selection, selectionArgs);
-
-        mLogger.d(TAG, "updateCurrenciesItem, item id: " + model.getId());
-    }
-
-    public void insertOrUpdateCurrenciesItem(CurrenciesModel model) {
-        Cursor cursor = mDatabase.query(CurrenciesEntry.TABLE_NAME, CurrenciesEntry.ALL_COLUMNS,
-                CurrenciesEntry.COLUMN_ID + "=?", new String[]{model.getId()}, null, null, null);
-
-        if (cursor.moveToFirst()) {
-            mLogger.d(TAG, "insertOrUpdateCurrenciesItem: update");
-            updateCurrenciesItem(model);
-        } else {
-            mLogger.d(TAG, "insertOrUpdateCurrenciesItem: insert");
-            insertCurrenciesItem(model);
-        }
-        cursor.close();
-    }
-
-    public List<CurrenciesModel> getAllCurrenciesItems() {
+    public final List<CurrenciesModel> getAllCurrenciesItems() {
         List<CurrenciesModel> modelList = new ArrayList<>();
 
         Cursor cursor = mDatabase.query(CurrenciesEntry.TABLE_NAME, CurrenciesEntry.ALL_COLUMNS,
@@ -249,13 +164,13 @@ public final class DataSource {
             CurrenciesModel model = new CurrenciesModel();
 
             model.setId(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ID)));
-            model.setOrganization_id(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ORGANIZATION_ID)));
+            model.setOrganizationId(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ORGANIZATION_ID)));
             model.setName(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_NAME)));
-            model.setName_key(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_NAME_KEY)));
+            model.setNameKey(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_NAME_KEY)));
             model.setAsk(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ASK)));
-            model.setAsk_color(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ASK_COLOR)));
+            model.setAskColor(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ASK_COLOR)));
             model.setBid(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_BID)));
-            model.setBid_color(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_BID_COLOR)));
+            model.setBidColor(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_BID_COLOR)));
 
             modelList.add(model);
         }
@@ -264,10 +179,10 @@ public final class DataSource {
         return modelList;
     }
 
-    public List<CurrenciesModel> getCurrenciesItemsForOrganization(String organizationId) {
+    public final List<CurrenciesModel> getCurrenciesItemsForOrganization(final String _organizationId) {
         List<CurrenciesModel> modelList = new ArrayList<>();
 
-        String[] strings = new String[]{organizationId};
+        String[] strings = new String[]{_organizationId};
         Cursor cursor = mDatabase.query(CurrenciesEntry.TABLE_NAME, CurrenciesEntry.ALL_COLUMNS,
                 CurrenciesEntry.COLUMN_ORGANIZATION_ID + "=?", strings, null, null, null);
 
@@ -275,13 +190,13 @@ public final class DataSource {
             CurrenciesModel model = new CurrenciesModel();
 
             model.setId(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ID)));
-            model.setOrganization_id(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ORGANIZATION_ID)));
+            model.setOrganizationId(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ORGANIZATION_ID)));
             model.setName(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_NAME)));
-            model.setName_key(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_NAME_KEY)));
+            model.setNameKey(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_NAME_KEY)));
             model.setAsk(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ASK)));
-            model.setAsk_color(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ASK_COLOR)));
+            model.setAskColor(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_ASK_COLOR)));
             model.setBid(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_BID)));
-            model.setBid_color(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_BID_COLOR)));
+            model.setBidColor(cursor.getString(cursor.getColumnIndex(CurrenciesEntry.COLUMN_BID_COLOR)));
 
             modelList.add(model);
         }

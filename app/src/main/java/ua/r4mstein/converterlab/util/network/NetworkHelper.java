@@ -11,10 +11,16 @@ public final class NetworkHelper {
 
     private static final String TAG = "NetworkHelper";
 
-    public static boolean isOnline(final Context context) {
+    private Logger mLogger;
+
+    public NetworkHelper() {
+        mLogger = LogManager.getLogger();
+    }
+
+    public static boolean isOnline(final Context _context) {
 
         ConnectivityManager connectivityManager =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
         final Logger logger = LogManager.getLogger();

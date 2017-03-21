@@ -34,40 +34,40 @@ public final class DetailItemAdapter extends RecyclerView.Adapter<ViewHolderBase
 
     private List<DataHolderBase> mItemsList = new ArrayList<>();
 
-    public DetailItemAdapter(Context context) {
-        mContext = context;
+    public DetailItemAdapter(final Context _context) {
+        mContext = _context;
         mLogger = LogManager.getLogger();
     }
 
-    public void updateData(List<DataHolderBase> itemsList) {
+    public final void updateData(final List<DataHolderBase> _itemsList) {
         mItemsList.clear();
-        mItemsList = itemsList;
+        mItemsList = _itemsList;
         notifyDataSetChanged();
         mLogger.d(TAG, "updateData");
     }
 
     @Override
-    public int getItemViewType(int position) {
-        return mItemsList.get(position).itemViewType();
+    public int getItemViewType(final int _position) {
+        return mItemsList.get(_position).itemViewType();
     }
 
     @Override
-    public ViewHolderBase onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolderBase onCreateViewHolder(final ViewGroup _parent, final int _viewType) {
 
         ViewHolderBase viewHolder = null;
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        LayoutInflater inflater = LayoutInflater.from(_parent.getContext());
 
-        switch (viewType) {
+        switch (_viewType) {
             case DETAIL_ADAPTER_ORGANIZATION:
-                View organizationView = inflater.inflate(R.layout.detail_organization_item, parent, false);
+                View organizationView = inflater.inflate(R.layout.detail_organization_item, _parent, false);
                 viewHolder = new OrganizationViewHolder(organizationView);
                 break;
             case DETAIL_ADAPTER_CURRENCY_HEADER:
-                View currencyHeaderView = inflater.inflate(R.layout.detail_currency_header_item, parent, false);
+                View currencyHeaderView = inflater.inflate(R.layout.detail_currency_header_item, _parent, false);
                 viewHolder = new CurrencyHeaderViewHolder(currencyHeaderView);
                 break;
             case DETAIL_ADAPTER_CURRENCY:
-                View currencyView = inflater.inflate(R.layout.detail_currency_item, parent, false);
+                View currencyView = inflater.inflate(R.layout.detail_currency_item, _parent, false);
                 viewHolder = new CurrencyViewHolder(currencyView, mContext);
                 break;
         }
@@ -75,17 +75,17 @@ public final class DetailItemAdapter extends RecyclerView.Adapter<ViewHolderBase
     }
 
     @Override
-    public void onBindViewHolder(ViewHolderBase holder, int position) {
+    public void onBindViewHolder(final ViewHolderBase _holder, final int _position) {
 
-        switch (holder.getItemViewType()) {
+        switch (_holder.getItemViewType()) {
             case DETAIL_ADAPTER_ORGANIZATION:
-                ((OrganizationViewHolder) holder).setData((OrganizationDataHolder) mItemsList.get(position));
+                ((OrganizationViewHolder) _holder).setData((OrganizationDataHolder) mItemsList.get(_position));
                 break;
             case DETAIL_ADAPTER_CURRENCY_HEADER:
-                ((CurrencyHeaderViewHolder) holder).setData((CurrencyHeaderDataHolder) mItemsList.get(position));
+                ((CurrencyHeaderViewHolder) _holder).setData((CurrencyHeaderDataHolder) mItemsList.get(_position));
                 break;
             case DETAIL_ADAPTER_CURRENCY:
-                ((CurrencyViewHolder) holder).setData((CurrencyDataHolder) mItemsList.get(position));
+                ((CurrencyViewHolder) _holder).setData((CurrencyDataHolder) mItemsList.get(_position));
                 break;
         }
     }

@@ -35,13 +35,14 @@ import ua.r4mstein.converterlab.presentation.adapters.detail.data_holders.Organi
 import ua.r4mstein.converterlab.presentation.base.BaseFragment;
 import ua.r4mstein.converterlab.presentation.ui_models.CurrenciesModel;
 import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
+import ua.r4mstein.converterlab.util.OnBackPressedListener;
 import ua.r4mstein.converterlab.util.logger.LogManager;
 import ua.r4mstein.converterlab.util.logger.Logger;
 import ua.r4mstein.converterlab.util.map_api.MapApi;
 
 import static ua.r4mstein.converterlab.util.Constants.DETAIL_FRAGMENT_BUNDLE_KEY;
 
-public final class DetailFragment extends BaseFragment<MainActivity> {
+public final class DetailFragment extends BaseFragment<MainActivity> implements OnBackPressedListener {
 
     private static final String TAG = "DetailFragment";
 
@@ -51,6 +52,7 @@ public final class DetailFragment extends BaseFragment<MainActivity> {
     private MapApi mMapApi;
     private String mRequest;
     private ProgressDialogFragment mProgressDialogFragment;
+    private FloatingActionMenu mFloatingActionMenu;
 
     @Override
     protected int getLayoutResId() {
@@ -65,34 +67,39 @@ public final class DetailFragment extends BaseFragment<MainActivity> {
     private DetailItemAdapter mAdapter;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreate(@Nullable Bundle _savedInstanceState) {
+        super.onCreate(_savedInstanceState);
         setHasOptionsMenu(true);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(final View _view, @Nullable Bundle _savedInstanceState) {
+        super.onViewCreated(_view, _savedInstanceState);
         mLogger = LogManager.getLogger();
         mMapApi = new MapApi();
         mProgressDialogFragment = new ProgressDialogFragment();
 
-        getActivityGeneric().setToolbarIconBack();
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.detail_recycler_view);
+        RecyclerView recyclerView = (RecyclerView) _view.findViewById(R.id.detail_recycler_view);
         mAdapter = new DetailItemAdapter(getActivityGeneric());
         recyclerView.setAdapter(mAdapter);
 
         String key = getArguments().getString(DETAIL_FRAGMENT_BUNDLE_KEY);
         mOrganizationModel = getActivityGeneric().getOrganizationModelFromDB(key);
+
+        getActivityGeneric().setToolbarIconBack(false);
+        getActivityGeneric().setToolbarTitle(mOrganizationModel.getTitle());
+        getActivityGeneric().setToolbarSubTitle(mOrganizationModel.getCity());
+
         updateDataAdapter(mOrganizationModel);
+
         mLogger.d(TAG, "onViewCreated");
 
         SwipeRefreshLayout refreshLayout =
-                (SwipeRefreshLayout) view.findViewById(R.id.detail_swipe_refresh);
+                (SwipeRefreshLayout) _view.findViewById(R.id.detail_swipe_refresh);
         swipeRefreshListener(refreshLayout);
 
-        initFloatingActionMenu(view, mOrganizationModel);
+        initFloatingActionMenu(_view, mOrganizationModel);
 
         initDataForDialog();
     }
@@ -111,31 +118,28 @@ public final class DetailFragment extends BaseFragment<MainActivity> {
 
     private MapApi.MapApiCallback mMapApiCallback = new MapApi.MapApiCallback() {
         @Override
-        public void onSuccess(List<Double> coordinates) {
+        public void onSuccess(final List<Double> _coordinates) {
             getActivityGeneric().cancelProgressDialog(mProgressDialogFragment);
-            getActivityGeneric().openMapsFragment(coordinates.get(0), coordinates.get(1), mRequest);
-            mLogger.d(TAG, "mMapApiCallback: onSuccess: coordinates " + coordinates.get(0) +
-                    " - " + coordinates.get(1));
+            getActivityGeneric().openMapsFragment(_coordinates.get(0), _coordinates.get(1), mRequest);
+            mLogger.d(TAG, "mMapApiCallback: onSuccess: coordinates " + _coordinates.get(0) +
+                    " - " + _coordinates.get(1));
         }
 
         @Override
-        public void onError(String message) {
+        public void onError(final String _message) {
             getActivityGeneric().cancelProgressDialog(mProgressDialogFragment);
-            Toast.makeText(getActivityGeneric(), message, Toast.LENGTH_SHORT).show();
-            mLogger.d(TAG, "MapApiCallback: onError: " + message);
+            Toast.makeText(getActivityGeneric(), _message, Toast.LENGTH_SHORT).show();
+            mLogger.d(TAG, "MapApiCallback: onError: " + _message);
         }
     };
 
-    private void updateDataAdapter(OrganizationModel organizationModel) {
+    private void updateDataAdapter(final OrganizationModel _organizationModel) {
         List<DataHolderBase> objectList = new ArrayList<>();
 
-        getActivityGeneric().setToolbarTitle(organizationModel.getTitle());
-        getActivityGeneric().setToolbarSubTitle(organizationModel.getCity());
-
         String currencyHeader = "currencyHeader";
-        List<CurrenciesModel> currenciesModels = getActivityGeneric().getCurrenciesDataFromDB(organizationModel.getId());
+        List<CurrenciesModel> currenciesModels = getActivityGeneric().getCurrenciesDataFromDB(_organizationModel.getId());
 
-        objectList.add(new OrganizationDataHolder(organizationModel));
+        objectList.add(new OrganizationDataHolder(_organizationModel));
         objectList.add(new CurrencyHeaderDataHolder(currencyHeader));
 
         for (CurrenciesModel model : currenciesModels) {
@@ -145,19 +149,19 @@ public final class DetailFragment extends BaseFragment<MainActivity> {
         mAdapter.updateData(objectList);
     }
 
-    private void initFloatingActionMenu(View view, final OrganizationModel organizationModel) {
-        final FloatingActionMenu actionMenu = (FloatingActionMenu) view.findViewById(R.id.floating_action_menu);
-        FloatingActionButton mapFAB = (FloatingActionButton) view.findViewById(R.id.floating_action_menu_map);
-        FloatingActionButton linkFAB = (FloatingActionButton) view.findViewById(R.id.floating_action_menu_link);
-        FloatingActionButton phoneFAB = (FloatingActionButton) view.findViewById(R.id.floating_action_menu_phone);
+    private void initFloatingActionMenu(final View _view, final OrganizationModel _organizationModel) {
+        mFloatingActionMenu = (FloatingActionMenu) _view.findViewById(R.id.floating_action_menu);
+        FloatingActionButton mapFAB = (FloatingActionButton) _view.findViewById(R.id.floating_action_menu_map);
+        FloatingActionButton linkFAB = (FloatingActionButton) _view.findViewById(R.id.floating_action_menu_link);
+        FloatingActionButton phoneFAB = (FloatingActionButton) _view.findViewById(R.id.floating_action_menu_phone);
 
-        createCustomAnimation(actionMenu);
+        createCustomAnimation(mFloatingActionMenu);
 
         mapFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getActivityGeneric().showProgressDialog(mProgressDialogFragment);
-                mRequest = mMapApi.getRequest(organizationModel);
+                mRequest = mMapApi.getRequest(_organizationModel);
                 mMapApi.getCoordinates(mRequest, getActivityGeneric());
                 mLogger.d(TAG, "initFloatingActionMenu: map FAB clicked: address: " + mRequest);
             }
@@ -166,40 +170,40 @@ public final class DetailFragment extends BaseFragment<MainActivity> {
         linkFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(organizationModel.getLink()));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(_organizationModel.getLink()));
                 getActivityGeneric().startActivity(intent);
-                mLogger.d(TAG, "initFloatingActionMenu: link FAB clicked: Link: " + organizationModel.getLink());
+                mLogger.d(TAG, "initFloatingActionMenu: link FAB clicked: Link: " + _organizationModel.getLink());
             }
         });
 
         phoneFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + organizationModel.getPhone()));
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + _organizationModel.getPhone()));
                 getActivityGeneric().startActivity(intent);
-                mLogger.d(TAG, "initFloatingActionMenu: phone FAB clicked: Phone: " + organizationModel.getPhone());
+                mLogger.d(TAG, "initFloatingActionMenu: phone FAB clicked: Phone: " + _organizationModel.getPhone());
             }
         });
     }
 
-    private void swipeRefreshListener(final SwipeRefreshLayout refreshLayout) {
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+    private void swipeRefreshListener(final SwipeRefreshLayout _refreshLayout) {
+        _refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 updateDataAdapter(mOrganizationModel);
-                refreshLayout.setRefreshing(false);
+                _refreshLayout.setRefreshing(false);
             }
         });
     }
 
-    private void createCustomAnimation(final FloatingActionMenu actionMenu) {
+    private void createCustomAnimation(final FloatingActionMenu _actionMenu) {
         AnimatorSet set = new AnimatorSet();
 
-        ObjectAnimator scaleOutX = ObjectAnimator.ofFloat(actionMenu.getMenuIconView(), "scaleX", 1.0f, 0.2f);
-        ObjectAnimator scaleOutY = ObjectAnimator.ofFloat(actionMenu.getMenuIconView(), "scaleY", 1.0f, 0.2f);
+        ObjectAnimator scaleOutX = ObjectAnimator.ofFloat(_actionMenu.getMenuIconView(), "scaleX", 1.0f, 0.2f);
+        ObjectAnimator scaleOutY = ObjectAnimator.ofFloat(_actionMenu.getMenuIconView(), "scaleY", 1.0f, 0.2f);
 
-        ObjectAnimator scaleInX = ObjectAnimator.ofFloat(actionMenu.getMenuIconView(), "scaleX", 0.2f, 1.0f);
-        ObjectAnimator scaleInY = ObjectAnimator.ofFloat(actionMenu.getMenuIconView(), "scaleY", 0.2f, 1.0f);
+        ObjectAnimator scaleInX = ObjectAnimator.ofFloat(_actionMenu.getMenuIconView(), "scaleX", 0.2f, 1.0f);
+        ObjectAnimator scaleInY = ObjectAnimator.ofFloat(_actionMenu.getMenuIconView(), "scaleY", 0.2f, 1.0f);
 
         scaleOutX.setDuration(50);
         scaleOutY.setDuration(50);
@@ -210,7 +214,7 @@ public final class DetailFragment extends BaseFragment<MainActivity> {
         scaleInX.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                actionMenu.getMenuIconView().setImageResource(actionMenu.isOpened()
+                _actionMenu.getMenuIconView().setImageResource(_actionMenu.isOpened()
                         ? R.drawable.ic_close : R.drawable.ic_fab_menu);
             }
         });
@@ -219,23 +223,23 @@ public final class DetailFragment extends BaseFragment<MainActivity> {
         set.play(scaleInX).with(scaleInY).after(scaleOutX);
         set.setInterpolator(new OvershootInterpolator(2));
 
-        actionMenu.setIconToggleAnimatorSet(set);
+        _actionMenu.setIconToggleAnimatorSet(set);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_share, menu);
+    public void onCreateOptionsMenu(final Menu _menu, final MenuInflater _inflater) {
+        super.onCreateOptionsMenu(_menu, _inflater);
+        _inflater.inflate(R.menu.menu_share, _menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem _item) {
 
-        if (item.getItemId() == R.id.action_share) {
+        if (_item.getItemId() == R.id.action_share) {
             getActivityGeneric().showDetailDialog(mStrings);
         }
 
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected(_item);
     }
 
     private void initDataForDialog() {
@@ -250,7 +254,18 @@ public final class DetailFragment extends BaseFragment<MainActivity> {
             String ask = format.format(Double.parseDouble(model.getAsk())).trim();
             String bid = format.format(Double.parseDouble(model.getBid())).trim();
 
-            mStrings.add(model.getName_key().trim() + "\t\t\t\t\t\t\t" + ask + "/" + bid);
+            mStrings.add(model.getNameKey().trim() + "\t\t\t\t\t\t\t" + ask + "/" + bid);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mFloatingActionMenu.isOpened()) {
+            mFloatingActionMenu.close(true);
+            getActivityGeneric().setToolbarIconBack(true);
+        } else {
+            getActivityGeneric().getSupportFragmentManager().popBackStack();
+            getActivityGeneric().getToolbar().setNavigationIcon(null);
         }
     }
 }

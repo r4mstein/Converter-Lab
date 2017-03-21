@@ -46,7 +46,7 @@ public class RetrofitManager {
         return retrofitManager;
     }
 
-    public void init() {
+    public final void init() {
         mLogger.d(TAG, "init");
 
         OkHttpClient okHttpClient = initOkHttpClient();
@@ -59,7 +59,7 @@ public class RetrofitManager {
 
     }
 
-    public OkHttpClient initOkHttpClient() {
+    private OkHttpClient initOkHttpClient() {
         mLogger.d(TAG, "initOkHttpClient");
 
         final HttpLoggingInterceptor loggingBODY = new HttpLoggingInterceptor();
@@ -68,15 +68,13 @@ public class RetrofitManager {
         final HttpLoggingInterceptor loggingHEADERS = new HttpLoggingInterceptor();
         loggingHEADERS.setLevel(HttpLoggingInterceptor.Level.HEADERS);
 
-        final OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        return new OkHttpClient.Builder()
                 .addInterceptor(loggingHEADERS)
                 .addInterceptor(loggingBODY)
                 .build();
-
-        return okHttpClient;
     }
 
-    public GsonConverterFactory initGsonConverterFactory() {
+    private GsonConverterFactory initGsonConverterFactory() {
         mLogger.d(TAG, "initGsonConverterFactory");
 
         final Type typeRegions = new TypeToken<List<Region>>() {
@@ -94,25 +92,21 @@ public class RetrofitManager {
                 .registerTypeAdapter(typeCurrencies, new CurrenciesDeserializer())
                 .registerTypeAdapter(type, new CitiesDeserializer());
 
-        final GsonConverterFactory factory = GsonConverterFactory.create(gsonBuilder.create());
-
-        return factory;
+        return GsonConverterFactory.create(gsonBuilder.create());
     }
 
-    public Retrofit initRetrofit(OkHttpClient okHttpClient, GsonConverterFactory factory) {
+    private Retrofit initRetrofit(final OkHttpClient _okHttpClient, final GsonConverterFactory _factory) {
         mLogger.d(TAG, "initRetrofit");
 
-        final Retrofit retrofit = new Retrofit.Builder()
+        return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .client(okHttpClient)
-                .addConverterFactory(factory)
+                .client(_okHttpClient)
+                .addConverterFactory(_factory)
                 .build();
-
-        return retrofit;
     }
 
 
-    public void getResponse(final RCallback callback) {
+    public final void getResponse(final RCallback _callback) {
         final Call<RootResponse> modelCall = apiInterface.getMainModel();
 
         modelCall.enqueue(new Callback<RootResponse>() {
@@ -120,14 +114,14 @@ public class RetrofitManager {
                               public void onResponse(Call<RootResponse> call, Response<RootResponse> response) {
                                   mLogger.d(TAG, "onResponse - Response Code: " + response.code());
 
-                                  if (response.isSuccessful()) callback.onSuccess(response.body());
-                                  else callback.onError(response.errorBody().toString());
+                                  if (response.isSuccessful()) _callback.onSuccess(response.body());
+                                  else _callback.onError(response.errorBody().toString());
                               }
 
                               @Override
                               public void onFailure(Call<RootResponse> call, Throwable t) {
                                   mLogger.d(TAG, t.getMessage(), t);
-                                  callback.onError("error");
+                                  _callback.onError("error");
                               }
                           }
         );

@@ -5,6 +5,6 @@ import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
 
 public interface IValidator {
 
-    OrganizationModel validateOrganizationModel(OrganizationModel model);
-    CurrenciesModel validateCurrenciesModel(CurrenciesModel model);
+    OrganizationModel validateOrganizationModel(OrganizationModel _model);
+    CurrenciesModel validateCurrenciesModel(CurrenciesModel _model);
 }

@@ -22,6 +22,7 @@ import java.util.List;
 
 import ua.r4mstein.converterlab.presentation.ui_models.OrganizationModel;
 import ua.r4mstein.converterlab.util.logger.LogManager;
+import ua.r4mstein.converterlab.util.logger.Logger;
 import ua.r4mstein.converterlab.util.network.NetworkHelper;
 
 public final class MapApi implements IMapApi {
@@ -29,17 +30,22 @@ public final class MapApi implements IMapApi {
     private static final String TAG = "MapApi";
 
     private MapApiCallback mMapApiCallback;
+    private Logger mLogger;
 
-    public void setMapApiCallback(MapApiCallback mapApiCallback) {
-        mMapApiCallback = mapApiCallback;
+    public MapApi() {
+        mLogger = LogManager.getLogger();
+    }
+
+    public final void setMapApiCallback(final MapApiCallback _mapApiCallback) {
+        mMapApiCallback = _mapApiCallback;
     }
 
     @Override
-    public List<String> getCoordinatesWithApi(String request) {
-        LogManager.getLogger().d(TAG, "getCoordinatesWithApi: request: " + request);
+    public List<String> getCoordinatesWithApi(final String _request) {
+        mLogger.d(TAG, "getCoordinatesWithApi: request: " + _request);
         List<String> result = new ArrayList<>();
 
-        String url = String.format("https://maps.googleapis.com/maps/api/geocode/json?address=%s", request);
+        String url = String.format("https://maps.googleapis.com/maps/api/geocode/json?address=%s", _request);
         String response = getHTTPData(url);
 
         try {
@@ -61,13 +67,13 @@ public final class MapApi implements IMapApi {
     }
 
     @Override
-    public String getHTTPData(String requestURL) {
-        LogManager.getLogger().d(TAG, "getHTTPData: URL: " + requestURL);
+    public String getHTTPData(final String _requestURL) {
+        mLogger.d(TAG, "getHTTPData: URL: " + _requestURL);
         URL url;
         String response = "";
 
         try {
-            url = new URL(requestURL);
+            url = new URL(_requestURL);
             try {
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
@@ -97,29 +103,29 @@ public final class MapApi implements IMapApi {
         return response;
     }
 
-    public void getCoordinates(final String request, Context context) {
+    public final void getCoordinates(final String _request, final Context _context) {
 
         final Handler handler = new Handler(Looper.getMainLooper());
 
         final List<Double> result = new ArrayList<>();
-        Geocoder geocoder = new Geocoder(context);
+        Geocoder geocoder = new Geocoder(_context);
 
-        if (NetworkHelper.isOnline(context)) {
+        if (NetworkHelper.isOnline(_context)) {
             try {
-                List<Address> address = geocoder.getFromLocationName(request, 5);
+                List<Address> address = geocoder.getFromLocationName(_request, 5);
 
                 if (address != null && !address.isEmpty()) {
                     result.add(address.get(0).getLatitude());
                     result.add(address.get(0).getLongitude());
 
                     if (mMapApiCallback != null) mMapApiCallback.onSuccess(result);
-                    LogManager.getLogger().d(TAG, "getCoordinates: Success/Geocoder: coordinates: "
+                    mLogger.d(TAG, "getCoordinates: Success/Geocoder: coordinates: "
                             + address.get(0).getLatitude() + " - " + address.get(0).getLongitude());
                 } else {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            String url = request.replace(" ", "+");
+                            String url = _request.replace(" ", "+");
                             final List<String> coordinates = getCoordinatesWithApi(url);
 
                             if (coordinates != null && !coordinates.isEmpty()) {
@@ -129,7 +135,7 @@ public final class MapApi implements IMapApi {
                                 handler.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        LogManager.getLogger().d(TAG, "getCoordinates: Success/API: coordinates: "
+                                        mLogger.d(TAG, "getCoordinates: Success/API: coordinates: "
                                                 + coordinates.get(0) + " - " + coordinates.get(1));
                                         if (mMapApiCallback != null)
                                             mMapApiCallback.onSuccess(result);
@@ -140,7 +146,7 @@ public final class MapApi implements IMapApi {
                                 handler.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        LogManager.getLogger().d(TAG,
+                                        mLogger.d(TAG,
                                                 "getCoordinates: Error: Not found coordinates");
                                         if (mMapApiCallback != null)
                                             mMapApiCallback.onError("Not found coordinates");
@@ -154,13 +160,13 @@ public final class MapApi implements IMapApi {
                 e.printStackTrace();
             }
         } else {
-            Toast.makeText(context, "Internet not available", Toast.LENGTH_SHORT).show();
+            Toast.makeText(_context, "Internet not available", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public String getRequest(OrganizationModel model) {
-        return model.getRegion().trim() + " " + model.getCity().trim() + " " +
-                model.getAddress().trim();
+    public final String getRequest(final OrganizationModel _model) {
+        return _model.getRegion().trim() + " " + _model.getCity().trim() + " " +
+                _model.getAddress().trim();
     }
 
     public interface MapApiCallback {

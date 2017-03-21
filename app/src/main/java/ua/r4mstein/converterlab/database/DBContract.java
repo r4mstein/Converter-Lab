@@ -2,7 +2,7 @@ package ua.r4mstein.converterlab.database;
 
 public final class DBContract {
 
-    public static class OrganizationEntry {
+    public static final class OrganizationEntry {
 
         public static final String TABLE_NAME = "organization_models";
 
@@ -35,7 +35,7 @@ public final class DBContract {
 
     }
 
-    public static class CurrenciesEntry {
+    public static final class CurrenciesEntry {
 
         public static final String TABLE_NAME = "currencies_models";
 

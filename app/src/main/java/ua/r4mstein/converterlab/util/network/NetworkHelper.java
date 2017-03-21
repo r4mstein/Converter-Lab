@@ -11,10 +11,8 @@ public final class NetworkHelper {
 
     private static final String TAG = "NetworkHelper";
 
-    private Logger mLogger;
-
     public NetworkHelper() {
-        mLogger = LogManager.getLogger();
+
     }
 
     public static boolean isOnline(final Context _context) {

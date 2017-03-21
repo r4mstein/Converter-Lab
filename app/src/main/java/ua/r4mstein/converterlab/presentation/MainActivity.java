@@ -3,6 +3,7 @@ package ua.r4mstein.converterlab.presentation;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -54,9 +55,11 @@ public class MainActivity extends BaseActivity {
         super.onCreate(_savedInstanceState);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        logger.d(TAG, "onCreate");
 
-        mDataSource = new DataSource(this);
+        mDataSource = DataSource.getDataSource(this);
+        mDataSource.open();
+        mDataSource.inUse = true;
+        logger.d(TAG, "onCreate: Open DB");
 
         Intent intent = new Intent(this, DataService.class);
         intent.setAction(SERVICE_START);
@@ -169,42 +172,66 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        mDataSource.open();
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this, new String[]{
-                            Manifest.permission.ACCESS_COARSE_LOCATION,
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    100);
+//        mDataSource.open();
+//        mDataSource.inUse = true;
+        if (!mDataSource.inUse) {
+            mDataSource.open();
+            mDataSource.inUse = true;
+            logger.d(TAG, "onStart: Open DB");
         }
+
+        if (Build.VERSION.SDK_INT >= 23) checkPermissions();
+        logger.d(TAG, "onStart: Build.VERSION: " + Build.VERSION.SDK_INT);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         mDataSource.close();
+        mDataSource.inUse = false;
+        logger.d(TAG, "onStop: Close DB");
+    }
+
+    private void checkPermissions() {
+        List<String> permissionList = new ArrayList<>();
+        String[] permissions;
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+        if (permissionList.size() > 0) {
+            permissions = new String[permissionList.size()];
+            for (int i = 0; i < permissionList.size(); i++) {
+                permissions[i] = permissionList.get(i);
+            }
+
+            ActivityCompat.requestPermissions(this, permissions, 100);
+        }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-                grantResults[1] == PackageManager.PERMISSION_GRANTED &&
-                grantResults[2] == PackageManager.PERMISSION_GRANTED) {
-
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                    ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                    ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-
-                Toast.makeText(this, "You have all permissions", Toast.LENGTH_SHORT).show();
+        int count = 0;
+        if (grantResults.length > 0) {
+            for (int i : grantResults) {
+                if (i == PackageManager.PERMISSION_GRANTED) count++;
             }
-        } else {
-            finish();
+
+            if (count == grantResults.length) {
+                Toast.makeText(this, "You have all permissions", Toast.LENGTH_SHORT).show();
+            } else finish();
+
+            logger.d(TAG, "onRequestPermissionsResult: count = " + count);
+            logger.d(TAG, "onRequestPermissionsResult: grantResults.length = " + grantResults.length);
         }
     }
 

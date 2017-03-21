@@ -19,6 +19,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import ua.r4mstein.converterlab.R;
 import ua.r4mstein.converterlab.api.RetrofitManager;
@@ -47,7 +48,7 @@ public final class DataService extends Service {
     public void onCreate() {
         super.onCreate();
         mLogger.d(TAG, "onCreate");
-        mDataSource = new DataSource(this);
+        mDataSource = DataSource.getDataSource(this);
         mRetrofitManager = RetrofitManager.getInstance();
         mRetrofitManager.init();
         mAlarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
@@ -121,7 +122,7 @@ public final class DataService extends Service {
                 SharedPreferences preferences = DataService.this.getSharedPreferences(
                         SERVICE_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
 
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss",  Locale.getDefault());
                 Date newDate = null;
                 try {
                     newDate = dateFormat.parse(_response.getDate());
@@ -153,8 +154,11 @@ public final class DataService extends Service {
                 List<OrganizationModel> organizationModels = converter.getOrganizationModels();
                 List<CurrenciesModel> currenciesModels = converter.getCurrencies();
 
-                mDataSource.open();
-                mLogger.d(TAG, "loadDataFromServer: DataSource open");
+                if (!mDataSource.inUse) {
+                    mDataSource.open();
+                    mLogger.d(TAG, "loadDataFromServer: DataSource open");
+                }
+
 
                 resetDataServiceAlarm(DataService.this, mAlarmManager);
 
@@ -181,8 +185,10 @@ public final class DataService extends Service {
                 mDataSource.insertOrUpdateOrganizations(organizationModels);
                 mDataSource.insertOrUpdateCurrencies(currenciesModels);
 
-                mDataSource.close();
-                mLogger.d(TAG, "loadDataFromServer: DataSource close");
+                if (!mDataSource.inUse && mDataSource.isOpen()) {
+                    mDataSource.close();
+                    mLogger.d(TAG, "loadDataFromServer: DataSource close");
+                }
 
                 sendMessage(SERVICE_MESSAGE_SUCCESS);
 

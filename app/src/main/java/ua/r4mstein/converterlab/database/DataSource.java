@@ -17,21 +17,35 @@ import ua.r4mstein.converterlab.util.logger.Logger;
 
 public final class DataSource {
 
+    private static DataSource INSTANCE;
+
     private static final String TAG = "DataSource";
     private final Logger mLogger;
 
     private SQLiteDatabase mDatabase;
     private DBHelper mDBHelper;
 
-    public DataSource(final Context _context) {
+    public boolean inUse;
+
+    private DataSource(final Context _context) {
         mDBHelper = new DBHelper(_context);
-        mDatabase = mDBHelper.getWritableDatabase();
         mLogger = LogManager.getLogger();
+    }
+
+    public static DataSource getDataSource(final Context _context) {
+        if (INSTANCE == null) INSTANCE = new DataSource(_context);
+        return INSTANCE;
     }
 
     public final void open() {
         mDatabase = mDBHelper.getWritableDatabase();
         mLogger.d(TAG, "Open DB");
+    }
+
+    public final boolean isOpen() {
+        boolean isOpen = mDatabase.isOpen();
+        mLogger.d(TAG, "DB isOpen = " + isOpen);
+        return isOpen;
     }
 
     public final void close() {

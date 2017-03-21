@@ -15,6 +15,6 @@
     <string name="fab_phone">Позвонить</string>
 
     <string name="detail_currency_name">Название валюты</string>
-    <string name="detail_purchase_sale">Покупка / \nПродажа</string>
+    <string name="detail_purchase_sale">Покупка /\nПродажа</string>
 
 </resources>

@@ -22,8 +22,6 @@
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_size_medium" />
 
-
-        <!--TODO FIX-->
         <TextView
             android:id="@+id/detail_purchase_sale"
             android:layout_width="wrap_content"
@@ -33,7 +31,9 @@
             android:padding="@dimen/padding_text_large"
             android:text="@string/detail_purchase_sale"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/text_size_medium" />
+            android:textSize="@dimen/text_size_medium"
+            android:layout_toEndOf="@id/detail_currency_name"
+            android:gravity="end"/>
 
     </RelativeLayout>
 

@@ -2,7 +2,7 @@ package ua.r4mstein.converterlab.util;
 
 public final class Constants {
 
-    public Constants() {
+    private Constants() {
 
     }
 

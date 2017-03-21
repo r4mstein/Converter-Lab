@@ -21,15 +21,16 @@
             android:layout_centerVertical="true"
             android:textColor="@color/colorBlack"
             android:textSize="@dimen/text_size_medium"
-            tools:text="Доллар США" />
+            tools:text="Доллар США"/>
 
-        <!--TODO FIX-->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_toEndOf="@id/detail_currency_name"
+            android:gravity="end">
 
             <LinearLayout
                 android:layout_width="wrap_content"

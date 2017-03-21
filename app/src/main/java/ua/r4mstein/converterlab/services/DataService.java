@@ -122,7 +122,7 @@ public final class DataService extends Service {
                 SharedPreferences preferences = DataService.this.getSharedPreferences(
                         SERVICE_SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
 
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss",  Locale.getDefault());
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
                 Date newDate = null;
                 try {
                     newDate = dateFormat.parse(_response.getDate());
@@ -158,7 +158,6 @@ public final class DataService extends Service {
                     mDataSource.open();
                     mLogger.d(TAG, "loadDataFromServer: DataSource open");
                 }
-
 
                 resetDataServiceAlarm(DataService.this, mAlarmManager);
 

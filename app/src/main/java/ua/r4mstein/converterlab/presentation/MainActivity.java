@@ -31,6 +31,7 @@ import ua.r4mstein.converterlab.services.DataService;
 import ua.r4mstein.converterlab.util.OnBackPressedListener;
 
 import static ua.r4mstein.converterlab.util.Constants.DETAIL_FRAGMENT_BUNDLE_KEY;
+import static ua.r4mstein.converterlab.util.Constants.MAIN_ACTIVITY_PERMISSION_REQUEST_CODE;
 import static ua.r4mstein.converterlab.util.Constants.SERVICE_START;
 
 public class MainActivity extends BaseActivity {
@@ -121,9 +122,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public final void setToolbarIconBack(final boolean isMenuOpen) {
-
-        //todo - use not deprecated method "getDrawable" for newer api
-        mToolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back));
+        mToolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.ic_arrow_back));
 
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -177,8 +176,6 @@ public class MainActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
 
-        //no need to open DB in on Start if its done in onCreate;, also better to close it in onDestroy;
-
         if (Build.VERSION.SDK_INT >= 23) checkPermissions();
         logger.d(TAG, "onStart: Build.VERSION: " + Build.VERSION.SDK_INT);
     }
@@ -189,7 +186,7 @@ public class MainActivity extends BaseActivity {
         mDataSource.close();
         mDataSource.inUse = false;
         mDataSource = null;
-        logger.d(TAG, "onStop: Close DB");
+        logger.d(TAG, "onDestroy: Close DB");
     }
 
     private void checkPermissions() {
@@ -212,7 +209,7 @@ public class MainActivity extends BaseActivity {
                 permissions[i] = permissionList.get(i);
             }
 
-            ActivityCompat.requestPermissions(this, permissions, 100);
+            ActivityCompat.requestPermissions(this, permissions, MAIN_ACTIVITY_PERMISSION_REQUEST_CODE);
         }
     }
 
@@ -220,20 +217,20 @@ public class MainActivity extends BaseActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        //todo - check matching requestCode;
+        if (requestCode == MAIN_ACTIVITY_PERMISSION_REQUEST_CODE) {
+            int count = 0;
+            if (grantResults.length > 0) {
+                for (int i : grantResults) {
+                    if (i == PackageManager.PERMISSION_GRANTED) count++;
+                }
 
-        int count = 0;
-        if (grantResults.length > 0) {
-            for (int i : grantResults) {
-                if (i == PackageManager.PERMISSION_GRANTED) count++;
+                if (count == grantResults.length) {
+                    Toast.makeText(this, "You have all permissions", Toast.LENGTH_SHORT).show();
+                } else finish();
+
+                logger.d(TAG, "onRequestPermissionsResult: count = " + count);
+                logger.d(TAG, "onRequestPermissionsResult: grantResults.length = " + grantResults.length);
             }
-
-            if (count == grantResults.length) {
-                Toast.makeText(this, "You have all permissions", Toast.LENGTH_SHORT).show();
-            } else finish();
-
-            logger.d(TAG, "onRequestPermissionsResult: count = " + count);
-            logger.d(TAG, "onRequestPermissionsResult: grantResults.length = " + grantResults.length);
         }
     }
 

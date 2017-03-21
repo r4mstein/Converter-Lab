@@ -84,7 +84,7 @@ public final class MapApi implements IMapApi {
                 connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
                 int responseCode = connection.getResponseCode();
-                mLogger.d(TAG, "responseCode: " + responseCode); //fixed
+                mLogger.d(TAG, "getHTTPData: responseCode: " + responseCode);
                 if (responseCode == HttpURLConnection.HTTP_OK) {
                     String line;
                     BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));

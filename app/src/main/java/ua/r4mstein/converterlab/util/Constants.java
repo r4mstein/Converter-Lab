@@ -30,4 +30,6 @@ public final class Constants {
     public static final String MAPS_FRAGMENT_LATITUDE = "maps_fragment_latitude";
     public static final String MAPS_FRAGMENT_LONGITUDE = "maps_fragment_longitude";
     public static final String MAPS_FRAGMENT_ADDRESS = "maps_fragment_address";
+
+    public static final int MAIN_ACTIVITY_PERMISSION_REQUEST_CODE = 100;
 }
